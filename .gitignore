@@ -22,3 +22,13 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+/run/saves/testig/playerdata
+/run/saves/testig/advancements
+/run/crash-reports
+/run/logs
+/run/saves/testig/stats
+/run/config/worldedit
+/run/saves
+/run/debug
+/run/screenshots
+/run/resourcepacks

@@ -1,5 +1,7 @@
 package com.soc;
 
+import com.soc.items.util.ModItems;
+import com.soc.players.PlayerDataManager;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -20,5 +22,8 @@ public class SocWars implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+
+		ModItems.initialise();
+		PlayerDataManager.initialise();
 	}
 }

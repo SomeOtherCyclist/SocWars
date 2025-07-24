@@ -1,0 +1,14 @@
+{
+  "item.socwars.dashrend": "Dashrend",
+  "item.socwars.lifethief": "Lifethief",
+  "item.socwars.biohacker": "Biohacker",
+  "item.socwars.goo_shovel": "Goo Shovel",
+  "item.socwars.invisibility_ring": "Ring of Invisibility",
+  "item.socwars.lesser_speed_ring": "Ring of Lesser Speed",
+  "item.socwars.greater_speed_ring": "Ring of Greater Speed",
+  "item.socwars.lesser_jump_ring": "Ring of Lesser Leaping",
+  "item.socwars.greater_jump_ring": "Ring of Greater Leaping",
+  "item.socwars.devastator": "Devastator",
+  "item.socwars.devastator_prime": "Devastator Prime",
+  "itemGroup.socwars": "SocWars"
+}

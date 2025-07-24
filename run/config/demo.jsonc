@@ -1,0 +1,57 @@
+{
+    // The version of the config file. Do not change this unless you know what you are doing.
+    "rconfig:version": 2,
+    "demoBoolean": true,
+    // Type: Integer
+    "demoInteger": 1,
+    // Type: Double
+    "demoDouble": 1.0,
+    // Range: 0 - 10
+    "demoSlider": 1,
+    "demoString": "Hello World!",
+    // [Allows newlines]
+    "multiline": "This is a multiline string.\nIt has multiple lines.\nIt is very long.\n",
+    // Range: 0 - 10
+    "demoRange": 5,
+    // Valid Values: BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE, OBFUSCATED, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC, RESET
+    "demoEnum": "RED",
+    // Regex: #[a-fA-F0-9]{6}
+    "demoRegex": "#ff0000",
+    // [Color Format: RGB]
+    "demoColor": 16711680,
+    // [Color Format: RGBA]
+    "demoAlphaColor": -65536,
+    // Valid Values: BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE, OBFUSCATED, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC, RESET
+    "demoSelect": [
+        "RED",
+        "GREEN"
+    ],
+    /*
+     * Range: 1 - 10
+     * Valid Values: BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE, OBFUSCATED, BOLD, STRIKETHROUGH, UNDERLINE, ITALIC, RESET
+     */
+    "demoDraggable": [
+        "RED",
+        "GREEN"
+    ],
+    // Type: Integer
+    "demoKeybind": 48,
+    "object": {
+        "string": "Hello World!",
+        // Type: Integer
+        "integer": 1
+    },
+    "object2": {
+        "string": "Hello World!",
+        // Type: Integer
+        "integer": 1
+    },
+    // Type: Integer
+    "demoRenderer": 48,
+    // Valid Values: FIRST, SECOND, THIRD
+    "demoEnumWithAbstract": "FIRST",
+    "category": {
+        // Type: Integer
+        "demoInteger": 1
+    }
+}

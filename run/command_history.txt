@@ -1,0 +1,50 @@
+//undo
+//redo
+//paste
+//undo
+//paste
+//undo
+//paste
+/tp itsevocat
+//paste
+//schem load frond_centre
+//gmask air
+//paste
+//pos1
+//pos2
+//set air
+//pos2
+//undo
+//pos1
+//pos2
+//set air
+//gmask
+//set air
+//gmask air
+//stack 40
+//replacenear 30 lime_stained_glass air
+//gmask air
+//replacenear 30 lime_stained_glass air
+//gmask
+//replacenear 30 lime_stained_glass air
+//paste
+//undo
+//gmask air
+//paste
+//undo
+//replacenear 30 lime_stained_glass air
+//gmask
+//replacenear 30 lime_stained_glass air
+//gmask air
+//paste
+//gmask
+//replacenear 40 lime_stained_glass,yellow_stained_glass,red_stained_glass,orange_stained_glass
+//undo
+//replacenear 40 lime_stained_glass,yellow_stained_glass,red_stained_glass,orange_stained_glass air
+/tp itsevocat
+/summon giant
+/summon zombie ~ ~ ~ [canPickUp:true]
+/summon zombie ~ ~ ~ [canPickUp:{true}]
+/summon zombie ~ ~ ~ {CanPickUpLoot: 1b}
+/time set night
+/summon zombie ~ ~ ~ {CanPickUpLoot: 1b}

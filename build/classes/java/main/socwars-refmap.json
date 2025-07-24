@@ -1,0 +1,14 @@
+{
+  "mappings": {
+    "com/soc/mixin/CancelSprintParticles": {
+      "spawnSprintingParticles": "Lnet/minecraft/class_1297;method_5839()V"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "com/soc/mixin/CancelSprintParticles": {
+        "spawnSprintingParticles": "Lnet/minecraft/class_1297;method_5839()V"
+      }
+    }
+  }
+}
