@@ -1,5 +1,6 @@
 package com.soc;
 
+import com.soc.effects.Armour;
 import com.soc.items.util.ModItems;
 import com.soc.players.PlayerDataManager;
 import net.fabricmc.api.ModInitializer;
@@ -25,5 +26,6 @@ public class SocWars implements ModInitializer {
 
 		ModItems.initialise();
 		PlayerDataManager.initialise();
+		Armour.initialise();
 	}
 }

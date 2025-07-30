@@ -1,7 +1,7 @@
 package com.soc.items;
 
 import com.soc.items.util.ModItems;
-import com.soc.tools.ToolMaterials;
+import com.soc.materials.ToolMaterials;
 import it.unimi.dsi.fastutil.objects.ReferenceSortedSets;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;

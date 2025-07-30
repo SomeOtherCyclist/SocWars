@@ -1,0 +1,16 @@
+#Mon Jul 01 00:25:12 AEST 2024
+Ambient_Mult=0.6
+AutoGeneratePOMTextures=true
+BLOOM_STRENGTH=4.0
+CLOUDS_QUALITY=0.3
+CLOUDS_SHADOWS=true
+Emissive_Strength=31.68
+MAX_ITERATIONS=400
+POM=true
+RAY_COUNT=21
+SCREENSPACE_CONTACT_SHADOWS=true
+STEPS=35
+Stochastic_Transparent_Shadows=true
+WAVY_SPEED=1.5
+rayMarchSampleCount=6
+shadowDistance=256

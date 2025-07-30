@@ -1,7 +1,7 @@
 package com.soc.items;
 
 import com.soc.items.util.ModItems;
-import com.soc.tools.ToolMaterials;
+import com.soc.materials.ToolMaterials;
 import it.unimi.dsi.fastutil.objects.ReferenceSortedSets;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -14,16 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.random.LocalRandom;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SequencedSet;
-
 import static com.soc.items.util.ModItems.addItemToGroups;
 
 public class Devastator extends Item {
     private final boolean isPrime;
 
-    public Devastator(Item.Settings settings, boolean isPrime) {
+    public Devastator(final Item.Settings settings, final boolean isPrime) {
         super(settings);
         this.isPrime = isPrime;
     }
@@ -36,13 +32,11 @@ public class Devastator extends Item {
     }
 
     public static final Item DEVASTATOR = ModItems.register("devastator", (settings) -> new Devastator(settings, false), new Settings()
-            .useCooldown(3.5f)
             .rarity(Rarity.RARE)
             .sword(ToolMaterials.DEVASTATOR_TOOL_MATERIAL, 2f, -3.7f)
             .component(DataComponentTypes.TOOLTIP_DISPLAY, new TooltipDisplayComponent(false, ReferenceSortedSets.emptySet()))
     );
     public static final Item DEVASTATOR_PRIME = ModItems.register("devastator_prime", (settings) -> new Devastator(settings, true), new Settings()
-            .useCooldown(3.5f)
             .rarity(Rarity.EPIC)
             .sword(ToolMaterials.DEVASTATOR_TOOL_MATERIAL, 2f, -3.7f)
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)

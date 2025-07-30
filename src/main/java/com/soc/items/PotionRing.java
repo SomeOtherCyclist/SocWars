@@ -2,7 +2,6 @@ package com.soc.items;
 
 import com.soc.items.util.ModItems;
 import com.soc.items.util.RingItem;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +18,7 @@ public class PotionRing extends RingItem {
     private final RegistryEntry<StatusEffect> effect;
     private final int amplifier;
 
-    public PotionRing(Settings settings, RegistryEntry<StatusEffect> effect, int amplifier) {
+    public PotionRing(final Settings settings, final RegistryEntry<StatusEffect> effect, final int amplifier) {
         super(settings);
         this.effect = effect;
         this.amplifier = amplifier;
@@ -34,8 +33,8 @@ public class PotionRing extends RingItem {
 
     public static final Item LESSER_SPEED_RING = ModItems.register("lesser_speed_ring", (settings) -> new PotionRing(settings, StatusEffects.SPEED, 0), new Settings().maxDamage(20 * 30));
     public static final Item GREATER_SPEED_RING = ModItems.register("greater_speed_ring", (settings) -> new PotionRing(settings, StatusEffects.SPEED, 1), new Settings().maxDamage(20 * 20));
-    public static final Item LESSER_JUMP_RING = ModItems.register("lesser_jump_ring", (settings) -> new PotionRing(settings, StatusEffects.JUMP_BOOST, 1), new Settings().maxDamage(20 * 20));
-    public static final Item GREATER_JUMP_RING = ModItems.register("greater_jump_ring", (settings) -> new PotionRing(settings, StatusEffects.JUMP_BOOST, 3), new Settings().maxDamage(20 * 15));
+    public static final Item LESSER_JUMP_RING = ModItems.register("lesser_jump_ring", (settings) -> new PotionRing(settings, StatusEffects.JUMP_BOOST, 1), new Settings().maxDamage(20 * 15));
+    public static final Item GREATER_JUMP_RING = ModItems.register("greater_jump_ring", (settings) -> new PotionRing(settings, StatusEffects.JUMP_BOOST, 3), new Settings().maxDamage(20 * 5));
 
     @Override
     protected void ringUse(World world, PlayerEntity user, Hand hand) {

@@ -1,0 +1,21 @@
+#Wed Jul 30 19:56:08 AEST 2025
+CAS_Strength=0.8
+FogDensity=0.1
+PT_SHARP_DIRECT=true
+PT_SHARP_DIRECT_Angle=0.1
+SVGF_RAD=2
+blocklightIllum=1.25
+brightnessInt=-0.10
+colorlumG=1.15
+colorlumR=1.10
+constrastInt=1.05
+gammaCurve=0.35
+minimumAmbientIllum=0.4
+moonlightIllum=0.75
+motionblurToggle=false
+saturationInt=1.20
+shadowMapResolution=4096
+skylightIllum=0.75
+sunlightBlueMult=0.85
+sunlightIllum=1.25
+vibranceInt=1.20

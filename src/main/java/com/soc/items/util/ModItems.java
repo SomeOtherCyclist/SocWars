@@ -32,6 +32,9 @@ public class ModItems {
         InvisibilityRing.initialise();
         PotionRing.initialise();
         Devastator.initialise();
+        DiceOfFate.initialise();
+        PotionApple.initialise();
+        NetherightSword.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
