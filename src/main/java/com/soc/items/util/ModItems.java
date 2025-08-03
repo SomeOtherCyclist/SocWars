@@ -35,6 +35,8 @@ public class ModItems {
         DiceOfFate.initialise();
         PotionApple.initialise();
         NetherightSword.initialise();
+        GamblerArmour.initialise();
+        SteadfastArmour.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

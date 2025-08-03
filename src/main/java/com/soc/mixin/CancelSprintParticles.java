@@ -23,7 +23,7 @@ public abstract class CancelSprintParticles {
 			return;
 		}
 
-		if (playerData.getInvisible()) {
+		if (playerData.invisible) {
 			info.cancel();
 		}
 	}

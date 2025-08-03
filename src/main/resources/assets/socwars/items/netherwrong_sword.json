@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "soc:item/netherwrong_sword"
+    "model": "socwars:item/netherwrong_sword"
   }
 }

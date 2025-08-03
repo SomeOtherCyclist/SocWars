@@ -10,6 +10,7 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 
@@ -23,10 +24,8 @@ public class BigTnt extends Entity {
         this.createFire = createFire;
     }
 
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        world.createExplosion(null, Explosion.createDamageSource(world, null), null, user.getX(), user.getY() - 2, user.getZ(), this.explosionPower, this.createFire, World.ExplosionSourceType.TNT);
-
-        return ActionResult.SUCCESS;
+    public void use(World world, BlockPos pos) {
+        world.createExplosion(null, Explosion.createDamageSource(world, null), null, pos.getX(), pos.getY() - 2, pos.getZ(), this.explosionPower, this.createFire, World.ExplosionSourceType.TNT);
     }
 
     @Override

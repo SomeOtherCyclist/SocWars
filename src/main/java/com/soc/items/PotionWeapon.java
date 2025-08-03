@@ -79,8 +79,8 @@ public class PotionWeapon extends Item {
     );
     public static final Item ALCHEMISM = ModItems.register("alchemism", (settings) -> new PotionWeapon(settings, ALCHEMISM_EFFECTS, EffectRecipients.POSITIVE_BOTH), new Settings()
             .sword(ToolMaterials.POTIONWEAPON_TOOL_MATERIAL, 4f, -2.5f)
-            .rarity(Rarity.RARE)
-            .maxDamage(300)
+            .rarity(Rarity.EPIC)
+            .maxDamage(500)
     );
 
     @Override

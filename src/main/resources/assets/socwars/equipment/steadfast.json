@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "socwars:steadfast"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "socwars:steadfast"
+      }
+    ]
+  }
+}

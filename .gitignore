@@ -32,3 +32,10 @@ replay_pid*
 /run/debug
 /run/screenshots
 /run/resourcepacks
+run/command_history.txt
+run/config/fabric/indigo-renderer.properties
+run/command_history.txt
+build/reports/problems/problems-report.html
+/build
+run/command_history.txt
+/run/shaderpacks

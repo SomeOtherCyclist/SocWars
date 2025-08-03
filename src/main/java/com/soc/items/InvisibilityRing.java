@@ -38,14 +38,14 @@ public class InvisibilityRing extends RingItem {
     protected void ringUse(World world, PlayerEntity user, Hand hand) {
         PlayerData playerData = PlayerDataManager.getPlayerData(user.getUuid());
 
-        playerData.setInvisible(true);
+        playerData.invisible = true;
         user.setInvisible(true);
     }
 
     protected void ringFinishUse(World world, PlayerEntity user, Hand hand) {
         PlayerData playerData = PlayerDataManager.getPlayerData(user.getUuid());
 
-        playerData.setInvisible(false);
+        playerData.invisible = false;
         user.setInvisible(false);
     }
 }

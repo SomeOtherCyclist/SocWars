@@ -1,11 +1,12 @@
 package com.soc.players;
 
-public class PlayerData {
-    private int lives;
-    public int getLives() { return lives; }
-    public void setLives(int _lives) { lives = _lives; }
+import com.soc.items.util.StatArmourBonus;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributes;
 
-    private boolean invisible;
-    public boolean getInvisible() { return invisible; }
-    public void setInvisible(boolean _invisible) { invisible = _invisible; }
+public class PlayerData {
+    public int lives;
+    public boolean invisible;
+
+    public StatArmourBonus steadfastBonus = new StatArmourBonus(EntityAttributes.KNOCKBACK_RESISTANCE);
 }
