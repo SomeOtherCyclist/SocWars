@@ -1,50 +1,50 @@
-//paste
-//schem load parkour5
-//paste
+/asc
 //undo
+//brush deform cyl
+//brush deform cyl 2
+//brush morph
+//brush morph 1
+//undo
+//brush clipboard
+//cyl grass_block 3 2
+//undo
+//cyl grass_block 3 2 -s
+//cyl grass_block 3 2 -sh
+//cyl grass_block 3 2
+//pos1
+//pos2
+//copy
+//brush clipboard
+//undo
+//wand
+//copy
+//undi
+//undo
+//brush clipboard
+//undo
+//copy
+//copy -m !air
+//brush clipboard
+//undo
+//copy
+//brush clipboard
+//copy
+//brush clipboard
+//copy -m !air
+//brush clipboard
+//undo
+//gmask air
+//gmask
+/mask air
+//undo
+//replace grass_block air
+//brush smooth 4
+//undo
+//copy
 //rotate 90
 //paste
-/summon zombie
-//schem load parkour3
+//rotate 90
 //paste
-/tp its
-/tp itsevocat
-//schem load parkour2
-//rotate 180
-//paste
-//schem load parkour5
-//paste
-//schem load parkour2
-//paste
-//schem load parkour5
+//rotate 90
 //paste
 //undo
-//pate
-//paste
-//schem load parkour 3
-//schem load parkour3
-//paste
-//paste -s
-//move
-//schem load parkour5
-//schem load parkour1
-//paste
-//paste -s
-//move 1 up
-//move 1
-//pos
-//po2s
-//pos2
-//move
-/tp itsevocat
-/tp -909 0 -1035
-/tp -909 0 -1035\
-/tp -909 0 -1035
-/attribute @p minecraft:armor modifier remove minecraft:gambler.CHEST
-/tp itsevocat
-/data get block ~ ~-1 ~
-/data get block ~ ~-1 ~ Items
-/data modify block ~ ~-1 ~ Items set value [{count: 1, Slot: 0b, id: "minecart"}]
-/attribute @p minecraft:knockback_resistance modifier value get minecraft:armour.knockback_resistance
-/tp itsevocat
-/time set 0

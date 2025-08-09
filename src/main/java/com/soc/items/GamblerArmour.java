@@ -66,11 +66,11 @@ public class GamblerArmour extends Item {
         this.randomiseArmour();
 
         if (entity instanceof PlayerEntity playerEntity) {
-            Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.ofVanilla(slotName), 0, EntityAttributeModifier.Operation.ADD_VALUE));
+            Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.ofVanilla(slotName), this.protectionValue, EntityAttributeModifier.Operation.ADD_VALUE));
             playerEntity.getAttributes().removeModifiers(map);
 
             if (slot != null && slot.isArmorSlot()) {
-                Objects.requireNonNull(playerEntity.getAttributeInstance(EntityAttributes.ARMOR)).addTemporaryModifier(new EntityAttributeModifier(Identifier.ofVanilla(slotName), this.protectionValue, EntityAttributeModifier.Operation.ADD_VALUE));
+                playerEntity.getAttributes().addTemporaryModifiers(map);
             }
         }
     }

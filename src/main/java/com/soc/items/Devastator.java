@@ -1,5 +1,6 @@
 package com.soc.items;
 
+import com.soc.entities.BigTnt;
 import com.soc.items.util.ModItems;
 import com.soc.materials.ToolMaterials;
 import it.unimi.dsi.fastutil.objects.ReferenceSortedSets;
@@ -8,11 +9,15 @@ import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.world.World;
 
 import static com.soc.items.util.ModItems.addItemToGroups;
 
@@ -49,5 +54,11 @@ public class Devastator extends Item {
             target.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 3 * 20, 1));
             target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 2));
         }
+    }
+
+    @Override
+    public ActionResult use(World world, PlayerEntity user, Hand hand) {
+        world.spawnEntity(new BigTnt(world, user.getPos(), user, this.isPrime ? 20f : 13f));
+        return ActionResult.SUCCESS;
     }
 }

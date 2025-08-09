@@ -14,6 +14,7 @@
   "item.socwars.devastator_prime": "Devastator Prime",
   "item.socwars.netheright_sword": "Netheright Sword",
   "item.socwars.netherwrong_sword": "Netherwrong Sword",
+  "item.socwars.sharpened_poking_stick": "Sharpened Poking Stick",
   "item.socwars.dice_of_fate": "Dice of Fate",
   "item.socwars.iron_apple": "Iron Apple",
   "item.socwars.copper_apple": "Copper Apple",
@@ -24,7 +25,12 @@
   "item.socwars.gambler_chestplate": "Gambler's Chestplate",
   "item.socwars.gambler_leggings": "Gambler's Leggings",
   "item.socwars.gambler_boots": "Gambler's Boots",
+  "item.socwars.gambler_sword": "Gambler's Blade",
   "gambler_armour_amount": "+%s Armour?",
+  "gambler_attack_damage": " %s Attack Damage?",
+  "attack_damage": " %s Attack Damage",
+  "attack_speed": " %s Attack Speed",
+  "reach": "+%s Reach Distance",
   "item.socwars.steadfast_helmet": "Steadfast Helmet",
   "item.socwars.steadfast_chestplate": "Steadfast Chestplate",
   "item.socwars.steadfast_leggings": "Steadfast Leggings",
@@ -37,5 +43,6 @@
   "potion.potency.100": "(Full Heal)",
   "effect.socwars.armour": "Armour",
   "death.attack.lifethief": "%1$s had their life stolen",
+  "death.attack.lifethief.player": "%1$s had their life stolen",
   "death.attack.netherwrong_sword_damage": "%1$s held their sword incorrectly"
 }

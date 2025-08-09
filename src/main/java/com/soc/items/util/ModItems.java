@@ -35,7 +35,9 @@ public class ModItems {
         DiceOfFate.initialise();
         PotionApple.initialise();
         NetherightSword.initialise();
+        SharpenedPokingStick.initialise();
         GamblerArmour.initialise();
+        GamblerSword.initialise();
         SteadfastArmour.initialise();
     }
 

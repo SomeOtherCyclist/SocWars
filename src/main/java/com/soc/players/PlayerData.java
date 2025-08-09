@@ -1,7 +1,6 @@
 package com.soc.players;
 
 import com.soc.items.util.StatArmourBonus;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
 
 public class PlayerData {

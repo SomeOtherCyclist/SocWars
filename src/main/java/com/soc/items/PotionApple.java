@@ -62,13 +62,16 @@ public class PotionApple extends Item {
             new EffectRecord(StatusEffects.ABSORPTION, 2, -1),
     };
     private final static EffectRecord[] EMERALD_APPLE_EFFECTS = {
-
+            new EffectRecord(StatusEffects.JUMP_BOOST, 1, 30 * 20),
+            new EffectRecord(StatusEffects.SPEED, 1, 30 * 20),
+            new EffectRecord(StatusEffects.REGENERATION, 1, 60 * 20),
+            new EffectRecord(StatusEffects.ABSORPTION, 1, -1),
     };
     private final static EffectRecord[] NETHERITE_APPLE_EFFECTS = {
             new EffectRecord(StatusEffects.RESISTANCE, 1, 60 * 20),
             new EffectRecord(StatusEffects.STRENGTH, 1, 120 * 20),
             new EffectRecord(StatusEffects.REGENERATION, 1, 60 * 20),
-            new EffectRecord(StatusEffects.INSTANT_HEALTH, 100, 1), //Entity.applyInstantEffect?
+            new EffectRecord(StatusEffects.INSTANT_HEALTH, 100, 1),
             new EffectRecord(StatusEffects.ABSORPTION, 3, -1),
     };
     private final EffectRecord[] effectList;

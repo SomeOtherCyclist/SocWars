@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "socwars:item/sharpened_poking_stick"
+  }
+}
