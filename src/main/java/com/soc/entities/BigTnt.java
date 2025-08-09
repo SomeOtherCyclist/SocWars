@@ -1,5 +1,6 @@
 package com.soc.entities;
 
+import com.soc.SocWars;
 import com.soc.util.SphereExplosion;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -109,18 +110,6 @@ public class BigTnt extends Entity implements Ownable {
         this.intersectionChecked = true;
     }
 
-    private static <T extends Entity> EntityType<T> register(RegistryKey<EntityType<?>> key, EntityType.Builder<T> type) {
-        return Registry.register(Registries.ENTITY_TYPE, key, type.build(key));
-    }
-
-    private static RegistryKey<EntityType<?>> keyOf(String id) {
-        return RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.ofVanilla(id));
-    }
-
-    private static <T extends Entity> EntityType<T> register(String id, EntityType.Builder<T> type) {
-        return Registry.register(Registries.ENTITY_TYPE, keyOf(id), type.build(keyOf(id)));
-    }
-
     public BigTnt(World world, Vec3d position, @Nullable LivingEntity igniter, float explosionRadius) {
         this(NUCLEAR_BOMB, world);
         this.setPosition(position);
@@ -130,7 +119,11 @@ public class BigTnt extends Entity implements Ownable {
         this.igniter = new LazyEntityReference<>(igniter);
     }
 
-    static EntityType<Entity> NUCLEAR_BOMB = register("nuclear_bomb", EntityType.Builder.create(BigTnt::new, SpawnGroup.MISC).dropsNothing().makeFireImmune().dimensions(0.98F, 0.98F).eyeHeight(0.15F).maxTrackingRange(10).trackingTickInterval(10));
+    static EntityType<Entity> NUCLEAR_BOMB = Registry.register(
+            Registries.ENTITY_TYPE,
+            Identifier.of(SocWars.MOD_ID, "nuclear_bomb"),
+            EntityType.Builder.create(BigTnt::new, SpawnGroup.MISC).dropsNothing().makeFireImmune().dimensions(0.98F, 0.98F).eyeHeight(0.15F).maxTrackingRange(10).trackingTickInterval(10).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(SocWars.MOD_ID, "nuclear_bomb")))
+    );
 
     public static void initialise() {}
 
