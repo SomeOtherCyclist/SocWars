@@ -3,17 +3,16 @@ package com.soc.items;
 import com.soc.entities.BWFireballEntity;
 import com.soc.items.util.ModItems;
 import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.DragonFireballEntity;
-import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.WriteView;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -34,6 +33,7 @@ public class Fireball extends Item {
         NORMAL,
         SNAIL,
         DRAGON,
+        TNT,
     }
 
     private final FireballType fireballType;
@@ -47,6 +47,7 @@ public class Fireball extends Item {
         addItemToGroups(FIREBALL, ItemGroups.COMBAT);
         addItemToGroups(DRAGON_FIREBALL, ItemGroups.COMBAT);
         addItemToGroups(SNAIL_FIREBALL, ItemGroups.COMBAT);
+        addItemToGroups(THROWABLE_TNT, ItemGroups.COMBAT);
 
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> world = b);
     }
@@ -54,32 +55,43 @@ public class Fireball extends Item {
     public static final Item FIREBALL = ModItems.register("fireball", (settings) -> new Fireball(settings, FireballType.NORMAL), new Settings().useCooldown(0.75f));
     public static final Item DRAGON_FIREBALL = ModItems.register("dragon_fireball", (settings) -> new Fireball(settings, FireballType.DRAGON), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
     public static final Item SNAIL_FIREBALL = ModItems.register("snail_fireball", (settings) -> new Fireball(settings, FireballType.SNAIL), new Settings().useCooldown(0.75f).rarity(Rarity.EPIC));
+    public static final Item THROWABLE_TNT = ModItems.register("throwable_tnt", (settings) -> new Fireball(settings, FireballType.TNT), new Settings().useCooldown(0.75f));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
 
         if (world instanceof ServerWorld serverWorld) {
-            ProjectileEntity fireball = switch (this.fireballType) {
-                case NORMAL -> ProjectileEntity.spawn(new BWFireballEntity(world, user, Vec3d.ZERO, 3), serverWorld, itemStack);
-                case SNAIL -> ProjectileEntity.spawn(new BWFireballEntity(world, user, Vec3d.ZERO, 25), serverWorld, itemStack);
-                case DRAGON -> ProjectileEntity.spawn(new DragonFireballEntity(world, user, Vec3d.ZERO), serverWorld, itemStack);
+            Entity entity = switch (this.fireballType) {
+                case NORMAL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 3), serverWorld, user, 0.8f);
+                case SNAIL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 25), serverWorld, user, 0.2f);
+                case DRAGON -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), serverWorld, user, 0.8f);
+                case TNT -> spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f);
             };
 
-            fireball.setPos(user.getX(), user.getEyeY(), user.getZ());
-
-            float speed = this.fireballType == FireballType.SNAIL ? 0.1f : 0.8f;
-            fireball.setVelocity(user.getRotationVector().multiply(speed));
+            if (this.fireballType == FireballType.TNT) {
+                ((TntEntity)entity).setFuse(35);
+            }
         }
 
         itemStack.decrementUnlessCreative(1, user);
         return ActionResult.SUCCESS;
     }
 
+    private Entity spawnEntityWithVelocity(Entity entity, ServerWorld world, PlayerEntity user, float speed) {
+        entity.setPosition(user.getEyePos());
+        entity.setVelocity(user.getRotationVector().multiply(speed));
+
+        world.spawnEntity(entity);
+
+        return entity;
+    }
+
     @Override
+    @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         Text text = switch (this.fireballType) {
-            case NORMAL -> null;
+            case NORMAL, TNT -> null;
             case SNAIL -> Text.literal("WHERE IS OMNI MAN").withColor(0xe6e475);
             case DRAGON -> {
                 MutableText baseText = Text.literal("nuts across your face");
