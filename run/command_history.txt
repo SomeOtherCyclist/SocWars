@@ -1,50 +1,50 @@
-/asc
 //undo
-//brush deform cyl
-//brush deform cyl 2
-//brush morph
-//brush morph 1
-//undo
-//brush clipboard
-//cyl grass_block 3 2
-//undo
-//cyl grass_block 3 2 -s
-//cyl grass_block 3 2 -sh
-//cyl grass_block 3 2
+//paste
+//rotate 90
+//paste
 //pos1
 //pos2
-//copy
-//brush clipboard
+//move 54
 //undo
-//wand
-//copy
-//undi
+//move 5
 //undo
-//brush clipboard
-//undo
-//copy
-//copy -m !air
-//brush clipboard
-//undo
-//copy
-//brush clipboard
-//copy
-//brush clipboard
-//copy -m !air
-//brush clipboard
-//undo
-//gmask air
-//gmask
-/mask air
-//undo
-//replace grass_block air
-//brush smooth 4
-//undo
-//copy
-//rotate 90
 //paste
 //rotate 90
 //paste
+//rotate 180
+//paste
+//schem load imperius_diamond
+//paste
+//undo
+//paste
+//stack 6
+//undo
+//paste
+//line stone
+//undo
 //rotate 90
 //paste
+//line stone
+//undo
+//rotate 90
+//paste
+//undo
+//redo
+//line stone
+//undo
+//rotate 90
+//paste
+//line stone
+//undo
+//replacenear 90 orange_stained_glass,yellow_stained_glass, air
+//replacenear 6 red_carpet yellow_carpet
+//replacenear 6 red_carpet green_carpet
+//undo
+//replacenear 6 red_carpet lime_carpet
+//replacenear 6 red_carpet blue_carpet
+//pos1
+//pos2
+//move 1 up
+//schem load imperius_spawn
+//paste -e
 //undo

@@ -1,14 +1,14 @@
 {
-	"required": true,
-	"package": "com.soc.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-      "CancelSprintParticles"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
+  "required": true,
+  "package": "com.soc.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CancelSprintParticles"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
 	}
 }

@@ -19,7 +19,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 /*
 public class BigTnt extends Entity {
@@ -115,17 +114,18 @@ public class BigTnt extends Entity implements Ownable {
         this.setPosition(position);
         this.setVelocity(new Vec3d(0, 0, 0));
         this.setFuse(10 * 20);
-        this.explosionRadius = explosionRadius;
         this.igniter = new LazyEntityReference<>(igniter);
+        this.explosionRadius = explosionRadius;
     }
 
-    static EntityType<Entity> NUCLEAR_BOMB = Registry.register(
+    public static final EntityType<Entity> NUCLEAR_BOMB = Registry.register(
             Registries.ENTITY_TYPE,
             Identifier.of(SocWars.MOD_ID, "nuclear_bomb"),
             EntityType.Builder.create(BigTnt::new, SpawnGroup.MISC).dropsNothing().makeFireImmune().dimensions(0.98F, 0.98F).eyeHeight(0.15F).maxTrackingRange(10).trackingTickInterval(10).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(SocWars.MOD_ID, "nuclear_bomb")))
     );
 
-    public static void initialise() {}
+    public static void initialise() {
+    }
 
     protected void initDataTracker(DataTracker.Builder builder) {
         builder.add(FUSE, 10 * 20);

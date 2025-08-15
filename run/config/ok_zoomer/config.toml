@@ -35,7 +35,7 @@
 	scrolling_mode = "EXPONENTIAL"
 	# Retains the interface when zooming.
 	# default: false
-	persistent_interface = false
+	persistent_interface = true
 	# Adds zoom manipulation keys along with the zoom key. A game reboot will be required in order to apply the changes.
 	# default: true
 	extra_key_binds = true
@@ -117,7 +117,7 @@
 	unbind_conflicting_key = false
 	# Hides the crosshair while zooming.
 	# default: true
-	hide_crosshair = true
+	hide_crosshair = false
 	# Allows for resetting the zoom with the middle mouse button.
 	# default: true
 	reset_zoom_with_mouse = true

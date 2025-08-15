@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import static com.soc.items.util.ModItems.addItemToGroups;
 import static net.minecraft.component.type.PotionContentsComponent.getEffectText;
 
-public class PotionApple extends Item {
+public class PotionFood extends Item {
     private static FoodComponent foodComponent(int nutrition, int saturation) {
         return new FoodComponent.Builder()
             .nutrition(nutrition)
@@ -74,9 +74,17 @@ public class PotionApple extends Item {
             new EffectRecord(StatusEffects.INSTANT_HEALTH, 100, 1),
             new EffectRecord(StatusEffects.ABSORPTION, 3, -1),
     };
+    private final static EffectRecord[] JELLY_DONUT_EFFECTS = {
+            new EffectRecord(StatusEffects.JUMP_BOOST, 3, 60 * 20),
+            new EffectRecord(StatusEffects.SPEED, 1, 60 * 20),
+            new EffectRecord(StatusEffects.REGENERATION, 1, 60 * 20),
+            new EffectRecord(StatusEffects.ABSORPTION, 9, 60 * 20),
+            new EffectRecord(StatusEffects.STRENGTH, 1, 60 * 20),
+            new EffectRecord(StatusEffects.RESISTANCE, 1, 60 * 20),
+    };
     private final EffectRecord[] effectList;
 
-    public PotionApple(final Item.Settings settings, EffectRecord[] effectRecords, int nutrition, int saturation) {
+    public PotionFood(final Item.Settings settings, EffectRecord[] effectRecords, int nutrition, int saturation) {
         super(settings.food(foodComponent(nutrition, saturation), consumableComponent(effectRecords)));
         this.effectList = effectRecords;
     }
@@ -87,38 +95,45 @@ public class PotionApple extends Item {
         addItemToGroups(DIAMOND_APPLE, ItemGroups.FOOD_AND_DRINK);
         addItemToGroups(EMERALD_APPLE, ItemGroups.FOOD_AND_DRINK);
         addItemToGroups(NETHERITE_APPLE, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroups(JELLY_DONUT, ItemGroups.FOOD_AND_DRINK);
     }
 
-    public static final Item IRON_APPLE = ModItems.register("iron_apple", (settings) -> new PotionApple(settings, IRON_APPLE_EFFECTS, 6, 10), new Settings());
-    public static final Item COPPER_APPLE = ModItems.register("copper_apple", (settings) -> new PotionApple(settings, COPPER_APPLE_EFFECTS, 6, 10), new Settings());
-    public static final Item DIAMOND_APPLE = ModItems.register("diamond_apple", (settings) -> new PotionApple(settings, DIAMOND_APPLE_EFFECTS, 6, 12), new Settings().rarity(Rarity.RARE));
-    public static final Item EMERALD_APPLE = ModItems.register("emerald_apple", (settings) -> new PotionApple(settings, EMERALD_APPLE_EFFECTS, 6, 12), new Settings().rarity(Rarity.RARE));
-    public static final Item NETHERITE_APPLE = ModItems.register("netherite_apple", (settings) -> new PotionApple(settings, NETHERITE_APPLE_EFFECTS, 6, 16), new Settings().rarity(Rarity.EPIC));
+    public static final Item IRON_APPLE = ModItems.register("iron_apple", (settings) -> new PotionFood(settings, IRON_APPLE_EFFECTS, 6, 10), new Settings());
+    public static final Item COPPER_APPLE = ModItems.register("copper_apple", (settings) -> new PotionFood(settings, COPPER_APPLE_EFFECTS, 6, 10), new Settings());
+    public static final Item DIAMOND_APPLE = ModItems.register("diamond_apple", (settings) -> new PotionFood(settings, DIAMOND_APPLE_EFFECTS, 6, 12), new Settings().rarity(Rarity.RARE));
+    public static final Item EMERALD_APPLE = ModItems.register("emerald_apple", (settings) -> new PotionFood(settings, EMERALD_APPLE_EFFECTS, 6, 12), new Settings().rarity(Rarity.RARE));
+    public static final Item NETHERITE_APPLE = ModItems.register("netherite_apple", (settings) -> new PotionFood(settings, NETHERITE_APPLE_EFFECTS, 6, 16), new Settings().rarity(Rarity.EPIC));
+    public static final Item JELLY_DONUT = ModItems.register("jelly_donut", (settings) -> new PotionFood(settings, JELLY_DONUT_EFFECTS, 20, 20), new Settings().rarity(Rarity.EPIC));
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        List<Pair<RegistryEntry<EntityAttribute>, EntityAttributeModifier>> list = Lists.newArrayList();
+        switch (stack.getItem().toString()) {
+            case "socwars:jelly_donut": textConsumer.accept(Text.literal("What the fuck is that?")); break;
+            default: {
+                List<Pair<RegistryEntry<EntityAttribute>, EntityAttributeModifier>> list = Lists.newArrayList();
 
-        SocWars.LOGGER.warn("Rewrite this code because it was derived from minecraft code if I ever want to release this");
+                SocWars.LOGGER.warn("Rewrite this code because it was derived from minecraft code if I ever want to release this");
 
-        for(EffectRecord effectRecord : this.effectList) {
-            RegistryEntry<StatusEffect> registryEntry = effectRecord.effect();
-            int i = effectRecord.amplifier();
-            (registryEntry.value()).forEachAttributeModifier(i, (attribute, modifier) -> list.add(new Pair<>(attribute, modifier)));
-            MutableText mutableText = Text.translatable("potion_apple.with_duration", new Object[]{getEffectText(registryEntry, i), effectRecord.duration() > 1 ? "(" + effectRecord.duration() / 20 + "s)": ""});
+                for(EffectRecord effectRecord : this.effectList) {
+                    RegistryEntry<StatusEffect> registryEntry = effectRecord.effect();
+                    int i = effectRecord.amplifier();
+                    (registryEntry.value()).forEachAttributeModifier(i, (attribute, modifier) -> list.add(new Pair<>(attribute, modifier)));
+                    MutableText mutableText = Text.translatable("potion_apple.with_duration", new Object[]{getEffectText(registryEntry, i), effectRecord.duration() > 1 ? "(" + effectRecord.duration() / 20 + "s)": ""});
 
-            textConsumer.accept(mutableText.formatted(Formatting.GREEN));
-        }
+                    textConsumer.accept(mutableText.formatted(Formatting.GREEN));
+                }
 
-        textConsumer.accept(Text.empty());
-        textConsumer.accept(Text.translatable("potion_apple.when_eaten").formatted(Formatting.DARK_PURPLE));
+                textConsumer.accept(Text.empty());
+                textConsumer.accept(Text.translatable("potion_apple.when_eaten").formatted(Formatting.DARK_PURPLE));
 
-        for(Pair<RegistryEntry<EntityAttribute>, EntityAttributeModifier> pair : list) {
-            EntityAttributeModifier entityAttributeModifier = pair.getSecond();
+                for(Pair<RegistryEntry<EntityAttribute>, EntityAttributeModifier> pair : list) {
+                    EntityAttributeModifier entityAttributeModifier = pair.getSecond();
 
-            double e = entityAttributeModifier.value() * (entityAttributeModifier.operation() == EntityAttributeModifier.Operation.ADD_VALUE ? 1.0f : 100.0f);
+                    double e = entityAttributeModifier.value() * (entityAttributeModifier.operation() == EntityAttributeModifier.Operation.ADD_VALUE ? 1.0f : 100.0f);
 
-            textConsumer.accept(Text.translatable("attribute.modifier.plus." + entityAttributeModifier.operation().getId(), new Object[]{AttributeModifiersComponent.DECIMAL_FORMAT.format(e), Text.translatable(((pair.getFirst()).value()).getTranslationKey())}).formatted(Formatting.BLUE));
+                    textConsumer.accept(Text.translatable("attribute.modifier.plus." + entityAttributeModifier.operation().getId(), new Object[]{AttributeModifiersComponent.DECIMAL_FORMAT.format(e), Text.translatable(((pair.getFirst()).value()).getTranslationKey())}).formatted(Formatting.BLUE));
+                }
+            } break; //For when I want things to have the proper effect and attribute tooltip
         }
     }
 }

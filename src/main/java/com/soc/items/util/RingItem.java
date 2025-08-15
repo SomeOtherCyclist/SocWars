@@ -44,8 +44,6 @@ public abstract class RingItem extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {
-        super.inventoryTick(stack, world, entity, slot);
-
         if (this.isUsing) {
             ItemStack item = this.user.getStackInHand(this.hand);
             item.setDamage(item.getDamage() + 1);

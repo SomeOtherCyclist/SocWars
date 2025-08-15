@@ -3,8 +3,8 @@ package com.soc.materials;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.registry.tag.BlockTags;
 
-public class ToolMaterials {
-    public static final ToolMaterial DASH_TOOL_MATERIAL = new ToolMaterial(
+public interface ToolMaterials {
+    ToolMaterial DASH = new ToolMaterial(
             BlockTags.INCORRECT_FOR_IRON_TOOL,
             150,
             12.0F,
@@ -12,7 +12,7 @@ public class ToolMaterials {
             40,
             null
     );
-    public static final ToolMaterial POTIONWEAPON_TOOL_MATERIAL = new ToolMaterial(
+    ToolMaterial POTIONWEAPON = new ToolMaterial(
             BlockTags.INCORRECT_FOR_IRON_TOOL,
             300,
             8.0F,
@@ -20,7 +20,7 @@ public class ToolMaterials {
             30,
             null
     );
-    public static final ToolMaterial LIFETHIEF_TOOL_MATERIAL = new ToolMaterial(
+    ToolMaterial LIFETHIEF = new ToolMaterial(
             BlockTags.INCORRECT_FOR_IRON_TOOL,
             350,
             8.0F,
@@ -28,12 +28,20 @@ public class ToolMaterials {
             30,
             null
     );
-    public static final ToolMaterial DEVASTATOR_TOOL_MATERIAL = new ToolMaterial(
+    ToolMaterial DEVASTATOR = new ToolMaterial(
             BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
             5,
             2.0F,
             10F,
             20,
+            null
+    );
+    ToolMaterial BASE = new ToolMaterial(
+            BlockTags.INCORRECT_FOR_IRON_TOOL,
+            69,
+            7F,
+            0F,
+            25,
             null
     );
 }

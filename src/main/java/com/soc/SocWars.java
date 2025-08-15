@@ -1,5 +1,6 @@
 package com.soc;
 
+import com.soc.blocks.util.ModBlocks;
 import com.soc.effects.Armour;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ModItems;
@@ -26,6 +27,7 @@ public class SocWars implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
 
 		ModItems.initialise();
+		ModBlocks.initialise();
 		ModEntities.initialise();
 		PlayerDataManager.initialise();
 		Armour.initialise();

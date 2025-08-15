@@ -2,6 +2,7 @@ package com.soc.items.util;
 
 import com.soc.SocWars;
 import com.soc.items.*;
+import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
@@ -19,26 +20,29 @@ import java.util.function.Function;
 public class ModItems {
     public static final RegistryKey<ItemGroup> SOCWARS_ITEM_GROUP_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(SocWars.MOD_ID, "item_group"));
     public static final ItemGroup SOCWARS_ITEM_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(Devastator.DEVASTATOR_PRIME))
+            .icon(() -> new ItemStack(AttackFunctionWeapon.DEVASTATOR_PRIME))
             .displayName(Text.translatable("itemGroup.socwars"))
             .build();
 
     public static void initialise() {
         Registry.register(Registries.ITEM_GROUP, SOCWARS_ITEM_GROUP_KEY, SOCWARS_ITEM_GROUP);
 
-        Dashrend.initialise();
-        Lifethief.initialise();
+        Sounds.initialise();
+
+        BaseWeapon.initialise();
+        AttackFunctionWeapon.initialise();
+        UseFunctionWeapon.initialise();
         PotionWeapon.initialise();
+        GreenSword.initialise();
         InvisibilityRing.initialise();
         PotionRing.initialise();
-        Devastator.initialise();
         DiceOfFate.initialise();
-        PotionApple.initialise();
-        NetherightSword.initialise();
+        PotionFood.initialise();
         SharpenedPokingStick.initialise();
         GamblerArmour.initialise();
         GamblerSword.initialise();
         SteadfastArmour.initialise();
+        Fireball.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
