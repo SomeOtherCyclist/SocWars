@@ -1,50 +1,50 @@
+//deform x=1.51*x;y=y;z=1.51*z
 //undo
-//paste
-//rotate 90
-//paste
-//pos1
-//pos2
-//move 54
+//deform x=1.54*x;y=y;z=1.54*z
 //undo
-//move 5
+//deform x=1.6*x;y=y;z=1.6*z
 //undo
-//paste
-//rotate 90
-//paste
-//rotate 180
-//paste
-//schem load imperius_diamond
-//paste
+//deform x=1.7*x;y=y;z=1.7*z
+//paste -s
+//deform x=2.3*x;y=y;z=2.3*z
 //undo
-//paste
-//stack 6
+//deform x=2.15*x;y=y;z=2.15*z
 //undo
-//paste
-//line stone
+//deform x=2.05*x;y=y;z=2.05*z
+//paste -s
+//deform x=2.4*x;y=y;z=2.4*z
+//paste -s
+//deform x=2.8*x;y=y;z=2.8*z
 //undo
-//rotate 90
-//paste
-//line stone
+//deform x=38*x;y=y;z=3*z
 //undo
-//rotate 90
-//paste
+//deform x=3*x;y=y;z=3*z
 //undo
-//redo
-//line stone
+//deform x=3.1*x;y=y;z=3.1*z
 //undo
-//rotate 90
-//paste
-//line stone
-//undo
-//replacenear 90 orange_stained_glass,yellow_stained_glass, air
-//replacenear 6 red_carpet yellow_carpet
-//replacenear 6 red_carpet green_carpet
-//undo
-//replacenear 6 red_carpet lime_carpet
-//replacenear 6 red_carpet blue_carpet
-//pos1
-//pos2
-//move 1 up
-//schem load imperius_spawn
-//paste -e
-//undo
+//deform x=3.2*x;y=y;z=3.2*z
+//paste -s
+//deform x=5*x;y=y;z=5*z
+//move 1 down
+/team list
+/team join a
+/attribute @p minecraft:gravity get
+/summon giant
+/summon creeper
+/summon giant
+/summon creeper
+/summon zombie ~ ~ ~ {CanPickUp:1}
+/summon zombie ~ ~ ~ {CanPickUpLoot:1}
+/summon zombie
+/summon zombie ~ ~ ~ {CanPickUpLoot:1}
+/attribute @p minecraft:attack_damage get
+/attribute @p minecraft:attack_damage modifier value
+/attribute @p minecraft:attack_damage modifier remove
+/attribute get minecraft:attack_damage get
+/attribute @p minecraft:attack_damage get
+/summon zombie ~ ~ ~ {CanPickUpLoot:1}
+/summon zombie
+/summon giant
+/summon zombie
+/summon zombie ~ ~ ~ {CanPickUpLoot:1}
+/data get entity 145fcc4c-532d-4209-a170-82f353703d35

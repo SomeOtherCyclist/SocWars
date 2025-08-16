@@ -70,7 +70,7 @@ public class Fireball extends Item {
             };
 
             if (this.fireballType == FireballType.TNT) {
-                ((TntEntity)entity).setFuse(35);
+                ((TntEntity)entity).setFuse(40);
             }
         }
 

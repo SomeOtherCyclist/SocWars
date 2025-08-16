@@ -3,7 +3,8 @@
   "package": "com.soc.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "CancelSprintParticles"
+    "CancelSprintParticles",
+    "DropItemEvent"
   ],
   "injectors": {
     "defaultRequire": 1

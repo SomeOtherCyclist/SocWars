@@ -43,6 +43,8 @@ public class ModItems {
         GamblerSword.initialise();
         SteadfastArmour.initialise();
         Fireball.initialise();
+        ExtendoBridge.initialise();
+        GravityOrb.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

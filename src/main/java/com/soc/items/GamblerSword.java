@@ -32,6 +32,8 @@ public class GamblerSword extends Item {
     private int damageValue;
     private int ticksUntilChange = 0;
 
+    public static final Identifier ATTRIBUTE_ID = Identifier.of("gambler_damage");
+
     public GamblerSword(final Settings settings, final int[] protectionValues) {
         super(settings);
         this.damageValues = protectionValues;
@@ -49,7 +51,7 @@ public class GamblerSword extends Item {
         this.randomiseDamage();
 
         if (entity instanceof PlayerEntity playerEntity) {
-            Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.ofVanilla("gambler_damage"), this.damageValue - 1, EntityAttributeModifier.Operation.ADD_VALUE));
+            Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(ATTRIBUTE_ID, this.damageValue - 1, EntityAttributeModifier.Operation.ADD_VALUE));
             playerEntity.getAttributes().removeModifiers(map);
 
             if (slot != null && slot.getIndex() == 0) {

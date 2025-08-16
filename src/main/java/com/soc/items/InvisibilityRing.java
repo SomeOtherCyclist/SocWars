@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
 
 import static com.soc.items.util.ModItems.addItemToGroups;
@@ -21,7 +22,7 @@ public class InvisibilityRing extends RingItem {
     }
 
     public static void initialise() {
-        addItemToGroups(INVISIBILITY_RING, ItemGroups.COMBAT);
+        addItemToGroups(INVISIBILITY_RING, ItemGroups.TOOLS);
 
         /*
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
@@ -33,7 +34,7 @@ public class InvisibilityRing extends RingItem {
         */
     }
 
-    public static final Item INVISIBILITY_RING = ModItems.register("invisibility_ring", InvisibilityRing::new, new Settings().maxDamage(800));
+    public static final Item INVISIBILITY_RING = ModItems.register("invisibility_ring", InvisibilityRing::new, new Settings().maxDamage(20 * 40).rarity(Rarity.UNCOMMON));
 
     protected void ringUse(World world, PlayerEntity user, Hand hand) {
         PlayerData playerData = PlayerDataManager.getPlayerData(user.getUuid());

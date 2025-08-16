@@ -4,7 +4,17 @@ import com.soc.SocWars;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.UseFunction;
 import com.soc.materials.ToolMaterials;
+import net.minecraft.command.argument.OperationArgumentType;
+import net.minecraft.component.Component;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
+import net.minecraft.component.type.UseCooldownComponent;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.SpectralArrowEntity;
@@ -13,14 +23,14 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Rarity;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -36,6 +46,8 @@ public class UseFunctionWeapon extends Item {
 
     public static void initialise() {
         addItemToGroups(DASHREND, ItemGroups.COMBAT);
+        addItemToGroups(VELOCITY_STAFF, ItemGroups.TOOLS);
+        addItemToGroups(VEXING_STAFF, ItemGroups.COMBAT);
         addItemToGroups(YELLOW_SWORD, ItemGroups.COMBAT);
     }
 
@@ -51,9 +63,47 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-            .sword(ToolMaterials.DASH, 2f, -2f)
-            .useCooldown(3.5f)
-            .rarity(Rarity.RARE)
+                    .sword(ToolMaterials.DASH, 2f, -2f)
+                    .useCooldown(3.5f)
+                    .rarity(Rarity.RARE)
+    );
+    public static final Item VELOCITY_STAFF = ModItems.register("velocity_staff", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
+                float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
+                float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.85f;
+
+                user.addVelocity(user.getRotationVector().multiply(dashStrength));
+
+                user.getStackInHand(hand).damage(Math.round(pitchStrength * 10), user, hand);
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+                    .maxDamage(300)
+                    .useCooldown(1.2f)
+                    .rarity(Rarity.RARE)
+    );
+    public static final Item VEXING_STAFF = ModItems.register("vexing_staff", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                for (int i = 0; i < 2; i++) {
+                    VexEntity vex = new VexEntity(EntityType.VEX, world);
+                    vex.setPosition(user.getEyePos().add(user.getRotationVector()));
+
+                    Scoreboard scoreboard = world.getScoreboard();
+                    if (user.getScoreboardTeam() == null) {
+                        user.sendMessage(Text.literal("You are not assigned to a team, go yell at Liam"), false);
+                    } else {
+                        scoreboard.addScoreHolderToTeam(vex.getUuidAsString(), user.getScoreboardTeam());
+                    }
+
+                    world.spawnEntity(vex);
+
+                    user.getStackInHand(hand).damage(1, user, hand);
+                }
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+                    .maxDamage(5)
+                    .useCooldown(45f)
+                    .rarity(Rarity.RARE)
     );
     public static final Item YELLOW_SWORD = ModItems.register("yellow_sword", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 ItemStack itemStack = user.getStackInHand(hand);
@@ -68,9 +118,9 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-            .sword(ToolMaterials.BASE, 6f, -2.1f)
-            .useCooldown(1.5f)
-            .maxDamage(600)
+                    .sword(ToolMaterials.BASE, 6f, -2.1f)
+                    .useCooldown(1.5f)
+                    .maxDamage(600)
     );
 
     @Override
