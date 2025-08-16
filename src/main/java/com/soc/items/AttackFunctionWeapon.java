@@ -76,6 +76,7 @@ public class AttackFunctionWeapon extends Item {
         addItemToGroups(DETONATOR, ItemGroups.COMBAT);
         addItemToGroups(SHATTERSTAR, ItemGroups.COMBAT);
         addItemToGroups(LEATHERER, ItemGroups.COMBAT);
+        addItemToGroups(SPRING_SWORD, ItemGroups.COMBAT);
     }
 
     public static final Item LIFETHIEF = ModItems.register("lifethief", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -206,6 +207,18 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(0)
             .rarity(Rarity.RARE)
     );
+    public static final Item SPRING_SWORD = ModItems.register("spring_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+                if (attacker.getWorld().random.nextBetween(1, attacker.isOnGround() ? 8 : 6) == 1) {
+                    ItemEntity item = attacker.dropItem(stack, true, false);
+                    item.setVelocity(attacker.getRotationVector().multiply(0.3f));
+
+                    attacker.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
+                }
+            }), new Settings()
+            .sword(ToolMaterials.BASE, 4f, -1f)
+            .maxDamage(350)
+            .rarity(Rarity.UNCOMMON)
+    );
 
     private static void modifyEquipment(LivingEntity target, LivingEntity attacker, ReplaceMode replaceMode, ModifyEquipmentFunction armourFunction, ModifyEquipmentFunction handFunction) {
         ArrayList<EquipmentSlot> armour = new ArrayList<>();
@@ -237,14 +250,13 @@ public class AttackFunctionWeapon extends Item {
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        Text text = switch (stack.getItem().toString()) {
-            case "socwars:knockforward_sword" -> Text.literal("The Hypixel special").formatted(Formatting.GOLD);
-            case "socwars:stormageddon" -> Text.literal("He speaks baby");
-            default -> null;
+        switch (stack.getItem().toString()) {
+            case "socwars:knockforward_sword" -> textConsumer.accept(Text.literal("The Hypixel special").formatted(Formatting.GOLD));
+            case "socwars:stormageddon" -> textConsumer.accept(Text.literal("He speaks baby"));
+            case "socwars:spring_sword" -> {
+                textConsumer.accept(Text.literal("Potentially charged").formatted(Formatting.YELLOW));
+                textConsumer.accept(Text.literal("Potentially charged").formatted(Formatting.YELLOW));
+            }
         };
-
-        if (text != null) {
-            textConsumer.accept(text);
-        }
     }
 }

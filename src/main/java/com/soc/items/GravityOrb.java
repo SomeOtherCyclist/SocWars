@@ -34,7 +34,7 @@ public class GravityOrb extends Item {
     }
 
     public static final Item GRAVITY_ORB = ModItems.register("gravity_orb", GravityOrb::new, new Settings()
-            .useCooldown(3f)
+            .useCooldown(5f)
             .rarity(Rarity.UNCOMMON)
     );
 
@@ -51,7 +51,7 @@ public class GravityOrb extends Item {
 
             double gravity = playerEntity.getAttributeValue(EntityAttributes.GRAVITY);
             if (cooldownProgress > 0 && gravity > 0) {
-                playerEntity.getAttributeInstance(EntityAttributes.GRAVITY).addTemporaryModifier(new EntityAttributeModifier(Identifier.of("gravity_orb"), -1.2d * gravity, EntityAttributeModifier.Operation.ADD_VALUE));
+                playerEntity.getAttributeInstance(EntityAttributes.GRAVITY).addTemporaryModifier(new EntityAttributeModifier(Identifier.of("gravity_orb"), -2d * gravity, EntityAttributeModifier.Operation.ADD_VALUE));
             } else if (cooldownProgress < 10E-5 && gravity < 0) {
                 playerEntity.getAttributeInstance(EntityAttributes.GRAVITY).removeModifier(Identifier.of("gravity_orb"));
             }

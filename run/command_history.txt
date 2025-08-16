@@ -1,50 +1,50 @@
-//deform x=1.51*x;y=y;z=1.51*z
 //undo
-//deform x=1.54*x;y=y;z=1.54*z
+//hcyl red_stained_glass 85
+//paste
 //undo
-//deform x=1.6*x;y=y;z=1.6*z
-//undo
-//deform x=1.7*x;y=y;z=1.7*z
+//paste -b
+//rotate 90
+//paste -b
+//copy
+//copy -m !spruce_leaves
+//paste
 //paste -s
-//deform x=2.3*x;y=y;z=2.3*z
-//undo
-//deform x=2.15*x;y=y;z=2.15*z
-//undo
-//deform x=2.05*x;y=y;z=2.05*z
+//replace red_wool yellow_wool
+//replace red_carpet yellow_carpet
+//replace red_wall_banner ^yellow_wall_banner
 //paste -s
-//deform x=2.4*x;y=y;z=2.4*z
-//paste -s
-//deform x=2.8*x;y=y;z=2.8*z
 //undo
-//deform x=38*x;y=y;z=3*z
+//gmask air
+//paste
+//gmask
+//replace red_wool lime_wool
+//replace red_carpet lime_carpet
+//replace red_wall_banner ^lime_wall_banner
+//schem load mound_diamond
+//paste
 //undo
-//deform x=3*x;y=y;z=3*z
+//rotate 270
+//paste
 //undo
-//deform x=3.1*x;y=y;z=3.1*z
+//gmask air
+//hcyl lime_wool 95
 //undo
-//deform x=3.2*x;y=y;z=3.2*z
-//paste -s
-//deform x=5*x;y=y;z=5*z
-//move 1 down
-/team list
-/team join a
-/attribute @p minecraft:gravity get
-/summon giant
-/summon creeper
-/summon giant
-/summon creeper
-/summon zombie ~ ~ ~ {CanPickUp:1}
-/summon zombie ~ ~ ~ {CanPickUpLoot:1}
-/summon zombie
-/summon zombie ~ ~ ~ {CanPickUpLoot:1}
-/attribute @p minecraft:attack_damage get
-/attribute @p minecraft:attack_damage modifier value
-/attribute @p minecraft:attack_damage modifier remove
-/attribute get minecraft:attack_damage get
-/attribute @p minecraft:attack_damage get
-/summon zombie ~ ~ ~ {CanPickUpLoot:1}
-/summon zombie
-/summon giant
-/summon zombie
-/summon zombie ~ ~ ~ {CanPickUpLoot:1}
-/data get entity 145fcc4c-532d-4209-a170-82f353703d35
+//hcyl lime_stained_glass 956
+//undo
+//hcyl lime_stained_glass 95
+//paste -b
+//undo
+/
+//undo
+//redo
+//paste -b
+//undo
+//gmask
+//paste -b
+//rotate 90
+//paste -b
+//rotate 90
+//paste -b
+//rotate 90
+//paste -b
+//replacenear 100 lime_stained_glass,red_stained_glass air
