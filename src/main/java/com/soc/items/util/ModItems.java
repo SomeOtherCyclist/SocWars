@@ -42,9 +42,8 @@ public class ModItems {
         GamblerArmour.initialise();
         GamblerSword.initialise();
         SteadfastArmour.initialise();
-        Fireball.initialise();
+        ThrowableItem.initialise();
         ExtendoBridge.initialise();
-        GravityOrb.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

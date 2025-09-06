@@ -4,5 +4,17 @@
     "sounds": [
       "socwars:vine_boom"
     ]
+  },
+  "flesh": {
+    "subtitle": "sound.socwars.flesh",
+    "sounds": [
+      "socwars:flesh"
+    ]
+  },
+  "nuclear_siren": {
+    "subtitle": "sound.socwars.nuclear_siren",
+    "sounds": [
+      "socwars:nuclear_siren"
+    ]
   }
 }

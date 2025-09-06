@@ -2,10 +2,8 @@ package com.soc.items;
 
 import com.soc.items.util.ModItems;
 import com.soc.items.util.RingItem;
-import com.soc.players.PlayerData;
-import com.soc.players.PlayerDataManager;
-//import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import com.soc.player.PlayerData;
+import com.soc.player.PlayerDataManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;

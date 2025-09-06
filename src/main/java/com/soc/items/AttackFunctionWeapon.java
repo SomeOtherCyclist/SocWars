@@ -39,6 +39,7 @@ import static com.soc.items.util.ModItems.addItemToGroups;
 
 public class AttackFunctionWeapon extends Item {
     private final AttackFunction attackFunction;
+    private static World world;
 
     private static final EquipmentSlot[] ARMOUR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     private static Item leatherArmour(EquipmentSlot slot) {
@@ -77,6 +78,9 @@ public class AttackFunctionWeapon extends Item {
         addItemToGroups(SHATTERSTAR, ItemGroups.COMBAT);
         addItemToGroups(LEATHERER, ItemGroups.COMBAT);
         addItemToGroups(SPRING_SWORD, ItemGroups.COMBAT);
+        addItemToGroups(FLESHY_BLADE, ItemGroups.COMBAT);
+
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> world = b);
     }
 
     public static final Item LIFETHIEF = ModItems.register("lifethief", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -152,6 +156,7 @@ public class AttackFunctionWeapon extends Item {
             }), new Settings()
             .rarity(Rarity.UNCOMMON)
             .sword(ToolMaterials.BASE, 5.5f, -2.2f)
+            .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
             .maxDamage(450)
     );
     public static final Item TRANSPORTAS = ModItems.register("transportas", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -219,6 +224,12 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(350)
             .rarity(Rarity.UNCOMMON)
     );
+    public static final Item FLESHY_BLADE = ModItems.register("fleshy_blade", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+                world = target.getWorld(); // Horrible gross disgusting code
+                attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
+    }), new Settings()
+            .sword(ToolMaterials.BASE, 6f, -2.2f));
+
 
     private static void modifyEquipment(LivingEntity target, LivingEntity attacker, ReplaceMode replaceMode, ModifyEquipmentFunction armourFunction, ModifyEquipmentFunction handFunction) {
         ArrayList<EquipmentSlot> armour = new ArrayList<>();
@@ -251,12 +262,13 @@ public class AttackFunctionWeapon extends Item {
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         switch (stack.getItem().toString()) {
-            case "socwars:knockforward_sword" -> textConsumer.accept(Text.literal("The Hypixel special").formatted(Formatting.GOLD));
-            case "socwars:stormageddon" -> textConsumer.accept(Text.literal("He speaks baby"));
-            case "socwars:spring_sword" -> {
-                textConsumer.accept(Text.literal("Potentially charged").formatted(Formatting.YELLOW));
-                textConsumer.accept(Text.literal("Potentially charged").formatted(Formatting.YELLOW));
+            case "socwars:knockforward_sword" -> {
+                textConsumer.accept(Text.literal("The Hypixel special").formatted(Formatting.GOLD));
+                textConsumer.accept(Text.literal("Knockback -II").formatted(Formatting.GRAY));
             }
+            case "socwars:stormageddon" -> textConsumer.accept(Text.literal("He speaks baby"));
+            case "socwars:spring_sword" -> textConsumer.accept(Text.literal("Potentially charged").formatted(Formatting.YELLOW));
+            case "socwars:fleshy_blade" -> textConsumer.accept(Text.literal(world == null || world.getTime() % 25 > 2 ? "*crunch*" : "*crunches wetly*").formatted(Formatting.RED));
         };
     }
 }

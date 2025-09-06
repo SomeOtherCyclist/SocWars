@@ -14,4 +14,6 @@ public interface Sounds {
     }
 
     SoundEvent VINE_BOOM = register("vine_boom");
+    SoundEvent FLESH = register("flesh");
+    SoundEvent NUCLEAR_SIREN = register("nuclear_siren");
 }

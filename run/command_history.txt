@@ -1,50 +1,50 @@
-//undo
-//hcyl red_stained_glass 85
-//paste
-//undo
-//paste -b
-//rotate 90
-//paste -b
+//replace red_wall_banner ^blue_wall_banner
+//move 3 up -m blue_wool,blue_carpet,blue_wall_banner
+//pos2
 //copy
-//copy -m !spruce_leaves
-//paste
-//paste -s
-//replace red_wool yellow_wool
-//replace red_carpet yellow_carpet
-//replace red_wall_banner ^yellow_wall_banner
-//paste -s
-//undo
-//gmask air
-//paste
-//gmask
-//replace red_wool lime_wool
-//replace red_carpet lime_carpet
-//replace red_wall_banner ^lime_wall_banner
-//schem load mound_diamond
-//paste
-//undo
 //rotate 270
 //paste
-//undo
-//gmask air
-//hcyl lime_wool 95
-//undo
-//hcyl lime_stained_glass 956
-//undo
-//hcyl lime_stained_glass 95
-//paste -b
-//undo
+//move 3 up -m ##minecraft:wool,##minecraft:wool_carpets,##minecraft:banners,dark_oak_fence,skeleton_skull
+//move 3 up -m red_wool,red_carpet,red_wall_banner
+//pos2
+//move 3 up
+//pos2
+//move 3 up
+//move 3 down
+//move -1
+/give @p socwars:collectible_block
+/data get block ~ ~-1 ~
+/tp itsevocat
+/setblock ~ ~ ~ end_portal
+/tp itsevocat
+/spawnpoint @a
+/tp itsevocat
+/spawnpoint @a
+/data get entity @n[type=!player]
+/summon cow
+/data get entity @n[type=!player]
 /
-//undo
-//redo
-//paste -b
-//undo
-//gmask
-//paste -b
-//rotate 90
-//paste -b
-//rotate 90
-//paste -b
-//rotate 90
-//paste -b
-//replacenear 100 lime_stained_glass,red_stained_glass air
+/data get entity @n[type=!player]
+//wand
+/data get entity @p Inventory[0]
+/data get entity @p Inventory[3]
+/data get entity @p Inventory[4]
+//expand -1
+//wand
+//expand -1
+//expand 2
+//expand 3
+//expand 1
+//expand -1
+//set stone
+//expand 1
+//set stone
+//expand -1
+//set dirt
+/scoreboard objectives list
+/scoreboard objectives add Doubloons
+/scoreboard objectives setdisplay sidebar Doubloons
+/setblock ~ ~ ~ socwars:collectible_block
+/give @p socwars:god_complex
+/give @p socwars:collectible_block
+/stop

@@ -120,7 +120,7 @@ public class PotionFood extends Item {
                     RegistryEntry<StatusEffect> registryEntry = effectRecord.effect();
                     int i = effectRecord.amplifier();
                     (registryEntry.value()).forEachAttributeModifier(i, (attribute, modifier) -> list.add(new Pair<>(attribute, modifier)));
-                    MutableText mutableText = Text.translatable("potion_apple.with_duration", new Object[]{getEffectText(registryEntry, i), effectRecord.duration() > 1 ? "(" + effectRecord.duration() / 20 + "s)": ""});
+                    MutableText mutableText = Text.translatable("potion_apple.with_duration", getEffectText(registryEntry, i), effectRecord.duration() > 1 ? "(" + effectRecord.duration() / 20 + "s)": "");
 
                     textConsumer.accept(mutableText.formatted(Formatting.GREEN));
                 }
@@ -133,7 +133,7 @@ public class PotionFood extends Item {
 
                     double e = entityAttributeModifier.value() * (entityAttributeModifier.operation() == EntityAttributeModifier.Operation.ADD_VALUE ? 1.0f : 100.0f);
 
-                    textConsumer.accept(Text.translatable("attribute.modifier.plus." + entityAttributeModifier.operation().getId(), new Object[]{AttributeModifiersComponent.DECIMAL_FORMAT.format(e), Text.translatable(((pair.getFirst()).value()).getTranslationKey())}).formatted(Formatting.BLUE));
+                    textConsumer.accept(Text.translatable("attribute.modifier.plus." + entityAttributeModifier.operation().getId(), AttributeModifiersComponent.DECIMAL_FORMAT.format(e), Text.translatable(((pair.getFirst()).value()).getTranslationKey())).formatted(Formatting.BLUE));
                 }
             } break; //For when I want things to have the proper effect and attribute tooltip
         }

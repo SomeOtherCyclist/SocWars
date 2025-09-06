@@ -1,24 +1,21 @@
 package com.soc.entities;
 
 import com.soc.SocWars;
+import com.soc.entities.util.ModEntities;
 import com.soc.util.SphereExplosion;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.explosion.ExplosionBehavior;
 import org.jetbrains.annotations.Nullable;
 /*
 public class BigTnt extends Entity {
@@ -98,30 +95,81 @@ public class BigTnt extends Entity {
 }
 */
 
-public class BigTnt extends Entity implements Ownable {
-    private static final TrackedData<Integer> FUSE = DataTracker.registerData(BigTnt.class, TrackedDataHandlerRegistry.INTEGER);
-    private LazyEntityReference<LivingEntity> igniter;
-    private float explosionRadius;
+public class BigTntEntity extends Entity implements Ownable {
+    public static class BigTntExplosionBehaviour extends ExplosionBehavior {
+        private float knockbackModifier;
 
-    public BigTnt(EntityType<Entity> entityType, World world) {
-        super(entityType, world);
-        this.explosionRadius = 13.0F;
-        this.intersectionChecked = true;
+        @Override
+        public float calculateDamage(Explosion explosion, Entity entity, float amount) {
+            return super.calculateDamage(explosion, entity, amount) * 0.125f;
+        }
+
+        @Override
+        public float getKnockbackModifier(Entity entity) {
+            return knockbackModifier;
+        }
+
+        public void setKnockbackModifier(float modifier) {
+            this.knockbackModifier = modifier;
+        }
     }
 
-    public BigTnt(World world, Vec3d position, @Nullable LivingEntity igniter, float explosionRadius) {
-        this(NUCLEAR_BOMB, world);
+    public enum BigTntType {
+        NUCLEAR(14f, 10 * 20),
+        HYDROGEN(24f, 15 * 20);
+
+        public float explosionRadius;
+        public final int fuse;
+
+        BigTntType(float explosionRadius, int fuse) {
+            this.explosionRadius = explosionRadius;
+            this.fuse = fuse;
+        }
+    }
+
+    private static final TrackedData<Integer> FUSE = DataTracker.registerData(BigTntEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private BigTntType tntType;
+    private LazyEntityReference<LivingEntity> igniter;
+
+    public BigTntEntity(EntityType<BigTntEntity> entityType, World world) {
+        super(entityType, world);
+        this.tntType = BigTntType.NUCLEAR;
+        //this.intersectionChecked = true;
+    }
+
+    public BigTntEntity(World world, Vec3d position, @Nullable LivingEntity igniter, BigTntType tntType) {
+        this(switch (tntType) {
+            case NUCLEAR -> NUCLEAR_BOMB;
+            case HYDROGEN -> HYDROGEN_BOMB;
+        }, world);
+        
         this.setPosition(position);
         this.setVelocity(new Vec3d(0, 0, 0));
-        this.setFuse(10 * 20);
-        this.igniter = new LazyEntityReference<>(igniter);
-        this.explosionRadius = explosionRadius;
+        
+        this.tntType = tntType;
+        this.setFuse(tntType.fuse);
+        if (igniter != null) this.igniter = new LazyEntityReference<>(igniter);
     }
 
-    public static final EntityType<Entity> NUCLEAR_BOMB = Registry.register(
-            Registries.ENTITY_TYPE,
+    public static final EntityType<BigTntEntity> NUCLEAR_BOMB = ModEntities.registerType(
             Identifier.of(SocWars.MOD_ID, "nuclear_bomb"),
-            EntityType.Builder.create(BigTnt::new, SpawnGroup.MISC).dropsNothing().makeFireImmune().dimensions(0.98F, 0.98F).eyeHeight(0.15F).maxTrackingRange(10).trackingTickInterval(10).build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(SocWars.MOD_ID, "nuclear_bomb")))
+            EntityType.Builder.<BigTntEntity>create(BigTntEntity::new, SpawnGroup.MISC)
+                    .dropsNothing()
+                    .makeFireImmune()
+                    .dimensions(0.98F, 0.98F)
+                    .eyeHeight(0.15F)
+                    .maxTrackingRange(10)
+                    .trackingTickInterval(10)
+    );
+    public static final EntityType<BigTntEntity> HYDROGEN_BOMB = ModEntities.registerType(
+            Identifier.of(SocWars.MOD_ID, "hydrogen_bomb"),
+            EntityType.Builder.<BigTntEntity>create(BigTntEntity::new, SpawnGroup.MISC)
+                    .dropsNothing()
+                    .makeFireImmune()
+                    .dimensions(0.98F, 0.98F)
+                    .eyeHeight(0.15F)
+                    .maxTrackingRange(10)
+                    .trackingTickInterval(10)
     );
 
     public static void initialise() {
@@ -131,60 +179,49 @@ public class BigTnt extends Entity implements Ownable {
         builder.add(FUSE, 10 * 20);
     }
 
-    /*
-    protected Entity.MoveEffect getMoveEffect() {
-        return MoveEffect.NONE;
-    }
-
-    public boolean canHit() {
-        return !this.isRemoved();
-    }
-    */
-
     protected double getGravity() {
         return 0.04;
     }
 
     public void tick() {
         this.applyGravity();
-        this.tickBlockCollision();
         this.move(MovementType.SELF, this.getVelocity());
-        this.setVelocity(this.getVelocity().multiply(0.8));
+        this.tickBlockCollision();
+        this.setVelocity(this.getVelocity().multiply(0.97));
+
+        super.tick();
 
         if (getFuse() > 0) {
             setFuse(getFuse() - 1);
-        } else {
-            this.discard();
-            SphereExplosion.explode(this.getWorld(), this.getBlockPos(), this.explosionRadius);
+            return;
         }
+
+        this.explode();
+        this.discard();
     }
 
     private void explode() {
-        World var2 = this.getWorld();
-        if (var2 instanceof ServerWorld serverWorld) {
-            if (serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES)) {
-                this.getWorld().createExplosion(this, Explosion.createDamageSource(this.getWorld(), this), null, this.getX(), this.getBodyY((double)0.0625F), this.getZ(), this.explosionRadius, false, World.ExplosionSourceType.TNT);
-            }
-        }
-
+        final BigTntExplosionBehaviour behaviour = new BigTntExplosionBehaviour();
+        behaviour.setKnockbackModifier(this.tntType.explosionRadius * 0.125f);
+        SphereExplosion.explode(this.getWorld(), this.getBlockPos(), this.tntType.explosionRadius, behaviour);
     }
 
     protected void writeCustomData(WriteView view) {
         view.putInt("fuse", this.getFuse());
-        view.putFloat("explosion_radius", this.explosionRadius);
+        view.putFloat("explosion_radius", this.tntType.explosionRadius);
 
-        LazyEntityReference.writeData(this.igniter, view, "owner");
+        if (this.igniter != null) LazyEntityReference.writeData(this.igniter, view, "owner");
     }
 
     protected void readCustomData(ReadView view) {
         this.setFuse(view.getInt("fuse", 10 * 20));
-        this.explosionRadius = view.getFloat("explosion_radius", 13f);
+        this.tntType.explosionRadius = view.getFloat("explosion_radius", 13f);
         this.igniter = LazyEntityReference.fromData(view, "igniter");
     }
 
     @Nullable
     public LivingEntity getOwner() {
-        return (LivingEntity)LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class);
+        return LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class);
     }
 
     /*
@@ -203,6 +240,10 @@ public class BigTnt extends Entity implements Ownable {
 
     public int getFuse() {
         return this.dataTracker.get(FUSE);
+    }
+
+    public BigTntType getTntType() {
+        return this.tntType;
     }
 
     public final boolean damage(ServerWorld world, DamageSource source, float amount) {

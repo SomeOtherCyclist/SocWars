@@ -15,9 +15,8 @@ import net.minecraft.util.Rarity;
 
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ModItems.addItemToGroups;
-
 public class BaseWeapon extends Item {
+
     public BaseWeapon(Settings settings) {
         super(settings);
     }
@@ -30,7 +29,6 @@ public class BaseWeapon extends Item {
         ModItems.addItemToGroups(SAW_BLADE_BAT, ItemGroups.COMBAT);
         ModItems.addItemToGroups(DEVASTATOR, ItemGroups.COMBAT);
         ModItems.addItemToGroups(NETHERIGHT_SWORD, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(FLESHY_BLADE, ItemGroups.COMBAT);
     }
 
     public static final Item BAT = ModItems.register("bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 4f, -1.9f));
@@ -40,7 +38,6 @@ public class BaseWeapon extends Item {
     public static final Item SAW_BLADE_BAT = ModItems.register("saw_blade_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 9f, -2.2f).rarity(Rarity.RARE));
     public static final Item DEVASTATOR = ModItems.register("devastator", BaseWeapon::new, new Settings().rarity(Rarity.RARE).sword(ToolMaterials.DEVASTATOR, 2f, -3.7f));
     public static final Item NETHERIGHT_SWORD = ModItems.register("netheright_sword", BaseWeapon::new, new Settings().sword(ToolMaterial.NETHERITE, -4.5f, 12f));
-    public static final Item FLESHY_BLADE = ModItems.register("fleshy_blade", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 6f, -2.2f));
 
     @Override
     @SuppressWarnings("deprecation")
@@ -48,7 +45,6 @@ public class BaseWeapon extends Item {
         Text text = switch (stack.getItem().toString()) {
             case "socwars:bat" -> Text.literal("*hits you cutely*");
             case "socwars:saw_blade_bat" -> Text.literal("Last day").formatted(Formatting.DARK_RED);
-            case "socwars:fleshy_blade" -> Text.literal("*crunch*").formatted(Formatting.RED);
             default -> null;
         };
 

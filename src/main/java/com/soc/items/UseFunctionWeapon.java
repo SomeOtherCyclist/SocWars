@@ -1,19 +1,15 @@
 package com.soc.items;
 
 import com.soc.SocWars;
+import com.soc.effects.AntiGravity;
+import com.soc.effects.Flight;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.UseFunction;
 import com.soc.materials.ToolMaterials;
-import net.minecraft.command.argument.OperationArgumentType;
-import net.minecraft.component.Component;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.component.type.UseCooldownComponent;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
@@ -24,13 +20,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -49,6 +42,8 @@ public class UseFunctionWeapon extends Item {
         addItemToGroups(VELOCITY_STAFF, ItemGroups.TOOLS);
         addItemToGroups(VEXING_STAFF, ItemGroups.COMBAT);
         addItemToGroups(YELLOW_SWORD, ItemGroups.COMBAT);
+        addItemToGroups(GRAVITY_ORB, ItemGroups.COMBAT);
+        addItemToGroups(GOD_COMPLEX, ItemGroups.COMBAT);
     }
 
     public static final Item DASHREND = ModItems.register("dashrend", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
@@ -63,9 +58,9 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-                    .sword(ToolMaterials.DASH, 2f, -2f)
-                    .useCooldown(3.5f)
-                    .rarity(Rarity.RARE)
+            .sword(ToolMaterials.DASH, 2f, -2f)
+            .useCooldown(3.5f)
+            .rarity(Rarity.RARE)
     );
     public static final Item VELOCITY_STAFF = ModItems.register("velocity_staff", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
@@ -78,9 +73,9 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-                    .maxDamage(300)
-                    .useCooldown(1.2f)
-                    .rarity(Rarity.RARE)
+            .maxDamage(300)
+            .useCooldown(1.2f)
+            .rarity(Rarity.RARE)
     );
     public static final Item VEXING_STAFF = ModItems.register("vexing_staff", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 for (int i = 0; i < 2; i++) {
@@ -101,9 +96,9 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-                    .maxDamage(5)
-                    .useCooldown(45f)
-                    .rarity(Rarity.RARE)
+            .maxDamage(5)
+            .useCooldown(45f)
+            .rarity(Rarity.RARE)
     );
     public static final Item YELLOW_SWORD = ModItems.register("yellow_sword", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 ItemStack itemStack = user.getStackInHand(hand);
@@ -118,9 +113,26 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-                    .sword(ToolMaterials.BASE, 6f, -2.1f)
-                    .useCooldown(1.5f)
-                    .maxDamage(600)
+            .sword(ToolMaterials.BASE, 6f, -2.1f)
+            .useCooldown(1.5f)
+            .maxDamage(600)
+    );
+    public static final Item GRAVITY_ORB = ModItems.register("gravity_orb", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                user.addStatusEffect(new StatusEffectInstance(AntiGravity.ANTI_GRAVITY, (int) 7.5 * 20, 2, false, false));
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+            .useCooldown(7.5f)
+            .rarity(Rarity.UNCOMMON)
+    );
+    public static final Item GOD_COMPLEX = ModItems.register("god_complex", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                user.addStatusEffect(new StatusEffectInstance(Flight.FLIGHT, 5 * 20, 0, false, false));
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+            .useCooldown(5f)
+            .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
+            .rarity(Rarity.EPIC)
     );
 
     @Override
@@ -131,15 +143,9 @@ public class UseFunctionWeapon extends Item {
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        Text text = switch (stack.getItem().toString()) {
-            case "socwars:knockforward_sword" -> Text.literal("The Hypixel special").formatted(Formatting.GOLD);
-            default -> null;
+        switch (stack.getItem().toString()) {
+            case "socwars:knockforward_sword" -> textConsumer.accept(Text.literal("The Hypixel special").formatted(Formatting.GOLD));
+            case "socwars:god_complex" -> textConsumer.accept(Text.translatable("tooltip.god_complex"));
         };
-
-        SocWars.LOGGER.info(stack.getItem().toString());
-
-        if (text != null) {
-            textConsumer.accept(text);
-        }
     }
 }

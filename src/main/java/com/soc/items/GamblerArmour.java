@@ -2,8 +2,7 @@ package com.soc.items;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.soc.SocWars;
-import com.soc.items.util.Armour;
+import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItems;
 import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
@@ -30,7 +29,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class GamblerArmour extends Item {
@@ -39,7 +37,7 @@ public class GamblerArmour extends Item {
     private int protectionValue;
     private int ticksUntilChange = 0;
 
-    private static final RegistryKey<EquipmentAsset> GAMBLER_MODEL_KEY = Armour.register("gambler");
+    private static final RegistryKey<EquipmentAsset> GAMBLER_MODEL_KEY = ArmourItem.register("gambler");
 
     public GamblerArmour(final Settings settings, final int[] protectionValues, final EquipmentSlot slot) {
         super(settings.component(DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(slot).equipSound(ArmorMaterials.DIAMOND.equipSound()).model(GAMBLER_MODEL_KEY).build()));

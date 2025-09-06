@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "socwars:block/nuclear_bomb_bottom",
+    "side": "socwars:block/nuclear_bomb_side",
+    "top": "socwars:block/nuclear_bomb_top"
+  }
+}

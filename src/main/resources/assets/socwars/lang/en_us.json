@@ -8,6 +8,7 @@
   "item.socwars.velocity_staff": "Staff of Velocity",
   "item.socwars.vexing_staff": "Staff of Vexing",
   "item.socwars.gravity_orb": "Gravity Orb",
+  "item.socwars.god_complex": "God Complex",
   "item.socwars.lifethief": "Lifethief",
   "item.socwars.biohacker": "Biohacker",
   "item.socwars.goo_shovel": "Goo Shovel",
@@ -57,6 +58,7 @@
   "item.socwars.extendo_bridge": "Extendo Bridge",
   "tooltip.extendo_bridge": "Want to go over there? Well now you can.",
   "tooltip.gravity_orb": "Not similar to the gravitation potion",
+  "tooltip.god_complex": "I have the power of god and anime on my side",
   "gambler_armour_amount": "+%s Armour?",
   "gambler_attack_damage": " %s Attack Damage?",
   "attack_damage": " %s Attack Damage",
@@ -75,5 +77,8 @@
   "effect.socwars.armour": "Armour",
   "death.attack.lifethief": "%1$s had their life stolen",
   "death.attack.lifethief.player": "%1$s had their life stolen",
-  "death.attack.netherwrong_sword_damage": "%1$s held their sword incorrectly"
+  "death.attack.netherwrong_sword_damage": "%1$s held their sword incorrectly",
+  "collectible.collect": "You found %s!",
+  "collectible.already_collected": "You have already collected %s!",
+  "item.socwars.collectible_block": "Collectible Block"
 }

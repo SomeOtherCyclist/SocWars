@@ -33,9 +33,7 @@ public class Armour extends StatusEffect {
 
     @Override
     public void onApplied(LivingEntity entity, int amplifier) {
-        if (entity instanceof PlayerEntity) {
-            Objects.requireNonNull(entity.getAttributeInstance(EntityAttributes.ARMOR)).addTemporaryModifier(new EntityAttributeModifier(Identifier.ofVanilla("apple_armour"), amplifier + 1, EntityAttributeModifier.Operation.ADD_VALUE));
-        }
+        Objects.requireNonNull(entity.getAttributeInstance(EntityAttributes.ARMOR)).addTemporaryModifier(new EntityAttributeModifier(Identifier.ofVanilla("apple_armour"), amplifier + 1, EntityAttributeModifier.Operation.ADD_VALUE));
     }
 
     @Override
