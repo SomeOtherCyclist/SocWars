@@ -1,5 +1,0 @@
-#Thu Jan 30 11:55:19 AEDT 2025
-bloomIntensity=1.4
-lensFlareHaloToggle=true
-lensFlareToggle=true
-motionblurToggle=false
