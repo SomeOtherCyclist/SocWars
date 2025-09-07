@@ -20,8 +20,6 @@ public class PlayerDataManager {
 
             final PlayerDataPayload playerDataPayload = new PlayerDataPayload(PlayerDataManager.getPlayerData(entity.getUuid()));
             ServerPlayNetworking.send(entity, playerDataPayload);
-
-            SocWars.LOGGER.info("Player {} joined with UUID {}", entity.getName().getString(), entity.getUuidAsString());
         });
     }
 

@@ -80,8 +80,6 @@ public class CollectibleBlock extends BlockWithEntity {
         boolean collected = PlayerDataManager.getPlayerData(player).collectCollectible(blockEntity.getCollectible());
         if (world.isClient()) {
             player.sendMessage(Text.translatable(collected ? "collectible.collect" : "collectible.already_collected", blockEntity.getCollectible().value().getName()), false);
-        } else {
-            if (collected) PlayerDataManager.collectDoubloons(player, 10);
-        }
+        } else if (collected) PlayerDataManager.collectDoubloons(player, 10);
     }
 }

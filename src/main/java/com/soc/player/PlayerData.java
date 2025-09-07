@@ -43,7 +43,7 @@ public class PlayerData {
     //public int lives;
     public boolean invisible;
 
-    private HashSet<RegistryEntry<Item>> collectibles;
+    private final HashSet<RegistryEntry<Item>> collectibles;
     public final StatArmourBonus steadfastBonus = new StatArmourBonus(EntityAttributes.KNOCKBACK_RESISTANCE);
 
     public PlayerData() {
