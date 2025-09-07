@@ -43,3 +43,8 @@ run/command_history.txt
 run/eula.txt
 run/usercache.json
 run/usercache.json
+/.gradle
+/run/config
+/run
+/.idea
+.github/workflows/build.yml
