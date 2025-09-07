@@ -1,2 +1,0 @@
-v1	named	intermediary
-METHOD	com/soc/mixin/CancelSprintParticles	()Ljava/util/UUID;	getUuid	method_5667
