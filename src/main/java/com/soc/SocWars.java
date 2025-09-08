@@ -5,13 +5,10 @@ import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModBlockEntities;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ModItems;
-import com.soc.networking.s2c.PlayerDataPayload;
-import com.soc.player.PlayerData;
+import com.soc.networking.S2CPayloads;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +34,6 @@ public class SocWars implements ModInitializer {
 		ModBlockEntities.initialise();
 		ModEffects.initialise();
 		PlayerDataManager.initialise();
-
-		PayloadTypeRegistry.playS2C().register(PlayerDataPayload.ID, PlayerDataPayload.CODEC);
+		S2CPayloads.initialise();
 	}
 }

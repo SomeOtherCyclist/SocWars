@@ -68,6 +68,7 @@
   "item.socwars.steadfast_chestplate": "Steadfast Chestplate",
   "item.socwars.steadfast_leggings": "Steadfast Leggings",
   "item.socwars.steadfast_boots": "Steadfast Boots",
+  "item.socwars.collectible_block": "Collectible Block",
   "steadfast_knockback_amount": "+%s%% Knockback Resistance",
   "full_set_worn": "When Worn as a Full Set:",
   "itemGroup.socwars": "SocWars",
@@ -78,7 +79,8 @@
   "death.attack.lifethief": "%1$s had their life stolen",
   "death.attack.lifethief.player": "%1$s had their life stolen",
   "death.attack.netherwrong_sword_damage": "%1$s held their sword incorrectly",
-  "collectible.collect": "You found %s!",
-  "collectible.already_collected": "You have already collected %s!",
-  "item.socwars.collectible_block": "Collectible Block"
+  "collectible.collect": "§2You found %s!",
+  "collectible.already_collected": "§cYou have already collected %s!",
+  "queue.join": "§2You have joined the queue for %s",
+  "queue.leave": "§2You have left the queue for %s"
 }

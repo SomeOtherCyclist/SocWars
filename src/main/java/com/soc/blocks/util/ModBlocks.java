@@ -1,12 +1,14 @@
 package com.soc.blocks.util;
 
 import com.soc.SocWars;
+//import com.soc.blocks.BedwarsBed;
 import com.soc.blocks.BigTnt;
 import com.soc.blocks.CollectibleBlock;
 import com.soc.blocks.DepositableChestBlock;
 import com.soc.entities.BigTntEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
@@ -14,6 +16,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
 import java.util.function.Function;
@@ -26,6 +29,10 @@ public class ModBlocks {
     public static final Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", (settings) -> new BigTnt(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true);
     public static final Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", (settings) -> new BigTnt(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly(), true);
     public static final Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create(), true);
+    //public static final Block RED_BEDWARS_BED = ModBlocks.register("red_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.RED, settings), bedSettings(DyeColor.RED), true);
+    //public static final Block YELLOW_BEDWARS_BED = ModBlocks.register("yellow_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.YELLOW, settings), bedSettings(DyeColor.YELLOW), true);
+    //public static final Block LIME_BEDWARS_BED = ModBlocks.register("lime_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.LIME, settings), bedSettings(DyeColor.LIME), true);
+    //public static final Block BLUE_BEDWARS_BED = ModBlocks.register("blue_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.BLUE, settings), bedSettings(DyeColor.BLUE), true);
 
     public static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings, boolean shouldRegisterItem) {
 
@@ -54,5 +61,15 @@ public class ModBlocks {
 
     private static RegistryKey<Item> keyOfItem(String name) {
         return RegistryKey.of(RegistryKeys.ITEM, Identifier.of(SocWars.MOD_ID, name));
+    }
+
+    private static AbstractBlock.Settings bedSettings(DyeColor color) {
+        return AbstractBlock.Settings.create()
+                .mapColor(color.getMapColor())
+                .sounds(BlockSoundGroup.WOOD)
+                .hardness(0.2f)
+                .resistance(1000000f)
+                .nonOpaque()
+                .pistonBehavior(PistonBehavior.BLOCK);
     }
 }

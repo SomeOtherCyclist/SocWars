@@ -1,6 +1,7 @@
 package com.soc;
 
 import com.soc.entities.BigTntEntity;
+import com.soc.networking.S2CReceivers;
 import com.soc.networking.s2c.PlayerDataPayload;
 import com.soc.player.PlayerDataManager;
 import com.soc.renderer.BigTntRenderer;
@@ -18,8 +19,6 @@ public class SocWarsClient implements ClientModInitializer {
 		EntityRendererRegistry.register(BigTntEntity.NUCLEAR_BOMB, BigTntRenderer::new);
 		EntityRendererRegistry.register(BigTntEntity.HYDROGEN_BOMB, BigTntRenderer::new);
 
-		ClientPlayNetworking.registerGlobalReceiver(PlayerDataPayload.ID, (payload, context) -> {
-			PlayerDataManager.setPlayerData(context.player(), payload.playerData());
-		});
+		S2CReceivers.initialise();
 	}
 }

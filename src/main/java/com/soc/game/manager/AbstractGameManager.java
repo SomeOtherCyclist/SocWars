@@ -5,15 +5,14 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.HashSet;
 
-public abstract class AbstractGameManager<T extends AbstractGameManager.GameType> {
-    public static class GameType {}
-
-    protected final AbstractGameMap<T> map;
+public abstract class AbstractGameManager {
+    protected final AbstractGameMap map;
     protected final HashSet<PlayerEntity> players = new HashSet<>(8);
 
-    protected AbstractGameManager(AbstractGameMap<T> map) {
+    protected AbstractGameManager(AbstractGameMap map) {
         this.map = map;
     }
 
+    protected abstract AbstractGameMap getMap();
     public abstract void onPlayerDeath();
 }

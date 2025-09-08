@@ -1,12 +1,19 @@
 package com.soc.game.manager;
 
+import com.soc.SocWars;
 import com.soc.game.map.AbstractGameMap;
+import com.soc.game.map.BedwarsGameMap;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
-public class BedwarsGameManager extends AbstractGameManager<BedwarsGameManager.BedWarsGameType> {
-    public static class BedWarsGameType extends AbstractGameManager.GameType {}
-
-    protected BedwarsGameManager(AbstractGameMap<BedWarsGameType> map) {
+public class BedwarsGameManager extends AbstractGameManager {
+    protected BedwarsGameManager(BedwarsGameMap map) {
         super(map);
+    }
+
+    @Override
+    protected BedwarsGameMap getMap() {
+        return (BedwarsGameMap) super.map;
     }
 
     @Override

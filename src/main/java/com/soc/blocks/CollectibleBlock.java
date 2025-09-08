@@ -2,6 +2,8 @@ package com.soc.blocks;
 
 import com.mojang.serialization.MapCodec;
 import com.soc.blocks.blockentities.CollectibleBlockEntity;
+import com.soc.game.manager.GamesManager;
+import com.soc.game.map.AbstractGameMap;
 import com.soc.player.PlayerDataManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -13,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
