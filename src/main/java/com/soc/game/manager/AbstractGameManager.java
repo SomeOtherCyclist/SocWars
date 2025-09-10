@@ -13,7 +13,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.Collection;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public abstract class AbstractGameManager {
     public static final ImmutableSet<Formatting> FOUR_TEAMS_COLOURS = ImmutableSet.copyOf(new Formatting[]{Formatting.RED, Formatting.YELLOW, Formatting.GREEN, Formatting.BLUE});
@@ -24,7 +28,9 @@ public abstract class AbstractGameManager {
     protected final ImmutableMultimap<Team, ServerPlayerEntity> teams;
     protected final EventQueue eventQueue;
 
-    public final int gameId;
+    private final int gameId;
+
+    protected int time;
 
     protected AbstractGameManager(AbstractGameMap map, World world, Set<Team> teams, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
         this.map = map;
@@ -45,8 +51,13 @@ public abstract class AbstractGameManager {
     }
     public abstract void onPlayerDeath();
 
+    public void tick() {
+        time++;
+        this.updateEventQueue();
+    }
+
     public final void removeTeams() {
-        Scoreboard scoreboard = world.getScoreboard();
+        final Scoreboard scoreboard = world.getScoreboard();
         teams.keySet().forEach(scoreboard::removeTeam);
     }
 
@@ -64,7 +75,25 @@ public abstract class AbstractGameManager {
         return team;
     }
 
-    protected final void updateEventQueue() {
-        this.eventQueue
+    protected final Set<Team> addTeamsFromFormatting(Set<Formatting> formattings) {
+        ImmutableSet.Builder<Team> builder = ImmutableSet.builder();
+        formattings.forEach(formatting -> builder.add(this.addTeamFromFormatting(formatting)));
+
+        return builder.build();
+    }
+
+    private void updateEventQueue() {
+        Collection<Pair<Consumer<AbstractGameManager>, String>> events = this.eventQueue.tryPopEvents(this.time);
+        events.forEach(event -> {
+            event.getLeft().accept(this);
+        });
+    }
+
+    public final Collection<Text> getUpcomingEvents() {
+        return this.eventQueue.peekEventsText(this.time);
+    }
+
+    public final int getGameId() {
+        return this.gameId;
     }
 }
