@@ -24,10 +24,5 @@ public class SkywarsGameMap extends AbstractGameMap {
     }
 
     @Override
-    public void spreadPlayers(Multimap<Team, ServerPlayerEntity> teams) {
-
-    }
-
-    @Override
     public void tick() {}
 }

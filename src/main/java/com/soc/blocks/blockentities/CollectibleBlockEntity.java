@@ -71,9 +71,11 @@ public class CollectibleBlockEntity extends BlockEntity {
 
     @Override
     public void onBlockReplaced(BlockPos pos, BlockState oldState) {
+        //????????? breaks block breaking is broken when it doesn't have an assigned item
+        super.onBlockReplaced(pos, oldState);
+
         Entity display = this.getWorld().getEntity(UUID.fromString(this.displayUuid));
         if (display != null) display.remove(Entity.RemovalReason.KILLED);
 
-        super.onBlockReplaced(pos, oldState);
     }
 }

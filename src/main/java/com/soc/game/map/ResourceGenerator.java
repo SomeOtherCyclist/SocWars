@@ -45,4 +45,9 @@ public class ResourceGenerator {
 
         if (generationTime > 0) this.generate(); //Makes sure that generationTime > 0 so that a gen with generationTime = 0 doesn't constantly spawn items
     }
+
+    public void setStats(GeneratorStats stats) {
+        this.generationTime = stats.generationTime();
+        item.setCount(stats.count());
+    }
 }

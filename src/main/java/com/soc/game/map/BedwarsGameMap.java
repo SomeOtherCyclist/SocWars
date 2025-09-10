@@ -73,15 +73,6 @@ public class BedwarsGameMap extends AbstractGameMap {
     }
 
     @Override
-    public void spreadPlayers(Multimap<Team, ServerPlayerEntity> teams) {
-        teams.forEach((team, player) -> {
-            BlockPos pos = super.spawnLocations.get(team);
-
-            player.setPosition(pos.toCenterPos());
-        });
-    }
-
-    @Override
     public void tick() {
         this.islandGens.forEach((team, gen) -> Arrays.stream(gen).iterator().forEachRemaining(ResourceGenerator::tick));
         this.diamondGens.forEach(ResourceGenerator::tick);

@@ -8,14 +8,14 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 
 public class BedwarsGameManager extends AbstractGameManager {
-    protected BedwarsGameManager(BedwarsGameMap map, World world, Collection<Team> teams, Collection<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
+    protected BedwarsGameManager(BedwarsGameMap map, World world, Set<Team> teams, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
         super(map, world, teams, players, spreadRules, gameId);
     }
 
@@ -24,24 +24,8 @@ public class BedwarsGameManager extends AbstractGameManager {
         return (BedwarsGameMap) super.map;
     }
 
-    /*
     @Override
-    protected ImmutableSet<Team> makeTeams() {
-        ImmutableSet.Builder<Team> builder = ImmutableSet.builder();
-
-        for (Formatting colour : new Formatting[]{
-                Formatting.RED,
-                Formatting.YELLOW,
-                Formatting.GREEN,
-                Formatting.BLUE
-        }) builder.add(super.addTeamFromFormatting(colour));
-
-        return builder.build();
-    }
-     */
-
-    @Override
-    public ImmutableMultimap<Team, ServerPlayerEntity> assignTeams(Collection<Team> teams, Collection<ServerPlayerEntity> players, SpreadRules spreadRules) {
+    public ImmutableMultimap<Team, ServerPlayerEntity> assignTeams(Set<Team> teams, Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
 
         ImmutableMultimap.Builder<Team, ServerPlayerEntity> builder = ImmutableMultimap.builder();
@@ -55,7 +39,17 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
+    protected EventQueue buildEventQueue() {
+        return null;
+    }
+
+    @Override
     public void startGame() {
+
+    }
+
+    @Override
+    public void endGame() {
 
     }
 

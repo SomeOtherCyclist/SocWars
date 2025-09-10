@@ -37,8 +37,15 @@ public abstract class AbstractGameMap {
         this.world = world;
     }
 
-    public abstract void spreadPlayers(Multimap<Team, ServerPlayerEntity> teams);
     public abstract void tick();
+
+    public final void spreadPlayers(Multimap<Team, ServerPlayerEntity> teams) {
+        teams.forEach((team, player) -> {
+            BlockPos pos = this.spawnLocations.get(team);
+
+            player.setPosition(pos.toCenterPos());
+        });
+    }
 
     protected static <T, U> ImmutableMap<T, U> mapFromCollections(Collection<T> t1, Collection<U> t2) {
         ImmutableMap.Builder<T, U> builder = ImmutableMap.builder();
