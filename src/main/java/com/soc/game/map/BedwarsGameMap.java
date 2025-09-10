@@ -1,21 +1,16 @@
 package com.soc.game.map;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.*;
 import net.minecraft.item.Items;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.server.command.TeamCommand;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.structure.StructureTemplate;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class BedwarsGameMap extends AbstractGameMap {
-    private final SpreadRules spreadRules;
     private final ImmutableSet<ResourceGenerator> diamondGens;
     private final ImmutableSet<ResourceGenerator> emeraldGens;
     private final ImmutableMap<Team, ResourceGenerator[]> islandGens;
@@ -23,54 +18,67 @@ public class BedwarsGameMap extends AbstractGameMap {
 
     public BedwarsGameMap(
             StructureTemplate structure,
-            ImmutableSet<BlockPos> spawnLocations,
+            Set<BlockPos> spawnLocations,
+            BlockPos centrePos,
+            Multimap<Team, ServerPlayerEntity> teams,
             World world,
-            SpreadRules spreadRules,
-            ImmutableSet<BlockPos> diamondGens,
-            ImmutableSet<BlockPos> emeraldGens,
-            ImmutableSet<BlockPos> islandGens,
-            ImmutableSet<BedPos> bedPositions
+            Set<BlockPos> diamondGens,
+            Set<BlockPos> emeraldGens,
+            Set<BlockPos> islandGens,
+            Set<BedPos> bedPositions
     ) {
-        super(structure, spawnLocations, world);
-        this.spreadRules = spreadRules;
+        super(structure, spawnLocations, centrePos, teams, world);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens);
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens);
-        this.islandGens = this.makeIslandGenerators(world, islandGens);
-        this.bedPositions = AbstractGameMap.mapFromCollections(this.teams, bedPositions);
+        this.islandGens = this.makeIslandGenerators(world, islandGens, teams);
+        this.bedPositions = AbstractGameMap.mapFromCollections(teams.keySet(), bedPositions);
     }
 
-    private ImmutableMap<Team, ResourceGenerator[]> makeIslandGenerators(World world, ImmutableSet<BlockPos> islandGens) {
-        final ImmutableMap<Team, BlockPos> generatorPositions = AbstractGameMap.mapFromCollections(super.teams, islandGens);
+    // = NbtIo.read(path);
+
+    /*
+    public BedwarsGameMap(NbtCompound nbt, Multimap<Team, ServerPlayerEntity> teams, World world) throws IOException {
+        this(
+                (StructureTemplate) nbt.get("structure"),
+                (Set) nbt.get("spawn_locations"),
+                (BlockPos) nbt.get("centre_pos"),
+                teams,
+                world,
+                nbt.get("diamond_gens"),
+                nbt.get("emerald_gens"),
+                nbt.get("island_gens"),
+                nbt.get("bed_positions")
+        );
+    }
+    */
+
+    private ImmutableMap<Team, ResourceGenerator[]> makeIslandGenerators(World world, Set<BlockPos> islandGens, Multimap<Team, ServerPlayerEntity> teams) {
+        final List<BlockPos> islandGenList = islandGens.stream().toList();
+
+        final Set<Team> allTeams = teams.keySet();
+        allTeams.addAll(Arrays.stream(new Team[islandGens.size() - teams.keySet().size()]).toList());
+        final List<Team> allTeamList = allTeams.stream().toList();
 
         final ImmutableMap.Builder<Team, ResourceGenerator[]> builder = ImmutableMap.builder();
 
-        super.teams.forEach(team -> {
-            final BlockPos pos = generatorPositions.get(team);
-
-            builder.put(team, new ResourceGenerator[]{
-                    new ResourceGenerator(Items.IRON_INGOT.getDefaultStack(), world, pos),
-                    new ResourceGenerator(Items.GOLD_INGOT.getDefaultStack(), world, pos),
-                    new ResourceGenerator(Items.EMERALD.getDefaultStack(), world, pos),
+        for (int i = 0; i < islandGens.size(); i++) {
+            builder.put(allTeamList.get(i), new ResourceGenerator[]{
+                    new ResourceGenerator(Items.IRON_INGOT.getDefaultStack(), world, islandGenList.get(i)),
+                    new ResourceGenerator(Items.GOLD_INGOT.getDefaultStack(), world, islandGenList.get(i)),
+                    new ResourceGenerator(Items.EMERALD.getDefaultStack(), world, islandGenList.get(i)),
             });
-        });
+        }
+
         return builder.build();
     }
 
     @Override
-    public void spreadPlayers(ArrayList<ServerPlayerEntity> players) {
-        final int numTeams = spreadRules.numTeams();
+    public void spreadPlayers(Multimap<Team, ServerPlayerEntity> teams) {
+        teams.forEach((team, player) -> {
+            BlockPos pos = super.spawnLocations.get(team);
 
-        /*
-        final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
-
-        final int numTeams = this.spreadRules.numTeams();
-        final List<BlockPos> spawnLocations = super.getRandomSpawnLocationList().subList(0, numTeams);
-
-        for (int i = 0; i < players.size(); i++) {
-            final ServerPlayerEntity player = playerStack.pop();
-            player.setPosition(spawnLocations.get(i % numTeams).toBottomCenterPos());
-        }
-        */
+            player.setPosition(pos.toCenterPos());
+        });
     }
 
     @Override
@@ -78,19 +86,5 @@ public class BedwarsGameMap extends AbstractGameMap {
         this.islandGens.forEach((team, gen) -> Arrays.stream(gen).iterator().forEachRemaining(ResourceGenerator::tick));
         this.diamondGens.forEach(ResourceGenerator::tick);
         this.emeraldGens.forEach(ResourceGenerator::tick);
-    }
-
-    @Override
-    public ImmutableSet<Team> makeTeams() {
-        ImmutableSet.Builder<Team> builder = ImmutableSet.builder();
-
-        for (Formatting colour : new Formatting[]{
-                Formatting.RED,
-                Formatting.YELLOW,
-                Formatting.GREEN,
-                Formatting.BLUE
-        }) builder.add(super.addTeamFromFormatting(colour));
-
-        return builder.build();
     }
 }

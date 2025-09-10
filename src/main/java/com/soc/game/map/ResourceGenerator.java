@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Set;
+
 public class ResourceGenerator {
     protected final World world;
     protected final BlockPos pos;
@@ -22,7 +24,7 @@ public class ResourceGenerator {
         remainingTime = generationTime;
     }
 
-    public static ImmutableSet<ResourceGenerator> resourceGenerators(final ItemStack item, final World world, final ImmutableSet<BlockPos> positions) {
+    public static ImmutableSet<ResourceGenerator> resourceGenerators(final ItemStack item, final World world, final Set<BlockPos> positions) {
         ImmutableSet.Builder<ResourceGenerator> builder = ImmutableSet.builder();
         positions.forEach(pos -> builder.add(new ResourceGenerator(item, world, pos)));
         return builder.build();
