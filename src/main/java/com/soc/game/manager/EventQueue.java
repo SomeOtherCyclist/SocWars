@@ -9,14 +9,23 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class EventQueue {
-    private final SortedSet<Triple<Integer, Consumer<AbstractGameManager>, String>> events = new TreeSet<>();
+    private final SortedSet<Triple<Integer, Consumer<AbstractGameManager>, String>> events;
+
+    public EventQueue() {
+        this.events = new TreeSet<>();
+    }
 
     public EventQueue(Set<Triple<Integer, Consumer<AbstractGameManager>, String>> events) {
+        this();
         this.events.addAll(events);
     }
 
     public void addEvent(int time, Consumer<AbstractGameManager> event, String name) {
         events.add(Triple.of(time, event, name));
+    }
+
+    public void addEventSeconds(int time, Consumer<AbstractGameManager> event, String name) {
+        events.add(Triple.of(time * 20, event, name));
     }
 
     public int peekTime() {

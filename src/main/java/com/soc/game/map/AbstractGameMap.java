@@ -4,35 +4,43 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 
+import static com.soc.SocWarsLib.mapFromCollections;
+import static com.soc.SocWarsLib.putBlockPosSet;
+
 public abstract class AbstractGameMap {
-    public static final String MAP_FILE_EXTENSION = "socmap";
+    public static final String STRUCTURE_KEY = "structure";
+    public static final String CENTRE_POS_KEY = "centre_position";
+    public static final String SPAWN_POSITIONS_KEY = "spawn_position";
 
     protected final StructureTemplate structure;
     protected final BlockPos centrePos;
-    protected final ImmutableMap<Team, BlockPos> spawnLocations;
+    protected final ImmutableMap<Team, BlockPos> spawnPositions;
 
-    protected final World world;
+    protected final ServerWorld world;
     protected int tick;
 
     public AbstractGameMap(
             StructureTemplate structure,
-            Set<BlockPos> spawnLocations,
+            Set<BlockPos> spawnPositions,
             BlockPos centrePos,
-            Multimap<Team, ServerPlayerEntity> teams,
-            World world
+            Set<Team> teams,
+            ServerWorld world
     ) {
         this.structure = structure;
-        this.spawnLocations = mapFromCollections(teams.keySet(), spawnLocations);
+        this.spawnPositions = mapFromCollections(teams, spawnPositions);
         this.centrePos = centrePos.toImmutable();
         this.world = world;
     }
@@ -41,23 +49,18 @@ public abstract class AbstractGameMap {
 
     public final void spreadPlayers(Multimap<Team, ServerPlayerEntity> teams) {
         teams.forEach((team, player) -> {
-            BlockPos pos = this.spawnLocations.get(team);
+            BlockPos pos = this.spawnPositions.get(team);
 
             player.setPosition(pos.toCenterPos());
         });
     }
 
-    protected static <T, U> ImmutableMap<T, U> mapFromCollections(Collection<T> t1, Collection<U> t2) {
-        ImmutableMap.Builder<T, U> builder = ImmutableMap.builder();
+    public NbtCompound toNbt(NbtCompound compound) {
+        compound.put(STRUCTURE_KEY, this.structure.writeNbt(new NbtCompound()));
+        putBlockPosSet(compound, SPAWN_POSITIONS_KEY, this.spawnPositions.values());
+        compound.putLong(CENTRE_POS_KEY, this.centrePos.asLong());
 
-        Iterator<T> t1Iterator = t1.iterator();
-        Iterator<U> t2Iterator = t2.iterator();
-
-        while (t1Iterator.hasNext() && t2Iterator.hasNext()) {
-            builder.put(t1Iterator.next(), t2Iterator.next());
-        }
-
-        return builder.build();
+        return compound;
     }
 
     public static File getMapDirectory() {
@@ -73,15 +76,19 @@ public abstract class AbstractGameMap {
 
         return file;
     }
-    public static File[] getMaps() {
+    public static File[] getMaps(String fileExtension) {
         final var files = getMapDirectory().listFiles((file) -> {
             final String[] splitName = file.getName().split("\\.");
             final String extension = splitName[splitName.length - 1];
 
-            return Objects.equals(extension, MAP_FILE_EXTENSION);
+            return Objects.equals(extension, fileExtension);
         });
 
         return (files != null) ? files : new File[0];
+    }
+    public static File getRandomMap(String fileExtension, World world, @Nullable String preferred_map) {
+        File[] maps = getMaps(fileExtension);
+        return maps[world.random.nextBetween(0, maps.length)];
     }
     public static Stack<ServerPlayerEntity> getRandomPlayerStack(Collection<ServerPlayerEntity> players) {
         final Stack<ServerPlayerEntity> playerStack = new Stack<>();

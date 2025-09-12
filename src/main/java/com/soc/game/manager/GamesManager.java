@@ -1,62 +1,33 @@
 package com.soc.game.manager;
 
-import com.soc.networking.s2c.JoinQueuePayload;
-import com.soc.networking.s2c.LeaveQueuePayload;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import com.soc.game.map.BedwarsGameMap;
+import com.soc.game.map.SpreadRules;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static com.soc.game.manager.AbstractGameManager.FOUR_TEAMS_COLOURS;
+
 public class GamesManager {
-    public enum GameType {
-        SKYWARS,
-        BEDWARS,
-        PROP_HUNT;
-
-        GameType fromNatural(String string) {
-            return GameType.valueOf(string.replace(' ', '_').toUpperCase());
-        }
-
-        String toNatural() {
-            return StringUtils.capitalize(this.toString());
-        }
-    }
+    private static ServerWorld world;
 
     private static final ArrayList<AbstractGameManager> GAMES = new ArrayList<>();
-    private static final HashMap<ServerPlayerEntity, GameType> QUEUE = new HashMap<>();
+    private static final MatchmakingQueue<GameType> QUEUE = new MatchmakingQueue<>();
+    private static final HashMap<GameType, Float> QUEUE_PROGRESS = new HashMap<>();
 
-    public static boolean queuePlayer(ServerPlayerEntity player, GameType gameType) {
-        if (!QUEUE.containsKey(player) || QUEUE.get(player) == gameType) {
-            return false;
-        }
-
-        ServerPlayNetworking.send(player, new JoinQueuePayload(gameType.toString()));
-        QUEUE.put(player, gameType);
-
-        return true;
+    static {
+        Arrays.stream(GameType.values()).forEach(queue -> QUEUE_PROGRESS.put(queue, 0f));
     }
 
-    public static boolean unqueuePlayer(ServerPlayerEntity player) {
-        if (!QUEUE.containsKey(player)) return false;
+    public static void initialise() {
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> world = server.getOverworld());
 
-        ServerPlayNetworking.send(player, new LeaveQueuePayload(QUEUE.toString()));
-        QUEUE.remove(player);
-
-        return true;
-    }
-
-    public static void unqueuePlayers(Collection<ServerPlayerEntity> players) {
-        players.forEach(QUEUE::remove);
-    }
-
-    public static ArrayList<ServerPlayerEntity> getPlayersInQueue(GameType gameType) {
-        final ArrayList<ServerPlayerEntity> players = new ArrayList<>(QUEUE.size()); //Probably not great for very large player counts but this should never deal with more than a few players at a time
-        QUEUE.entrySet().iterator().forEachRemaining(entry -> {
-            if (entry.getValue() == gameType) players.add(entry.getKey());
-        });
-
-        return players;
+        ServerTickEvents.START_WORLD_TICK.register(GamesManager::tick);
     }
 
     public static boolean startGame(AbstractGameManager game) {
@@ -70,7 +41,7 @@ public class GamesManager {
             GAMES.add(gameId, game);
         }
 
-        unqueuePlayers(game.getPlayers());
+        QUEUE.unqueuePlayers(game.getPlayers());
 
         return true;
     }
@@ -87,6 +58,33 @@ public class GamesManager {
             i++;
         }
 
-        return ++i;
+        return games.hasNext() ? i : ++i;
+    }
+
+    public static void tick(ServerWorld world) {
+        checkQueues();
+    }
+
+    private static void checkQueues() {
+        final float deltaTime = 0.05f * 0.1f;
+
+        QUEUE_PROGRESS.keySet().forEach(queue -> {
+            final float queueProgress = QUEUE.getQueueProgress(queue);
+            QUEUE_PROGRESS.put(queue, queueProgress < Float.MIN_NORMAL ? 0f : QUEUE_PROGRESS.get(queue) + queueProgress * deltaTime);
+
+            final Set<ServerPlayerEntity> players = Set.copyOf(QUEUE.getPlayersInQueue(queue).stream().limit(queue.maxPlayers()).toList());
+
+            if (QUEUE_PROGRESS.get(queue) >= 1) {
+                QUEUE_PROGRESS.put(queue, 0f);
+
+                final AbstractGameManager game = switch (queue) {
+                    case SKYWARS -> new SkywarsGameManager(world, players, null, getNewGameId());
+                    case BEDWARS -> new BedwarsGameManager(world, players, new SpreadRules(4), getNewGameId());
+                    case PROP_HUNT -> null;
+                };
+
+                startGame(game);
+            }
+        });
     }
 }
