@@ -51,7 +51,7 @@ public class BedwarsGameManager extends AbstractGameManager {
     protected EventQueue buildEventQueue() {
         final EventQueue queue = new EventQueue();
 
-        queue.addEventSeconds(3, (manager) -> {}, "events.bedwars.diamond2");
+        queue.addEventMinutesSeconds(3, 30, (manager) -> {}, "events.bedwars.diamond2");
 
         return queue;
     }

@@ -16,7 +16,7 @@ public class SkywarsGameMap extends AbstractGameMap {
             StructureTemplate structure,
             Set<BlockPos> spawnPositions,
             BlockPos centrePos,
-            Multimap<Team, ServerPlayerEntity> teams,
+            Set<Team> teams,
             ServerWorld world
     ) {
         super(structure, spawnPositions, centrePos, teams, world);

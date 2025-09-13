@@ -28,6 +28,10 @@ public class EventQueue {
         events.add(Triple.of(time * 20, event, name));
     }
 
+    public void addEventMinutesSeconds(int minutes, int seconds, Consumer<AbstractGameManager> event, String name) {
+        events.add(Triple.of(minutes * 1200 + seconds * 20, event, name));
+    }
+
     public int peekTime() {
         return this.events.getFirst().getLeft();
     }

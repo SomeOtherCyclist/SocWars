@@ -1,20 +1,15 @@
 package com.soc.game.manager;
 
-import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.SpreadRules;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static com.soc.game.manager.AbstractGameManager.FOUR_TEAMS_COLOURS;
-
 public class GamesManager {
-    private static ServerWorld world;
+    private static ServerWorld WORLD;
 
     private static final ArrayList<AbstractGameManager> GAMES = new ArrayList<>();
     private static final MatchmakingQueue<GameType> QUEUE = new MatchmakingQueue<>();
@@ -25,7 +20,7 @@ public class GamesManager {
     }
 
     public static void initialise() {
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> world = server.getOverworld());
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> WORLD = server.getOverworld());
 
         ServerTickEvents.START_WORLD_TICK.register(GamesManager::tick);
     }
@@ -62,7 +57,9 @@ public class GamesManager {
     }
 
     public static void tick(ServerWorld world) {
-        checkQueues();
+        if (world.getTime() % 20 == 0) {
+            checkQueues();
+        }
     }
 
     private static void checkQueues() {
@@ -78,9 +75,9 @@ public class GamesManager {
                 QUEUE_PROGRESS.put(queue, 0f);
 
                 final AbstractGameManager game = switch (queue) {
-                    case SKYWARS -> new SkywarsGameManager(world, players, null, getNewGameId());
-                    case BEDWARS -> new BedwarsGameManager(world, players, new SpreadRules(4), getNewGameId());
-                    case PROP_HUNT -> null;
+                    case SKYWARS -> new SkywarsGameManager(WORLD, players, null, getNewGameId());
+                    case BEDWARS -> new BedwarsGameManager(WORLD, players, new SpreadRules(4), getNewGameId());
+                    case PROP_HUNT -> null; //Maybe get around to writing some of the game logic for prop hunt
                 };
 
                 startGame(game);
