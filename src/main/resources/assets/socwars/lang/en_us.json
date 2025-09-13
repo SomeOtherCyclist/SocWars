@@ -82,5 +82,15 @@
   "collectible.collect": "§2You found %s!",
   "collectible.already_collected": "§cYou have already collected %s!",
   "queue.join": "§2You have joined the queue for %s",
-  "queue.leave": "§2You have left the queue for %s"
+  "queue.leave": "§2You have left the queue for %s",
+  "block.socwars.spawn_placeholder": "Spawn Placeholder",
+  "item.socwars.spawn_placeholder": "Spawn Placeholder",
+  "block.socwars.centre_placeholder": "Centre Placeholder",
+  "item.socwars.centre_placeholder": "Centre Placeholder",
+  "block.socwars.diamond_gen_placeholder": "Diamond Generator Placeholder",
+  "item.socwars.diamond_gen_placeholder": "Diamond Generator Placeholder",
+  "block.socwars.emerald_gen_placeholder": "Emerald Generator Placeholder",
+  "item.socwars.emerald_gen_placeholder": "Emerald Generator Placeholder",
+  "block.socwars.island_gen_placeholder": "Island Generator Placeholder",
+  "item.socwars.island_gen_placeholder": "Island Generator Placeholder"
 }

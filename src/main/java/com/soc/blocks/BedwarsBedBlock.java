@@ -1,19 +1,16 @@
 package com.soc.blocks;
 
 import com.soc.SocWars;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BedwarsBed extends BedBlock {
-    public BedwarsBed(DyeColor color, Settings settings) {
+public class BedwarsBedBlock extends BedBlock {
+    public BedwarsBedBlock(DyeColor color, Settings settings) {
         super(color, settings);
     }
 

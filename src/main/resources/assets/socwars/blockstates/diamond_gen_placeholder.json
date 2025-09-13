@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "socwars:block/diamond_gen_placeholder"
+    }
+  }
+}

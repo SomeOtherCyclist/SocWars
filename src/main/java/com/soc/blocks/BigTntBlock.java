@@ -1,6 +1,5 @@
 package com.soc.blocks;
 
-import com.soc.blocks.util.ModBlocks;
 import com.soc.entities.BigTntEntity;
 import com.soc.util.Sounds;
 import net.minecraft.block.Block;
@@ -18,10 +17,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
-public class BigTnt extends Block {
+public class BigTntBlock extends Block {
     private final BigTntEntity.BigTntType tntType;
 
-    public BigTnt(Settings settings, BigTntEntity.BigTntType tntType) {
+    public BigTntBlock(Settings settings, BigTntEntity.BigTntType tntType) {
         super(settings);
         this.tntType = tntType;
     }

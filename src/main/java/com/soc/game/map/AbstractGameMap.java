@@ -9,6 +9,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -49,9 +50,14 @@ public abstract class AbstractGameMap {
 
     public final void spreadPlayers(Multimap<Team, ServerPlayerEntity> teams) {
         teams.forEach((team, player) -> {
-            BlockPos pos = this.spawnPositions.get(team);
+            final BlockPos rawPos = this.spawnPositions.get(team);
+            if (rawPos == null) {
+                player.sendMessage(Text.literal("Go yell at Liam for screwing up the spreadPlayers() method"));
+            } else {
+                final BlockPos pos = this.pos(rawPos);
 
-            player.setPosition(pos.toCenterPos());
+                player.setPosition(pos.toCenterPos());
+            }
         });
     }
 
@@ -87,7 +93,7 @@ public abstract class AbstractGameMap {
         return (files != null) ? files : new File[0];
     }
     public static File getRandomMap(String fileExtension, World world, @Nullable String preferred_map) {
-        File[] maps = getMaps(fileExtension);
+        final File[] maps = getMaps(fileExtension);
         return maps[world.random.nextBetween(0, maps.length)];
     }
     public static Stack<ServerPlayerEntity> getRandomPlayerStack(Collection<ServerPlayerEntity> players) {

@@ -1,0 +1,55 @@
+{
+  "variants": {
+    "dye_colour_with_empty=16": {
+      "model": "socwars:block/spawn_placeholder/empty"
+    },
+    "dye_colour_with_empty=0": {
+      "model": "socwars:block/spawn_placeholder/white"
+    },
+    "dye_colour_with_empty=1": {
+      "model": "socwars:block/spawn_placeholder/orange"
+    },
+    "dye_colour_with_empty=2": {
+      "model": "socwars:block/spawn_placeholder/magenta"
+    },
+    "dye_colour_with_empty=3": {
+      "model": "socwars:block/spawn_placeholder/light_blue"
+    },
+    "dye_colour_with_empty=4": {
+      "model": "socwars:block/spawn_placeholder/yellow"
+    },
+    "dye_colour_with_empty=5": {
+      "model": "socwars:block/spawn_placeholder/lime"
+    },
+    "dye_colour_with_empty=6": {
+      "model": "socwars:block/spawn_placeholder/pink"
+    },
+    "dye_colour_with_empty=7": {
+      "model": "socwars:block/spawn_placeholder/grey"
+    },
+    "dye_colour_with_empty=8": {
+      "model": "socwars:block/spawn_placeholder/light_grey"
+    },
+    "dye_colour_with_empty=9": {
+      "model": "socwars:block/spawn_placeholder/cyan"
+    },
+    "dye_colour_with_empty=10": {
+      "model": "socwars:block/spawn_placeholder/purple"
+    },
+    "dye_colour_with_empty=11": {
+      "model": "socwars:block/spawn_placeholder/blue"
+    },
+    "dye_colour_with_empty=12": {
+      "model": "socwars:block/spawn_placeholder/brown"
+    },
+    "dye_colour_with_empty=13": {
+      "model": "socwars:block/spawn_placeholder/green"
+    },
+    "dye_colour_with_empty=14": {
+      "model": "socwars:block/spawn_placeholder/red"
+    },
+    "dye_colour_with_empty=15": {
+      "model": "socwars:block/spawn_placeholder/black"
+    }
+  }
+}
