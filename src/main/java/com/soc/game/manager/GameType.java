@@ -1,5 +1,6 @@
 package com.soc.game.manager;
 
+import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
 public enum GameType implements QueueProgress {
@@ -38,5 +39,14 @@ public enum GameType implements QueueProgress {
         float offset = (float) this.maxPlayers / (4 * this.minPlayers());
         float rawProgress = (playerCount - this.minPlayers + offset) / (this.maxPlayers - this.minPlayers + offset);
         return (float) Math.pow(rawProgress, 2.5f);
+    }
+
+    public Text getVariantName() {
+        return Text.translatable("game_type." + this.toString().toLowerCase());
+    }
+
+    public static GameType fromOrdinal(int ordinal) {
+        final GameType[] values = GameType.values();
+        return values[ordinal < values.length ? ordinal : 0];
     }
 }

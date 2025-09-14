@@ -5,6 +5,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Set;
@@ -16,7 +17,7 @@ public class SkywarsGameMap extends AbstractGameMap {
             StructureTemplate structure,
             Set<BlockPos> spawnPositions,
             BlockPos centrePos,
-            Set<Team> teams,
+            Set<DyeColor> teams,
             ServerWorld world
     ) {
         super(structure, spawnPositions, centrePos, teams, world);

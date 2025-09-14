@@ -5,10 +5,10 @@ import com.soc.SocWars;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.scoreboard.Team;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 
-import static com.soc.SocWarsLib.*;
+import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "bwmap";
@@ -27,14 +27,14 @@ public class BedwarsGameMap extends AbstractGameMap {
 
     private final ImmutableSet<ResourceGenerator> diamondGens;
     private final ImmutableSet<ResourceGenerator> emeraldGens;
-    private final ImmutableMap<Team, ResourceGenerator[]> islandGens;
-    private final ImmutableMap<Team, BlockPos> bedPositions;
+    private final ImmutableMap<DyeColor, ResourceGenerator[]> islandGens;
+    private final ImmutableMap<DyeColor, BlockPos> bedPositions;
 
     public BedwarsGameMap(
             StructureTemplate structure,
             @NotNull Set<BlockPos> spawnPositions,
             @NotNull BlockPos centrePos,
-            Set<Team> teams,
+            Set<DyeColor> teams,
             ServerWorld world,
             @NotNull Set<BlockPos> diamondGens,
             @NotNull Set<BlockPos> emeraldGens,
@@ -48,11 +48,11 @@ public class BedwarsGameMap extends AbstractGameMap {
         this.bedPositions = mapFromCollections(teams, bedPositions);
     }
 
-    public static Optional<BedwarsGameMap> loadRandomMap(Set<Team> teams, ServerWorld world) {
+    public static Optional<BedwarsGameMap> loadRandomMap(Set<DyeColor> teams, ServerWorld world) {
         return loadFromFile(AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null), teams, world);
     }
 
-    public static Optional<BedwarsGameMap> loadFromFile(File file, Set<Team> teams, ServerWorld world) {
+    public static Optional<BedwarsGameMap> loadFromFile(File file, Set<DyeColor> teams, ServerWorld world) {
         NbtCompound compound = null;
         try {
             compound = NbtIo.read(file.toPath());
@@ -65,7 +65,7 @@ public class BedwarsGameMap extends AbstractGameMap {
         return fromNbt(compound, teams, world);
     }
 
-    private static Optional<BedwarsGameMap> fromNbt(NbtCompound compound, Set<Team> teams, ServerWorld world) {
+    private static Optional<BedwarsGameMap> fromNbt(NbtCompound compound, Set<DyeColor> teams, ServerWorld world) {
         StructureTemplateManager templateManager = world.getStructureTemplateManager();
         Optional<NbtCompound> structureCompound = compound.getCompound(STRUCTURE_KEY);
         StructureTemplate template = structureCompound.map(templateManager::createTemplate).orElse(null);
@@ -117,14 +117,14 @@ public class BedwarsGameMap extends AbstractGameMap {
         return true;
     }
 
-    private ImmutableMap<Team, ResourceGenerator[]> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<Team> teams) {
+    private ImmutableMap<DyeColor, ResourceGenerator[]> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<DyeColor> teams) {
         final List<BlockPos> islandGenList = islandGens.stream().toList(); //Should probably revisit this whole function at some point
 
-        final Set<Team> allTeams = new HashSet<>(teams);
-        allTeams.addAll(Arrays.stream(new Team[islandGens.size() - teams.size()]).toList());
-        final List<Team> allTeamList = allTeams.stream().toList();
+        final Set<DyeColor> allTeams = new HashSet<>(teams);
+        allTeams.addAll(Arrays.stream(new DyeColor[islandGens.size() - teams.size()]).toList());
+        final List<DyeColor> allTeamList = allTeams.stream().toList();
 
-        final ImmutableMap.Builder<Team, ResourceGenerator[]> builder = ImmutableMap.builder();
+        final ImmutableMap.Builder<DyeColor, ResourceGenerator[]> builder = ImmutableMap.builder();
 
         for (int i = 0; i < islandGens.size(); i++) {
             builder.put(allTeamList.get(i), new ResourceGenerator[]{

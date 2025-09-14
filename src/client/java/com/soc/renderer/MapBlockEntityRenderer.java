@@ -25,10 +25,10 @@ public class MapBlockEntityRenderer implements BlockEntityRenderer<MapBlockEntit
         VertexRendering.drawBox(
                 matrices,
                 consumer,
-                0d, 0d, 0d,
-                regionSize.x, regionSize.y, regionSize.z,
+                0d, 1d, 0d,
+                regionSize.x, regionSize.y + 1d, regionSize.z,
                 1f, 1f, 1f, 1f,
-                0.5f, 0.5f, 0.5f);
+                0.13f, 0.13f, 0.13f);
 
         matrices.pop();
     }

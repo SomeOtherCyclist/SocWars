@@ -5,6 +5,8 @@ import com.soc.blocks.util.ModBlocks;
 import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ModItems;
+import com.soc.networking.C2SPayloads;
+import com.soc.networking.C2SReceivers;
 import com.soc.networking.S2CPayloads;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.api.ModInitializer;
@@ -34,6 +36,8 @@ public class SocWars implements ModInitializer {
 		ModBlockEntities.initialise();
 		ModEffects.initialise();
 		PlayerDataManager.initialise();
+		C2SPayloads.initialise();
 		S2CPayloads.initialise();
+		C2SReceivers.initialise();
 	}
 }

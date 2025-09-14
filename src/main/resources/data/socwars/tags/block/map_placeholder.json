@@ -1,0 +1,9 @@
+{
+  "values": [
+    "socwars:spawn_placeholder",
+    "socwars:centre_placeholder",
+    "socwars:diamond_gen_placeholder",
+    "socwars:emerald_gen_placeholder",
+    "socwars:island_gen_placeholder"
+  ]
+}

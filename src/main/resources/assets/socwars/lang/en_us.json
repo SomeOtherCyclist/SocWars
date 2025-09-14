@@ -92,5 +92,14 @@
   "block.socwars.emerald_gen_placeholder": "Emerald Generator Placeholder",
   "item.socwars.emerald_gen_placeholder": "Emerald Generator Placeholder",
   "block.socwars.island_gen_placeholder": "Island Generator Placeholder",
-  "item.socwars.island_gen_placeholder": "Island Generator Placeholder"
+  "item.socwars.island_gen_placeholder": "Island Generator Placeholder",
+  "text.map_block.enter_name_field": "Map Name:",
+  "text.map_block.enter_x_field": "X Size: ",
+  "text.map_block.enter_y_field": "Y Size: ",
+  "text.map_block.enter_z_field": "Z Size: ",
+  "text.map_block.game_type": "Map Type:",
+  "game_type.bedwars": "Bedwars",
+  "game_type.skywars": "Skywars",
+  "game_type.prop_hunt": "Prop Hunt",
+  "button.map_block.save": "Save"
 }

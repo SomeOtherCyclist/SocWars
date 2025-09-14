@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 
 public interface BlockTags {
     TagKey<Block> EXPLOSION_IMMUNE = from_string("explosion_immune");
+    TagKey<Block> MAP_PLACEHOLDER = from_string("map_placeholder");
 
     private static TagKey<Block> from_string(String id) {
         return TagKey.of(RegistryKeys.BLOCK, Identifier.of(SocWars.MOD_ID, id));

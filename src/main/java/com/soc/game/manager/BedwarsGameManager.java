@@ -6,7 +6,7 @@ import com.soc.game.map.SpreadRules;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Formatting;
+import net.minecraft.util.DyeColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -29,16 +29,16 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public ImmutableMultimap<Team, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
+    public ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
         final int numTeams = Math.min(spreadRules.numTeams(), teams.size());
 
-        final ImmutableMultimap.Builder<Team, ServerPlayerEntity> builder = ImmutableMultimap.builder();
+        final ImmutableMultimap.Builder<DyeColor, ServerPlayerEntity> builder = ImmutableMultimap.builder();
 
-        final Set<Formatting> teamColours = (numTeams <= 4 ? FOUR_TEAMS_COLOURS : EIGHT_TEAMS_COLOURS);
-        final ArrayList<Team> teamsUnlimited = addTeamsFromFormatting(teamColours);
+        final Set<DyeColor> teamColours = (numTeams <= 4 ? FOUR_TEAMS_COLOURS : EIGHT_TEAMS_COLOURS);
+        final ArrayList<DyeColor> teamsUnlimited = new ArrayList<>(teamColours);
         Collections.shuffle(teamsUnlimited);
-        final List<Team> teams = teamsUnlimited.stream().limit(numTeams).toList();
+        final List<DyeColor> teams = teamsUnlimited.stream().limit(numTeams).toList();
 
         for (int i = 0; i < players.size(); i++) {
             builder.put(teams.get(i % numTeams), playerStack.pop());

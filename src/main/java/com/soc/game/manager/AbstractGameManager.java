@@ -1,6 +1,7 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.soc.game.map.AbstractGameMap;
@@ -11,8 +12,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.util.DyeColor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -21,13 +21,16 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static com.soc.lib.SocWarsLib.formattingColourFromDye;
+
 public abstract class AbstractGameManager {
-    public static final ImmutableSet<Formatting> FOUR_TEAMS_COLOURS = ImmutableSet.copyOf(new Formatting[]{Formatting.RED, Formatting.YELLOW, Formatting.GREEN, Formatting.BLUE});
-    public static final ImmutableSet<Formatting> EIGHT_TEAMS_COLOURS = ImmutableSet.copyOf(new Formatting[]{Formatting.RED, Formatting.GOLD, Formatting.YELLOW, Formatting.GREEN, Formatting.AQUA, Formatting.DARK_BLUE, Formatting.DARK_PURPLE, Formatting.LIGHT_PURPLE});
+    public static final ImmutableSet<DyeColor> FOUR_TEAMS_COLOURS = ImmutableSet.copyOf(new DyeColor[]{DyeColor.RED, DyeColor.YELLOW, DyeColor.GREEN, DyeColor.LIGHT_BLUE});
+    public static final ImmutableSet<DyeColor> EIGHT_TEAMS_COLOURS = ImmutableSet.copyOf(new DyeColor[]{DyeColor.RED, DyeColor.ORANGE, DyeColor.YELLOW, DyeColor.GREEN, DyeColor.LIGHT_BLUE, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.MAGENTA});
 
     protected final AbstractGameMap map;
     protected final ServerWorld world;
-    protected final ImmutableMultimap<Team, ServerPlayerEntity> teams;
+    protected final ImmutableMultimap<DyeColor, ServerPlayerEntity> teams;
+    protected final ImmutableMap<DyeColor, Team> scoreboardTeams;
     protected final EventQueue eventQueue;
 
     private final int gameId;
@@ -38,13 +41,21 @@ public abstract class AbstractGameManager {
         this.map = this.buildMap();
         this.world = world;
         this.teams = this.buildTeams(players, spreadRules);
+        this.scoreboardTeams = this.buildScoreboardTeams();
         this.eventQueue = this.buildEventQueue();
         this.gameId = gameId;
     }
 
     protected abstract AbstractGameMap getMap();
     protected abstract AbstractGameMap buildMap();
-    public abstract ImmutableMultimap<Team, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
+    public abstract ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
+    public final ImmutableMap<DyeColor, Team> buildScoreboardTeams() {
+        ImmutableMap.Builder<DyeColor, Team> builder = ImmutableMap.builder();
+
+        this.teams.keySet().forEach(colour -> builder.put(colour, addTeamFromColour(colour)));
+
+        return builder.build();
+    }
     protected abstract EventQueue buildEventQueue();
 
     public void startGame() {
@@ -63,26 +74,26 @@ public abstract class AbstractGameManager {
 
     public final void removeTeams() {
         final Scoreboard scoreboard = world.getScoreboard();
-        teams.keySet().forEach(scoreboard::removeTeam);
+        scoreboardTeams.values().forEach(scoreboard::removeTeam);
     }
 
     public final ImmutableCollection<ServerPlayerEntity> getPlayers() {
         return teams.values();
     }
 
-    public final Team addTeamFromFormatting(Formatting formatting) {
-        final Team team = this.world.getScoreboard().addTeam(this.gameId + "_" + formatting.toString());
-        team.setColor(formatting);
-        team.setDisplayName(Text.of(StringUtils.capitalize(formatting.toString())));
+    public final Team addTeamFromColour(DyeColor colour) {
+        final Team team = this.world.getScoreboard().addTeam(this.gameId + "_" + colour.toString());
+        team.setColor(formattingColourFromDye(colour));
+        team.setDisplayName(Text.of(StringUtils.capitalize(colour.toString())));
         team.setFriendlyFireAllowed(false);
         team.setCollisionRule(AbstractTeam.CollisionRule.PUSH_OTHER_TEAMS);
 
         return team;
     }
 
-    public final ArrayList<Team> addTeamsFromFormatting(Set<Formatting> formattings) {
+    public final ArrayList<Team> addTeamsFromColours(Set<DyeColor> colours) {
         final ArrayList<Team> teams = new ArrayList<>();
-        formattings.forEach(formatting -> teams.add(this.addTeamFromFormatting(formatting)));
+        colours.forEach(colour -> teams.add(this.addTeamFromColour(colour)));
 
         return teams;
     }

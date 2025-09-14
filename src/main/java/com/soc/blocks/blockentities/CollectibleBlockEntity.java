@@ -37,6 +37,7 @@ public class CollectibleBlockEntity extends BlockEntity {
 
     public void setDisplayUuid(String displayUuid) {
         this.displayUuid = displayUuid;
+        this.markDirty();
     }
 
     public String getDisplayUuid() {

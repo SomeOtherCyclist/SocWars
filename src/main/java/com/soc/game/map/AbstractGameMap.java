@@ -10,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +19,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 
-import static com.soc.SocWarsLib.mapFromCollections;
-import static com.soc.SocWarsLib.putBlockPosSet;
+import static com.soc.lib.SocWarsLib.mapFromCollections;
+import static com.soc.lib.SocWarsLib.putBlockPosSet;
 
 public abstract class AbstractGameMap {
     public static final String STRUCTURE_KEY = "structure";
@@ -28,7 +29,7 @@ public abstract class AbstractGameMap {
 
     protected final StructureTemplate structure;
     protected final BlockPos centrePos;
-    protected final ImmutableMap<Team, BlockPos> spawnPositions;
+    protected final ImmutableMap<DyeColor, BlockPos> spawnPositions;
 
     protected final ServerWorld world;
     protected int tick;
@@ -37,7 +38,7 @@ public abstract class AbstractGameMap {
             StructureTemplate structure,
             Set<BlockPos> spawnPositions,
             BlockPos centrePos,
-            Set<Team> teams,
+            Set<DyeColor> teams,
             ServerWorld world
     ) {
         this.structure = structure;
@@ -48,7 +49,7 @@ public abstract class AbstractGameMap {
 
     public abstract void tick();
 
-    public final void spreadPlayers(Multimap<Team, ServerPlayerEntity> teams) {
+    public final void spreadPlayers(Multimap<DyeColor, ServerPlayerEntity> teams) {
         teams.forEach((team, player) -> {
             final BlockPos rawPos = this.spawnPositions.get(team);
             if (rawPos == null) {

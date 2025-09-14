@@ -8,6 +8,7 @@ import com.soc.game.map.SpreadRules;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.DyeColor;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,9 +33,8 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public ImmutableMultimap<Team, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
+    public ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
-
 
         return null;
     }

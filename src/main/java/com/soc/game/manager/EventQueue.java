@@ -1,6 +1,5 @@
 package com.soc.game.manager;
 
-import com.soc.SocWars;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;

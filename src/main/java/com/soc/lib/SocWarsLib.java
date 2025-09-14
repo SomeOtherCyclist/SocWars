@@ -1,13 +1,13 @@
-package com.soc;
+package com.soc.lib;
 
 import com.google.common.collect.ImmutableMap;
+import com.soc.game.manager.GameType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.LongStream;
 
 public class SocWarsLib {
     public static final byte BLOCKPOS_NBT_TYPE = 101;
@@ -39,5 +39,30 @@ public class SocWarsLib {
         }
 
         compound.putLongArray(key, values);
+    }
+
+    public static Formatting formattingColourFromDye(DyeColor colour) {
+        return switch (colour) {
+            case WHITE -> Formatting.WHITE;
+            case ORANGE -> Formatting.GOLD;
+            case MAGENTA, PINK -> Formatting.LIGHT_PURPLE;
+            case LIGHT_BLUE -> Formatting.BLUE;
+            case YELLOW -> Formatting.YELLOW;
+            case LIME -> Formatting.GREEN;
+            case GRAY -> Formatting.DARK_GRAY;
+            case LIGHT_GRAY -> Formatting.GRAY;
+            case CYAN -> Formatting.AQUA;
+            case PURPLE -> Formatting.DARK_PURPLE;
+            case BLUE -> Formatting.DARK_BLUE;
+            case BROWN -> Formatting.DARK_RED;
+            case GREEN -> Formatting.DARK_GREEN;
+            case RED -> Formatting.RED;
+            case BLACK -> Formatting.BLACK;
+        };
+    }
+
+    public static DyeColor dyeColourFromOrdinal(int ordinal) {
+        final DyeColor[] values = DyeColor.values();
+        return values[ordinal < values.length ? ordinal : 0];
     }
 }
