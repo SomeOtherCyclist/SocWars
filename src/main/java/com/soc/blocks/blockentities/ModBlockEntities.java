@@ -1,7 +1,7 @@
-package com.soc.entities.util;
+package com.soc.blocks.blockentities;
 
 import com.soc.SocWars;
-import com.soc.blocks.blockentities.CollectibleBlockEntity;
+import com.soc.blocks.util.ModBlocks;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -12,8 +12,11 @@ import net.minecraft.util.Identifier;
 
 public class ModBlockEntities {
     public static void initialise() {
-        CollectibleBlockEntity.initialise();
+
     }
+
+    public static final BlockEntityType<CollectibleBlockEntity> COLLECTIBLE_BLOCK_ENTITY = register("collectible_block", CollectibleBlockEntity::new, ModBlocks.COLLECTIBLE_BLOCK);
+    public static final BlockEntityType<MapBlockEntity> MAP_BLOCK_ENTITY = ModBlockEntities.register("map_block", MapBlockEntity::new, ModBlocks.MAP_BLOCK);
 
     public static <T extends BlockEntity> BlockEntityType<T> register(
             String name,

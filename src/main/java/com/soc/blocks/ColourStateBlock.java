@@ -30,7 +30,7 @@ public class ColourStateBlock extends Block {
 
     public ColourStateBlock(Settings settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(COLOUR, 0));
+        this.setDefaultState(this.getDefaultState().with(COLOUR, 16));
     }
 
     @Override

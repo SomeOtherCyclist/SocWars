@@ -4,10 +4,12 @@ import com.soc.SocWars;
 import com.soc.blocks.BigTntBlock;
 import com.soc.blocks.CollectibleBlock;
 import com.soc.blocks.ColourStateBlock;
+import com.soc.blocks.MapBlock;
 import com.soc.entities.BigTntEntity;
 import com.soc.items.util.ModItems;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -34,6 +36,8 @@ public class ModBlocks {
     public static final Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", (settings) -> new BigTntBlock(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true);
     public static final Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", (settings) -> new BigTntBlock(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true);
     public static final Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true);
+    public static final Block MAP_BLOCK = ModBlocks.register("map_block", MapBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true);
+
     //public static final Block RED_BEDWARS_BED = ModBlocks.register("red_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.RED, settings), bedSettings(DyeColor.RED), true);
     //public static final Block YELLOW_BEDWARS_BED = ModBlocks.register("yellow_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.YELLOW, settings), bedSettings(DyeColor.YELLOW), true);
     //public static final Block LIME_BEDWARS_BED = ModBlocks.register("lime_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.LIME, settings), bedSettings(DyeColor.LIME), true);

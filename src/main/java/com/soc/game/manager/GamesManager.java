@@ -1,5 +1,6 @@
 package com.soc.game.manager;
 
+import com.soc.SocWars;
 import com.soc.game.map.SpreadRules;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -57,22 +58,20 @@ public class GamesManager {
     }
 
     public static void tick(ServerWorld world) {
-        if (world.getTime() % 20 == 0) {
+        if (world.getTime() % 20 == 0) { //Only update queues once per second
             checkQueues();
         }
     }
 
     private static void checkQueues() {
-        final float deltaTime = 0.05f * 0.1f;
-
         QUEUE_PROGRESS.keySet().forEach(queue -> {
             final float queueProgress = QUEUE.getQueueProgress(queue);
-            QUEUE_PROGRESS.put(queue, queueProgress < Float.MIN_NORMAL ? 0f : QUEUE_PROGRESS.get(queue) + queueProgress * deltaTime);
+            QUEUE_PROGRESS.put(queue, queueProgress < Float.MIN_NORMAL ? 0f : QUEUE_PROGRESS.get(queue) + queueProgress); //Update the queue progress of every queue
 
-            final Set<ServerPlayerEntity> players = Set.copyOf(QUEUE.getPlayersInQueue(queue).stream().limit(queue.maxPlayers()).toList());
+            final Set<ServerPlayerEntity> players = Set.copyOf(QUEUE.getPlayersInQueue(queue).stream().limit(queue.maxPlayers()).toList()); //Cap the number of players to send into a game to the queue's max player count
 
-            if (QUEUE_PROGRESS.get(queue) >= 1) {
-                QUEUE_PROGRESS.put(queue, 0f);
+            if (QUEUE_PROGRESS.get(queue) >= 10) {
+                QUEUE_PROGRESS.put(queue, 0f); //Reset the queue progress
 
                 final AbstractGameManager game = switch (queue) {
                     case SKYWARS -> new SkywarsGameManager(WORLD, players, null, getNewGameId());
@@ -80,7 +79,8 @@ public class GamesManager {
                     case PROP_HUNT -> null; //Maybe get around to writing some of the game logic for prop hunt
                 };
 
-                startGame(game);
+                boolean startedGame = startGame(game);
+                if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
             }
         });
     }

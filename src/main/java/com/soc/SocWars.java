@@ -1,8 +1,8 @@
 package com.soc;
 
+import com.soc.blocks.blockentities.ModBlockEntities;
 import com.soc.blocks.util.ModBlocks;
 import com.soc.effects.util.ModEffects;
-import com.soc.entities.util.ModBlockEntities;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ModItems;
 import com.soc.networking.S2CPayloads;

@@ -1,14 +1,10 @@
 package com.soc.blocks.blockentities;
 
 import com.mojang.serialization.Codec;
-import com.soc.blocks.util.ModBlocks;
-import com.soc.entities.util.ModBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -17,6 +13,8 @@ import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.UUID;
+
+import static com.soc.blocks.blockentities.ModBlockEntities.COLLECTIBLE_BLOCK_ENTITY;
 
 public class CollectibleBlockEntity extends BlockEntity {
     private RegistryEntry<Item> collectible;
@@ -27,9 +25,6 @@ public class CollectibleBlockEntity extends BlockEntity {
     }
 
     public static void initialise() {}
-
-    public static final BlockEntityType<CollectibleBlockEntity> COLLECTIBLE_BLOCK_ENTITY =
-            ModBlockEntities.register("collectible", CollectibleBlockEntity::new, ModBlocks.COLLECTIBLE_BLOCK);
 
     public void setCollectible(RegistryEntry<Item> collectible) {
         this.collectible = collectible;
