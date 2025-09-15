@@ -101,5 +101,14 @@
   "game_type.bedwars": "Bedwars",
   "game_type.skywars": "Skywars",
   "game_type.prop_hunt": "Prop Hunt",
-  "button.map_block.save": "Save"
+  "button.map_block.check_structure": "Check Structure",
+  "button.map_block.save": "Save",
+  "map_block.results.no_centre": "No centre position found",
+  "map_block.results.multiple_centres": "Multiple centre positions found",
+  "map_block.results.duplicate_spawn_teams": "Multiple spawns with same team",
+  "map_block.results.spawn_missing_teams": "Spawn positions missing teams",
+  "map_block.results.centre": "Centre: (%s, %s, %s)",
+  "map_block.results.islands": "Islands: %s",
+  "map_block.results.diamond_gens": "Diamond gens: %s",
+  "map_block.results.emerald_gens": "Emerald gens: %s"
 }

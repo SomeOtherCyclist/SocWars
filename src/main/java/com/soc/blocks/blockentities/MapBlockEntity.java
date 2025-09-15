@@ -1,6 +1,5 @@
 package com.soc.blocks.blockentities;
 
-import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.blocks.ColourStateBlock;
@@ -14,18 +13,13 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Contract;
 
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
-import static com.soc.lib.SocWarsLib.dyeColourFromOrdinal;
 
 public class MapBlockEntity extends BlockEntity {
     public static final int X_COLOUR = 0xdff21f43;
@@ -37,6 +31,7 @@ public class MapBlockEntity extends BlockEntity {
     private GameType mapType;
 
     private MapCheckResults mapCheckResults = null;
+    private List<Pair<Text, Text>> mapCheckInfo = List.of();
 
     public MapBlockEntity(BlockPos pos, BlockState state) {
         super(MAP_BLOCK_ENTITY, pos, state);
@@ -79,6 +74,7 @@ public class MapBlockEntity extends BlockEntity {
         }
 
         this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, diamondGens, emeraldGens, islandGens);
+        this.mapCheckInfo = mapCheckResults.generateInfo(this.mapType);
     }
 
     @Override
@@ -129,7 +125,7 @@ public class MapBlockEntity extends BlockEntity {
         this.markDirty();
     }
 
-    public List<Text> getMapCheckWarnings() {
-        return this.mapCheckResults == null ? List.of() : mapCheckResults.generateWarnings();
+    public List<Pair<Text, Text>> getMapCheckInfo() {
+        return this.mapCheckInfo;
     }
 }

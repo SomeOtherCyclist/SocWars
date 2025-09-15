@@ -6,6 +6,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -64,5 +65,17 @@ public class SocWarsLib {
     public static DyeColor dyeColourFromOrdinal(int ordinal) {
         final DyeColor[] values = DyeColor.values();
         return values[ordinal < values.length ? ordinal : 0];
+    }
+
+    public static <T, U> List<T> collectionPairToLeftList(Collection<Pair<T, U>> collection) {
+        ArrayList<T> list = new ArrayList<>();
+        collection.forEach(pair -> list.add(pair.getLeft()));
+        return list;
+    }
+
+    public static <T, U> List<U> collectionPairToRightList(Collection<Pair<T, U>> collection) {
+        ArrayList<U> list = new ArrayList<>();
+        collection.forEach(pair -> list.add(pair.getRight()));
+        return list;
     }
 }

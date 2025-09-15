@@ -4,6 +4,7 @@ import com.soc.SocWars;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
 import com.soc.gui.widget.NumberTextFieldWidget;
+import com.soc.networking.c2s.MapBlockStructureCheckPayload;
 import com.soc.networking.c2s.MapBlockUpdatePayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
@@ -11,9 +12,13 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
 
 public class MapBlockScreen extends Screen {
     private final MapBlockEntity blockEntity;
@@ -58,19 +63,19 @@ public class MapBlockScreen extends Screen {
         this.addSelectableChild(this.mapNameTextField);
         //endregion
         //region Region X Field
-        this.sizeXField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 152, 80, 80, 20, Text.translatable("text.map_block.x_size_field"), 2000, this.regionSize::setX);
+        this.sizeXField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 152, 80, 60, 20, Text.translatable("text.map_block.x_size_field"), 2000, this.regionSize::setX);
         this.sizeXField.setText(String.valueOf(this.blockEntity.getRegionSize().getX()));
         this.sizeXField.setEditableColor(MapBlockEntity.X_COLOUR);
         this.addSelectableChild(this.sizeXField);
         //endregion
         //region Region Y Field
-        this.sizeYField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 62, 80, 80, 20, Text.translatable("text.map_block.y_size_field"), this.blockEntity.getWorld().getTopYInclusive() - this.blockEntity.getPos().getY(), this.regionSize::setY);
+        this.sizeYField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 92, 80, 60, 20, Text.translatable("text.map_block.y_size_field"), this.blockEntity.getWorld().getTopYInclusive() - this.blockEntity.getPos().getY(), this.regionSize::setY);
         this.sizeYField.setText(String.valueOf(this.blockEntity.getRegionSize().getY()));
         this.sizeYField.setEditableColor(MapBlockEntity.Y_COLOUR);
         this.addSelectableChild(this.sizeYField);
         //endregion
         //region Region Z Field
-        this.sizeZField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 + 28, 80, 80, 20, Text.translatable("text.map_block.z_size_field"), 2000, this.regionSize::setZ);
+        this.sizeZField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 32, 80, 60, 20, Text.translatable("text.map_block.z_size_field"), 2000, this.regionSize::setZ);
         this.sizeZField.setText(String.valueOf(this.blockEntity.getRegionSize().getZ()));
         this.sizeZField.setEditableColor(MapBlockEntity.Z_COLOUR);
         this.addSelectableChild(this.sizeZField);
@@ -78,18 +83,18 @@ public class MapBlockScreen extends Screen {
         //region Map Type Cycler
         this.mapTypeButton = this.addDrawableChild(CyclingButtonWidget.builder(GameType::getVariantName)
                 .values(GameType.values()).omitKeyText().initially(this.mapType)
-                .build(this.width / 2 - 152, 120, 80, 20, Text.translatable("button.map_block.game_type"), (button, mapType) -> this.mapType = mapType));
+                .build(this.width / 2 - 152, 120, 100, 20, Text.translatable("button.map_block.game_type"), (button, mapType) -> this.mapType = mapType));
+        //endregion
+        //region Check Structure Button
+        this.checkStructureButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.check_structure"), button -> {
+            this.doStructureCheck();
+            this.blockEntity.checkStructure();
+        }).dimensions(this.width / 2 + 38, 80, 110, 20).build());
         //endregion
         //region Save Button
         this.saveButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.save"), button -> {
             this.saveSyncClose();
-        }).dimensions(this.width / 2 - 152, 160, 80, 20).build());
-        //endregion
-        //region Check Structure Button
-        this.checkStructureButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.check_structure"), button -> {
-            this.saveAndSync();
-            this.blockEntity.checkStructure(); //This should be performed on the server and have results sent back to the client
-        }).dimensions(this.width / 2 - 152, 200, 80, 20).build());
+        }).dimensions(this.width / 2 - 152, 300, 100, 20).build());
         //endregion
     }
 
@@ -121,18 +126,30 @@ public class MapBlockScreen extends Screen {
         context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_x_field"), this.width / 2 - 153, 70, MapBlockEntity.X_COLOUR);
         this.sizeXField.render(context, mouseX, mouseY, deltaTicks);
 
-        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_y_field"), this.width / 2 - 63, 70, MapBlockEntity.Y_COLOUR);
+        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_y_field"), this.width / 2 - 93, 70, MapBlockEntity.Y_COLOUR);
         this.sizeYField.render(context, mouseX, mouseY, deltaTicks);
 
-        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_z_field"), this.width / 2 + 27, 70, MapBlockEntity.Z_COLOUR);
+        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_z_field"), this.width / 2 - 33, 70, MapBlockEntity.Z_COLOUR);
         this.sizeZField.render(context, mouseX, mouseY, deltaTicks);
 
         context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.game_type"), this.width / 2 - 153, 110, -6250336);
+
+        List<Pair<Text, Text>> warnings = this.blockEntity.getMapCheckInfo();
+        context.fill(this.width / 2 - 32, 110, this.width / 2 + 148, 110 + 10 * warnings.size() + 8, 0xff000000);
+        context.drawBorder(this.width / 2 - 32, 110, 180, 10 * warnings.size() + 8, -6250336);
+        for (int i = 0; i < warnings.size(); i++) {
+            context.drawTextWithShadow(this.textRenderer, warnings.get(i).getLeft(), this.width / 2 - 27, 115 + 10 * i, -6250336);
+        }
+    }
+
+    private void doStructureCheck() {
+        this.saveAndSync();
+        ClientPlayNetworking.send(new MapBlockStructureCheckPayload(this.blockEntity.getPos().asLong()));
     }
 
     private void saveSyncClose() {
+        this.saveAndSync();
         super.client.setScreen(null);
-        saveAndSync();
     }
 
     private void saveAndSync() {
@@ -140,7 +157,7 @@ public class MapBlockScreen extends Screen {
         this.blockEntity.setMapName(this.mapName);
         this.blockEntity.setMapType(this.mapType);
 
-        MapBlockUpdatePayload payload = new MapBlockUpdatePayload(this.blockEntity.getPos().asLong(), this.world.getRegistryKey(), this.regionSize.asLong(), this.mapName, this.mapType.ordinal());
+        MapBlockUpdatePayload payload = new MapBlockUpdatePayload(this.blockEntity.getPos().asLong(), this.regionSize.asLong(), this.mapName, this.mapType.ordinal());
         ClientPlayNetworking.send(payload);
     }
 }
