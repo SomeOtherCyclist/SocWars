@@ -53,6 +53,8 @@ public class MapBlockScreen extends Screen {
         this.regionSize = blockEntity.getRegionSize().mutableCopy();
         this.mapName = blockEntity.getMapName();
         this.mapType = blockEntity.getMapType();
+
+        this.mapCheckInfo = blockEntity.getMapCheckInfo(this.mapType);
     }
 
     private void createWidgets() {

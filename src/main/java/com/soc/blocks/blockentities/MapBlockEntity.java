@@ -4,7 +4,10 @@ import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.blocks.ColourStateBlock;
 import com.soc.game.manager.GameType;
+import com.soc.game.map.AbstractGameMap;
+import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.MapCheckResults;
+import com.soc.game.map.SkywarsGameMap;
 import com.soc.lib.InfoList;
 import com.soc.util.BlockTags;
 import net.minecraft.block.BlockState;
@@ -12,8 +15,10 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
@@ -80,7 +85,21 @@ public class MapBlockEntity extends BlockEntity {
 
     public boolean saveMap(ServerPlayerEntity player) {
         this.checkStructure();
-        if (this.mapCheckInfo.hasErrors()) return false;
+        if (this.mapCheckInfo.hasErrors() || this.world.isClient) return false;
+
+        /*
+        StructureTemplate structure = ((ServerWorld)this.world).getStructureTemplateManager().getTemplate()
+
+        AbstractGameMap map = switch (this.mapType) {
+            case SKYWARS -> new SkywarsGameMap(
+
+            );
+            case BEDWARS -> new BedwarsGameMap(
+
+            );
+            case PROP_HUNT -> null;
+        }
+         */
 
 
         player.sendMessage(Text.translatable("map_block.save_success", this.mapName, this.mapType.getFileExtension()));
