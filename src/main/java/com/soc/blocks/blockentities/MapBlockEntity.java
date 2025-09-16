@@ -5,11 +5,13 @@ import com.soc.SocWars;
 import com.soc.blocks.ColourStateBlock;
 import com.soc.game.manager.GameType;
 import com.soc.game.map.MapCheckResults;
+import com.soc.lib.InfoList;
 import com.soc.util.BlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
@@ -31,7 +33,7 @@ public class MapBlockEntity extends BlockEntity {
     private GameType mapType;
 
     private MapCheckResults mapCheckResults = null;
-    private List<Pair<Text, Text>> mapCheckInfo = List.of();
+    private InfoList mapCheckInfo = new InfoList();
 
     public MapBlockEntity(BlockPos pos, BlockState state) {
         super(MAP_BLOCK_ENTITY, pos, state);
@@ -75,6 +77,17 @@ public class MapBlockEntity extends BlockEntity {
 
         this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, diamondGens, emeraldGens, islandGens);
         this.mapCheckInfo = mapCheckResults.generateInfo(this.mapType);
+    }
+
+    public boolean saveStructure(ServerPlayerEntity player) {
+        this.checkStructure();
+        if (this.mapCheckInfo.hasErrors()) return false;
+
+
+
+
+        player.sendMessage(Text.translatable("map_block.save_success", this.mapName + "." + this.mapType.getFileExtension()));
+        return true;
     }
 
     @Override
@@ -125,7 +138,7 @@ public class MapBlockEntity extends BlockEntity {
         this.markDirty();
     }
 
-    public List<Pair<Text, Text>> getMapCheckInfo() {
+    public InfoList getMapCheckInfo() {
         return this.mapCheckInfo;
     }
 }

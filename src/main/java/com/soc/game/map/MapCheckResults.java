@@ -14,13 +14,14 @@ import java.util.Set;
 import static com.soc.lib.SocWarsLib.collectionPairToLeftList;
 
 public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<BlockPos> centrePositions, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens) {
-    public List<Pair<Text, Text>> generateWarnings(GameType mapType) {
+    public InfoList generateWarnings(GameType mapType) {
         InfoList warnings = new InfoList();
 
         warnings.add(
                 () -> this.centrePositions.size() != 1,
                 Text.translatable(centrePositions.isEmpty() ? "map_block.results.no_centre" : "map_block.results.multiple_centres").formatted(Formatting.DARK_RED),
-                Text.empty()
+                Text.empty(),
+                InfoList.InfoType.ERROR
         );
         warnings.add(
                 () -> {
@@ -31,34 +32,38 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
                     return teamList.size() != teamSet.size();
                 },
                 Text.translatable("map_block.results.duplicate_spawn_teams").formatted(Formatting.RED),
-                Text.empty()
+                Text.empty(),
+                InfoList.InfoType.ERROR
         );
         warnings.add(
                 () -> this.spawnPositions.stream().anyMatch(spawn -> spawn.getLeft() == 16),
-                Text.translatable("map_block.results.spawn_missing_teams").formatted(Formatting.RED),
-                Text.empty()
+                Text.translatable("map_block.results.spawn_missing_teams").formatted(Formatting.YELLOW),
+                Text.empty(),
+                InfoList.InfoType.WARNING
         );
 
         switch (mapType) {
             case BEDWARS -> {
                 warnings.add(
                         () -> this.spawnPositions.size() != this.islandGens.size(),
-                        Text.translatable("Mismatched generators").formatted(Formatting.YELLOW),
-                        Text.empty()
+                        Text.translatable("map_block.results.mismatched_generators").formatted(Formatting.YELLOW),
+                        Text.empty(),
+                        InfoList.InfoType.WARNING
                 );
             }
         }
 
         warnings.add(
                 warnings::isEmpty,
-                Text.translatable("No issues found!").formatted(Formatting.DARK_GREEN),
-                Text.empty()
+                Text.translatable("map_block.results.no_issues").formatted(Formatting.DARK_GREEN),
+                Text.empty(),
+                null
         );
 
-        return warnings.getInfo();
+        return warnings;
     }
 
-    public List<Pair<Text, Text>> generateResults(GameType mapType) {
+    public InfoList generateResults(GameType mapType) {
         InfoList results = new InfoList();
 
         results.add(
@@ -67,7 +72,14 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
                     BlockPos centre = centrePositions.stream().findAny().get(); //This should never have issues
                     return Text.translatable("map_block.results.centre", centre.getX(), centre.getY(), centre.getZ()).formatted(Formatting.GREEN);
                 },
-                () -> Text.empty()
+                () -> Text.empty(),
+                InfoList.InfoType.INFO
+        );
+        results.add(
+                () -> mapType != GameType.BEDWARS,
+                Text.translatable("map_block.results.spawn_positions", spawnPositions.size()).formatted(Formatting.GREEN),
+                Text.empty(),
+                InfoList.InfoType.INFO
         );
 
         switch (mapType) {
@@ -78,28 +90,30 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
                             int islands = this.spawnPositions.size();
                             return Text.translatable("map_block.results.islands", islands).formatted(Arrays.stream(new int[]{2, 4, 8}).anyMatch(count -> count == islands) ? Formatting.DARK_GREEN : Formatting.GREEN);
                         },
-                        () -> Text.empty()
+                        () -> Text.empty(),
+                        InfoList.InfoType.INFO
                 );
                 results.add(
                         Text.translatable("map_block.results.diamond_gens", this.diamondGens.size()).formatted(Formatting.GREEN),
-                        Text.empty()
+                        Text.empty(),
+                        InfoList.InfoType.INFO
                 );
                 results.add(
                         Text.translatable("map_block.results.emerald_gens", this.emeraldGens.size()).formatted(Formatting.GREEN),
-                        Text.empty()
+                        Text.empty(),
+                        InfoList.InfoType.INFO
                 );
             }
         }
 
-        return results.getInfo();
+        return results;
     }
 
-    public List<Pair<Text, Text>> generateInfo(GameType mapType) {
-        List<Pair<Text, Text>> info = this.generateResults(mapType);
-        if (!info.isEmpty()) info.add(Pair.of(Text.empty(), Text.empty()));
-        info.addAll(this.generateWarnings(mapType));
+    public InfoList generateInfo(GameType mapType) {
+        InfoList info = this.generateResults(mapType);
+        info.addEmpty(info::isEmpty);
 
-        return info;
+        return info.concat(this.generateWarnings(mapType));
     }
 
     /*

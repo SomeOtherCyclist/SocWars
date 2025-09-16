@@ -91,6 +91,12 @@ public class MapBlockScreen extends Screen {
             this.blockEntity.checkStructure();
         }).dimensions(this.width / 2 + 38, 80, 110, 20).build());
         //endregion
+        //region Save Structure Button
+        this.checkStructureButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.save_structure"), button -> {
+            this.doStructureCheck();
+            this.blockEntity.checkStructure();
+        }).dimensions(this.width / 2 + 38, 80, 110, 20).build());
+        //endregion
         //region Save Button
         this.saveButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.save"), button -> {
             this.saveSyncClose();
@@ -134,7 +140,7 @@ public class MapBlockScreen extends Screen {
 
         context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.game_type"), this.width / 2 - 153, 110, -6250336);
 
-        List<Pair<Text, Text>> warnings = this.blockEntity.getMapCheckInfo();
+        List<Pair<Text, Text>> warnings = this.blockEntity.getMapCheckInfo().getInfo();
         context.fill(this.width / 2 - 32, 110, this.width / 2 + 148, 110 + 10 * warnings.size() + 8, 0xff000000);
         context.drawBorder(this.width / 2 - 32, 110, 180, 10 * warnings.size() + 8, -6250336);
         for (int i = 0; i < warnings.size(); i++) {

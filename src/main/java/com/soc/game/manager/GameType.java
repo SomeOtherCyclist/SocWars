@@ -49,4 +49,12 @@ public enum GameType implements QueueProgress {
         final GameType[] values = GameType.values();
         return values[ordinal < values.length ? ordinal : 0];
     }
+
+    public String getFileExtension() {
+        return switch (this) {
+            case SKYWARS -> "swmap";
+            case BEDWARS -> "bwmap";
+            case PROP_HUNT -> "phmap";
+        };
+    }
 }
