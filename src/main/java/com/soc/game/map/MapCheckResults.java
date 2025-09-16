@@ -1,14 +1,17 @@
 package com.soc.game.map;
 
+import com.google.common.collect.ImmutableMap;
 import com.soc.game.manager.GameType;
 import com.soc.lib.InfoList;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static com.soc.lib.SocWarsLib.collectionPairToLeftList;
@@ -117,6 +120,12 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
         info.addEmpty(() -> !info.isEmpty());
 
         return info.concat(this.generateWarnings(mapType));
+    }
+
+    public ImmutableMap<DyeColor, BlockPos> spawnPositionsAsMap() {
+        ImmutableMap.Builder<DyeColor, BlockPos> builder = new ImmutableMap.Builder<>();
+
+        return builder.build();
     }
 
     /*

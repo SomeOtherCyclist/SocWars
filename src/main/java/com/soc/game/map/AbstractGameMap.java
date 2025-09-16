@@ -18,7 +18,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 
-import static com.soc.lib.SocWarsLib.mapFromCollections;
 import static com.soc.lib.SocWarsLib.putBlockPosSet;
 
 public abstract class AbstractGameMap {
@@ -27,7 +26,7 @@ public abstract class AbstractGameMap {
     public static final String SPAWN_POSITIONS_KEY = "spawn_position";
 
     protected final StructureTemplate structure;
-    protected final BlockPos centrePos;
+    protected final BlockPos centrePos; //Is currently broken, please fix this future me
     protected final ImmutableMap<DyeColor, BlockPos> spawnPositions;
 
     protected final ServerWorld world;
@@ -35,13 +34,12 @@ public abstract class AbstractGameMap {
 
     public AbstractGameMap(
             StructureTemplate structure,
-            Set<BlockPos> spawnPositions,
+            ImmutableMap<DyeColor, BlockPos> spawnPositions,
             BlockPos centrePos,
-            Set<DyeColor> teams,
             ServerWorld world
     ) {
         this.structure = structure;
-        this.spawnPositions = mapFromCollections(teams, spawnPositions);
+        this.spawnPositions = ImmutableMap.copyOf(spawnPositions);
         this.centrePos = centrePos.toImmutable();
         this.world = world;
     }

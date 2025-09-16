@@ -1,5 +1,6 @@
 package com.soc.game.map;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,12 +16,11 @@ public class SkywarsGameMap extends AbstractGameMap {
 
     public SkywarsGameMap(
             StructureTemplate structure,
-            Set<BlockPos> spawnPositions,
+            ImmutableMap<DyeColor, BlockPos> spawnPositions,
             BlockPos centrePos,
-            Set<DyeColor> teams,
             ServerWorld world
     ) {
-        super(structure, spawnPositions, centrePos, teams, world);
+        super(structure, spawnPositions, centrePos, world);
     }
 
     @Override

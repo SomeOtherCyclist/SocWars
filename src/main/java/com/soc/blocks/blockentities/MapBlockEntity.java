@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.HashSet;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
+import static com.soc.lib.SocWarsLib.dyeColourFromOrdinal;
 
 public class MapBlockEntity extends BlockEntity {
     public static final int X_COLOUR = 0xdff21f43;
@@ -87,20 +88,32 @@ public class MapBlockEntity extends BlockEntity {
         this.checkStructure();
         if (this.mapCheckInfo.hasErrors() || this.world.isClient) return false;
 
-        /*
-        StructureTemplate structure = ((ServerWorld)this.world).getStructureTemplateManager().getTemplate()
+        //StructureTemplate structure = ((ServerWorld)this.world).getStructureTemplateManager().getTemplate()
+        BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos);
 
+        /*
         AbstractGameMap map = switch (this.mapType) {
             case SKYWARS -> new SkywarsGameMap(
-
+                null,
+                    this.mapCheckResults.spawnPositionsAsMap(),
+                    centrePos,
+                    null
             );
             case BEDWARS -> new BedwarsGameMap(
-
+                    null,
+                    this.mapCheckResults.spawnPositionsAsMap(),
+                    centrePos,
+                    null,
+                    this.mapCheckResults.diamondGens(),
+                    this.mapCheckResults.emeraldGens(),
+                    this.mapCheckResults.islandGens(),
+                    this.mapCheckResults.bedLocations()
             );
             case PROP_HUNT -> null;
-        }
-         */
+        };
 
+        NbtCompound mapNbt = map.toNbt(new NbtCompound());
+         */
 
         player.sendMessage(Text.translatable("map_block.save_success", this.mapName, this.mapType.getFileExtension()));
         return true;

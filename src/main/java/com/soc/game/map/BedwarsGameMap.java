@@ -32,20 +32,19 @@ public class BedwarsGameMap extends AbstractGameMap {
 
     public BedwarsGameMap(
             StructureTemplate structure,
-            @NotNull Set<BlockPos> spawnPositions,
+            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
             @NotNull BlockPos centrePos,
-            Set<DyeColor> teams,
             ServerWorld world,
             @NotNull Set<BlockPos> diamondGens,
             @NotNull Set<BlockPos> emeraldGens,
             @NotNull Set<BlockPos> islandGens,
             @NotNull Set<BlockPos> bedPositions
     ) {
-        super(structure, spawnPositions, centrePos, teams, world);
+        super(structure, spawnPositions, centrePos, world);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, Set.copyOf(diamondGens.stream().map(super::pos).toList()));
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, Set.copyOf(emeraldGens.stream().map(super::pos).toList()));
-        this.islandGens = this.makeIslandGenerators(world, Set.copyOf(islandGens.stream().map(super::pos).toList()), teams);
-        this.bedPositions = mapFromCollections(teams, bedPositions);
+        this.islandGens = this.makeIslandGenerators(world, Set.copyOf(islandGens.stream().map(super::pos).toList()), spawnPositions.keySet()); //Double check that this works
+        this.bedPositions = mapFromCollections(spawnPositions.keySet(), bedPositions); //Double check that this works
     }
 
     public static Optional<BedwarsGameMap> loadRandomMap(Set<DyeColor> teams, ServerWorld world) {
