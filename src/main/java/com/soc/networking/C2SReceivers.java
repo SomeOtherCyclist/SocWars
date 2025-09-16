@@ -2,6 +2,7 @@ package com.soc.networking;
 
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
+import com.soc.networking.c2s.MapBlockSaveMapPayload;
 import com.soc.networking.c2s.MapBlockStructureCheckPayload;
 import com.soc.networking.c2s.MapBlockUpdatePayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -28,6 +29,13 @@ public class C2SReceivers {
                 mapBlockEntity.checkStructure();
 
                 context.player().getWorld().getChunkManager().markForUpdate(mapBlockEntity.getPos());
+            }
+        });
+        ServerPlayNetworking.registerGlobalReceiver(MapBlockSaveMapPayload.ID, (payload, context) -> {
+            BlockEntity blockEntity = payload.getBlockEntity(context);
+
+            if (blockEntity instanceof MapBlockEntity mapBlockEntity) {
+                mapBlockEntity.saveMap(context.player());
             }
         });
     }

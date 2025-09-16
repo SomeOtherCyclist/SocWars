@@ -85,7 +85,10 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
         switch (mapType) {
             case BEDWARS -> {
                 results.add(
-                        () -> this.spawnPositions.size() == this.islandGens.size(),
+                        () -> {
+                            List<Pair<Integer, BlockPos>> validSpawnPositions = spawnPositions.stream().filter(spawn -> spawn.getLeft() != 16).toList();
+                            return validSpawnPositions.size() == this.islandGens.size();
+                        },
                         () -> {
                             int islands = this.spawnPositions.size();
                             return Text.translatable("map_block.results.islands", islands).formatted(Arrays.stream(new int[]{2, 4, 8}).anyMatch(count -> count == islands) ? Formatting.DARK_GREEN : Formatting.GREEN);
@@ -111,7 +114,7 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
 
     public InfoList generateInfo(GameType mapType) {
         InfoList info = this.generateResults(mapType);
-        info.addEmpty(info::isEmpty);
+        info.addEmpty(() -> !info.isEmpty());
 
         return info.concat(this.generateWarnings(mapType));
     }

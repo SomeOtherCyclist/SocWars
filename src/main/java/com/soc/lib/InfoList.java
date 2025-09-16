@@ -44,16 +44,20 @@ public class InfoList {
     }
 
     public void add(Text display, Text hoverable, @Nullable InfoType infoType) {
-        this.accumulate(infoType);
         this.info.add(Pair.of(display, hoverable));
+        this.accumulate(infoType);
     }
     public void add(BooleanSupplier predicate, Text display, Text hoverable, @Nullable InfoType infoType) {
-        this.accumulate(infoType);
-        if (predicate.getAsBoolean()) this.info.add(Pair.of(display, hoverable));
+        if (predicate.getAsBoolean()) {
+            this.accumulate(infoType);
+            this.info.add(Pair.of(display, hoverable));
+        }
     }
     public void add(BooleanSupplier predicate, Supplier<Text> display, Supplier<Text> hoverable, @Nullable InfoType infoType) {
-        this.accumulate(infoType);
-        if (predicate.getAsBoolean()) this.info.add(Pair.of(display.get(), hoverable.get()));
+        if (predicate.getAsBoolean()) {
+            this.accumulate(infoType);
+            this.info.add(Pair.of(display.get(), hoverable.get()));
+        }
     }
 
     public ArrayList<Pair<Text, Text>> getInfo() {

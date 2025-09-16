@@ -19,7 +19,6 @@ import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashSet;
-import java.util.List;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
 
@@ -79,14 +78,12 @@ public class MapBlockEntity extends BlockEntity {
         this.mapCheckInfo = mapCheckResults.generateInfo(this.mapType);
     }
 
-    public boolean saveStructure(ServerPlayerEntity player) {
+    public boolean saveMap(ServerPlayerEntity player) {
         this.checkStructure();
         if (this.mapCheckInfo.hasErrors()) return false;
 
 
-
-
-        player.sendMessage(Text.translatable("map_block.save_success", this.mapName + "." + this.mapType.getFileExtension()));
+        player.sendMessage(Text.translatable("map_block.save_success", this.mapName, this.mapType.getFileExtension()));
         return true;
     }
 
@@ -138,7 +135,7 @@ public class MapBlockEntity extends BlockEntity {
         this.markDirty();
     }
 
-    public InfoList getMapCheckInfo() {
-        return this.mapCheckInfo;
+    public InfoList getMapCheckInfo(GameType mapType) {
+        return this.mapCheckResults == null ? new InfoList() : this.mapCheckResults.generateInfo(mapType);
     }
 }
