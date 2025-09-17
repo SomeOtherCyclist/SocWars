@@ -43,9 +43,9 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> bedPositions
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, Set.copyOf(diamondGens.stream().map(super::pos).toList()));
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, Set.copyOf(emeraldGens.stream().map(super::pos).toList()));
-        this.islandGens = this.makeIslandGenerators(world, Set.copyOf(islandGens.stream().map(super::pos).toList()), spawnPositions.keySet()); //Double check that this works
+        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()));
+        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()));
+        this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.keySet()); //Double check that this works
         this.bedPositions = mapFromCollections(spawnPositions.keySet(), bedPositions); //Double check that this works
     }
 
@@ -60,9 +60,15 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> bedPositions
     ) {
         super(structure, spawnPositions, centrePos);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, Set.copyOf(diamondGens.stream().map(super::pos).toList()));
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, Set.copyOf(emeraldGens.stream().map(super::pos).toList()));
-        this.islandGens = this.makeIslandGenerators(world, Set.copyOf(islandGens.stream().map(super::pos).toList()), spawnPositions.keySet()); //Double check that this works
+        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens);
+        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens);
+
+        ImmutableMap.Builder<DyeColor, ResourceGenerator[]> builder = new ImmutableMap.Builder<>();
+        for (int i = 0; i < islandGens.size(); i++) {
+            builder.put(dyeColourFromOrdinal(i), new ResourceGenerator[]{new ResourceGenerator(null, null, islandGens.stream().toList().get(i))});
+        }
+        this.islandGens = builder.build();
+
         this.bedPositions = mapFromCollections(spawnPositions.keySet(), bedPositions); //Double check that this works
     }
 

@@ -7,13 +7,16 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.collectionPairToLeftList;
+import static com.soc.lib.SocWarsLib.dyeColourFromOrdinal;
 
 public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<BlockPos> centrePositions, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions) {
     public InfoList generateWarnings(GameType mapType) {
@@ -121,9 +124,26 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
         return info.concat(this.generateWarnings(mapType));
     }
 
+    private BlockPos getSingleCentre() {
+        if (this.centrePositions.size() != 1) throw new IllegalStateException("Tried to access a relative position function while there are multiple centres");
+        return this.centrePositions.stream().findFirst().get();
+    }
+
+    public Set<Pair<Integer, BlockPos>> relativeSpawnPositions() {
+        return this.spawnPositions.stream().map(spawn -> Pair.of(spawn.getLeft(), spawn.getRight().subtract(this.getSingleCentre()))).collect(Collectors.toSet());
+    }
+    public Set<BlockPos> getRelative(Set<net.minecraft.util.math.BlockPos> positions) {
+        return positions.stream().map(pos -> pos.subtract(this.getSingleCentre())).collect(Collectors.toSet());
+    }
+
     public ImmutableMap<DyeColor, BlockPos> spawnPositionsAsMap() {
         ImmutableMap.Builder<DyeColor, BlockPos> builder = new ImmutableMap.Builder<>();
-
+        this.spawnPositions.stream().forEach(spawn -> builder.put(dyeColourFromOrdinal(spawn.getLeft()), spawn.getRight()));
+        return builder.build();
+    }
+    public ImmutableMap<DyeColor, BlockPos> relativeSpawnPositionsAsMap() {
+        ImmutableMap.Builder<DyeColor, BlockPos> builder = new ImmutableMap.Builder<>();
+        this.relativeSpawnPositions().stream().forEach(spawn -> builder.put(dyeColourFromOrdinal(spawn.getLeft()), spawn.getRight()));
         return builder.build();
     }
 

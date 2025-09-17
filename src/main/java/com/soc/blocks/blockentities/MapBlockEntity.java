@@ -117,17 +117,17 @@ public class MapBlockEntity extends BlockEntity {
         AbstractGameMap map = switch (this.mapType) {
             case SKYWARS -> new SkywarsGameMap(
                     structure,
-                    this.mapCheckResults.spawnPositionsAsMap(),
+                    this.mapCheckResults.relativeSpawnPositionsAsMap(),
                     centrePos
             );
             case BEDWARS -> new BedwarsGameMap(
                     structure,
-                    this.mapCheckResults.spawnPositionsAsMap(),
+                    this.mapCheckResults.relativeSpawnPositionsAsMap(),
                     centrePos,
-                    this.mapCheckResults.diamondGens(),
-                    this.mapCheckResults.emeraldGens(),
-                    this.mapCheckResults.islandGens(),
-                    this.mapCheckResults.bedPositions()
+                    this.mapCheckResults.getRelative(this.mapCheckResults.diamondGens()),
+                    this.mapCheckResults.getRelative(this.mapCheckResults.emeraldGens()),
+                    this.mapCheckResults.getRelative(this.mapCheckResults.islandGens()),
+                    this.mapCheckResults.getRelative(this.mapCheckResults.bedPositions())
             );
             case PROP_HUNT -> throw new IllegalArgumentException("prop hunt map saving not yet implemented, please try again later (or yell at Liam)");
         };
