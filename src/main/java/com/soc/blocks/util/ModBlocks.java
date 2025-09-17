@@ -1,10 +1,7 @@
 package com.soc.blocks.util;
 
 import com.soc.SocWars;
-import com.soc.blocks.BigTntBlock;
-import com.soc.blocks.CollectibleBlock;
-import com.soc.blocks.ColourStateBlock;
-import com.soc.blocks.MapBlock;
+import com.soc.blocks.*;
 import com.soc.entities.BigTntEntity;
 import com.soc.items.util.ModItems;
 import net.minecraft.block.AbstractBlock;
@@ -32,6 +29,8 @@ public class ModBlocks {
     public static final Block DIAMOND_GEN_PLACEHOLDER = ModBlocks.register("diamond_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block ISLAND_GEN_PLACEHOLDER = ModBlocks.register("island_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
+
+    public static final Block JOIN_QUEUE_BLOCK = ModBlocks.register("join_queue_block", JoinQueueBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).hardness(1000000f).resistance(1000000f).nonOpaque().pistonBehavior(PistonBehavior.BLOCK), true);
 
     public static final Block MOSHPIT_MAP = ModBlocks.register("moshpit_map", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.WOOL).noCollision().nonOpaque(), true); //Maybe fix voxel shape
 

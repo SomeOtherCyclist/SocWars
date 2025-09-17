@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 
 import java.util.*;
 
@@ -34,10 +35,12 @@ public class GamesManager {
         if (GAMES.size() > gameId) {
             GAMES.set(gameId, game);
         } else {
-            GAMES.add(gameId, game);
+            GAMES.add(game);
         }
 
         QUEUE.unqueuePlayers(game.getPlayers());
+
+        game.startGame();
 
         return true;
     }
@@ -60,6 +63,7 @@ public class GamesManager {
     public static void tick(ServerWorld world) {
         if (world.getTime() % 20 == 0) { //Only update queues once per second
             checkQueues();
+            QUEUE_PROGRESS.keySet().forEach(queue -> world.getServer().getPlayerManager().broadcast(Text.literal("Progress for " + queue + ": " + QUEUE_PROGRESS.get(queue)), false));
         }
     }
 
@@ -70,7 +74,7 @@ public class GamesManager {
 
             final Set<ServerPlayerEntity> players = Set.copyOf(QUEUE.getPlayersInQueue(queue).stream().limit(queue.maxPlayers()).toList()); //Cap the number of players to send into a game to the queue's max player count
 
-            if (QUEUE_PROGRESS.get(queue) >= 10) {
+            if (QUEUE_PROGRESS.get(queue) >= 0.02f) {
                 QUEUE_PROGRESS.put(queue, 0f); //Reset the queue progress
 
                 final AbstractGameManager game = switch (queue) {
@@ -83,5 +87,13 @@ public class GamesManager {
                 if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
             }
         });
+    }
+
+    public static void queuePlayer(ServerPlayerEntity player, GameType queue) {
+        QUEUE.queuePlayer(player, queue);
+    }
+
+    public static void unqueuePlayer(ServerPlayerEntity player, GameType queue) {
+        if (!QUEUE.isPlayerInQueue(player, queue)) QUEUE.unqueuePlayer(player);
     }
 }

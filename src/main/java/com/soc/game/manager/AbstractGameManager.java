@@ -39,8 +39,8 @@ public abstract class AbstractGameManager {
     protected int time;
 
     protected AbstractGameManager(ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
-        this.map = this.buildMap();
         this.world = world;
+        this.map = this.buildMap();
         this.teams = this.buildTeams(players, spreadRules);
         this.scoreboardTeams = this.buildScoreboardTeams();
         this.eventQueue = this.buildEventQueue();

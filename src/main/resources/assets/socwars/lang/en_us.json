@@ -83,6 +83,7 @@
   "collectible.already_collected": "§cYou have already collected %s!",
   "queue.join": "§2You have joined the queue for %s",
   "queue.leave": "§2You have left the queue for %s",
+  "queue_block.set_queue": "Set queue to: %s",
   "block.socwars.spawn_placeholder": "Spawn Placeholder",
   "item.socwars.spawn_placeholder": "Spawn Placeholder",
   "block.socwars.centre_placeholder": "Centre Placeholder",

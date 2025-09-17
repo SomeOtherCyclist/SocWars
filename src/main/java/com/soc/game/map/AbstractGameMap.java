@@ -3,6 +3,7 @@ package com.soc.game.map;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
+import com.soc.util.Random;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NbtCompound;
@@ -113,7 +114,7 @@ public abstract class AbstractGameMap {
     }
     public static File getRandomMap(String fileExtension, World world, @Nullable String preferred_map) {
         final File[] maps = getMaps(fileExtension);
-        return maps[world.random.nextBetween(0, maps.length)];
+        return maps[world.random.nextBetween(0, maps.length - 1)];
     }
     public static Stack<ServerPlayerEntity> getRandomPlayerStack(Collection<ServerPlayerEntity> players) {
         final Stack<ServerPlayerEntity> playerStack = new Stack<>();

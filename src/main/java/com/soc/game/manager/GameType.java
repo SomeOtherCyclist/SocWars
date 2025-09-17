@@ -1,19 +1,22 @@
 package com.soc.game.manager;
 
 import net.minecraft.text.Text;
+import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.StringUtils;
 
-public enum GameType implements QueueProgress {
-    SKYWARS(2, 8),
-    BEDWARS(2, 4),
-    PROP_HUNT(2, 8);
+public enum GameType implements QueueProgress, StringIdentifiable {
+    SKYWARS(2, 8, "skywars"),
+    BEDWARS(1, 4, "bedwars"),
+    PROP_HUNT(2, 8, "prop_hunt");
 
     private final int minPlayers;
     private final int maxPlayers;
+    private final String name;
 
-    GameType(int minPlayers, int maxPlayers) {
+    GameType(int minPlayers, int maxPlayers, String name) {
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
+        this.name = name;
     }
 
     public GameType fromNatural(String string) {
@@ -56,5 +59,10 @@ public enum GameType implements QueueProgress {
             case BEDWARS -> "bwmap";
             case PROP_HUNT -> "phmap";
         };
+    }
+
+    @Override
+    public String asString() {
+        return this.name;
     }
 }

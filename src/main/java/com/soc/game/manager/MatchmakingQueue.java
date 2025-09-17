@@ -66,4 +66,8 @@ public class MatchmakingQueue<T extends QueueProgress> {
     public Collection<T> getQueues() {
         return queue.values();
     }
+
+    public boolean isPlayerInQueue(ServerPlayerEntity player, T queueType) {
+        return this.queue.get(player) == queueType;
+    }
 }
