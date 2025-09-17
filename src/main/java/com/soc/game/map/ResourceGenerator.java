@@ -50,4 +50,8 @@ public class ResourceGenerator {
         this.generationTime = stats.generationTime();
         item.setCount(stats.count());
     }
+
+    public BlockPos getPos() {
+        return this.pos;
+    }
 }

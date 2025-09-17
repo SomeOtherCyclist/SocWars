@@ -10,12 +10,15 @@ import com.soc.game.map.MapCheckResults;
 import com.soc.game.map.SkywarsGameMap;
 import com.soc.lib.InfoList;
 import com.soc.util.BlockTags;
+import net.minecraft.block.BedBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.enums.BedPart;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.structure.StructureTemplate;
@@ -23,15 +26,27 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
-import static com.soc.lib.SocWarsLib.dyeColourFromOrdinal;
+import static com.soc.blocks.util.ModBlocks.*;
+import static com.soc.game.map.AbstractGameMap.getMapDirectory;
 
 public class MapBlockEntity extends BlockEntity {
     public static final int X_COLOUR = 0xdff21f43;
     public static final int Y_COLOUR = 0xdf1ff24d;
     public static final int Z_COLOUR = 0xdf1f3ff2;
+
+    public static final List<Block> IGNORED_BLOCKS = List.of(
+            SPAWN_PLACEHOLDER,
+            CENTRE_PLACEHOLDER,
+            DIAMOND_GEN_PLACEHOLDER,
+            EMERALD_GEN_PLACEHOLDER,
+            ISLAND_GEN_PLACEHOLDER
+    );
 
     private BlockPos.Mutable regionSize;
     private String mapName;
@@ -57,6 +72,7 @@ public class MapBlockEntity extends BlockEntity {
         HashSet<BlockPos> diamondGens = new HashSet<>();
         HashSet<BlockPos> emeraldGens = new HashSet<>();
         HashSet<BlockPos> islandGens = new HashSet<>();
+        HashSet<BlockPos> bedPositions = new HashSet<>();
 
         final BlockPos minPos = this.getPos();
         final BlockPos maxPos = this.getPos().add(this.regionSize);
@@ -73,14 +89,20 @@ public class MapBlockEntity extends BlockEntity {
                             case "Diamond Generator Placeholder" -> diamondGens.add(currentPos);
                             case "Emerald Generator Placeholder" -> emeraldGens.add(currentPos);
                             case "Island Generator Placeholder" -> islandGens.add(currentPos);
-                            default -> SocWars.LOGGER.warn("Looks like someone accidentally assigned the map_placeholder tag to something that it shouldn't be assigned to");
+                            default -> {
+                                if (blockState.getBlock() instanceof BedBlock && blockState.get(BedBlock.PART) == BedPart.HEAD) {
+                                    bedPositions.add(currentPos);
+                                    continue;
+                                }
+                                SocWars.LOGGER.warn("Looks like someone accidentally assigned the map_placeholder tag to something that it shouldn't be assigned to");
+                            }
                         }
                     }
                 }
             }
         }
 
-        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, diamondGens, emeraldGens, islandGens);
+        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, diamondGens, emeraldGens, islandGens, bedPositions);
         this.mapCheckInfo = mapCheckResults.generateInfo(this.mapType);
     }
 
@@ -88,32 +110,36 @@ public class MapBlockEntity extends BlockEntity {
         this.checkStructure();
         if (this.mapCheckInfo.hasErrors() || this.world.isClient) return false;
 
-        //StructureTemplate structure = ((ServerWorld)this.world).getStructureTemplateManager().getTemplate()
-        BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos);
+        final StructureTemplate structure = new StructureTemplate();
+        structure.saveFromWorld(this.world, this.pos.add(0, 1, 0), this.regionSize, false, IGNORED_BLOCKS);
+        final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos);
 
-        /*
         AbstractGameMap map = switch (this.mapType) {
             case SKYWARS -> new SkywarsGameMap(
-                null,
+                    structure,
                     this.mapCheckResults.spawnPositionsAsMap(),
-                    centrePos,
-                    null
+                    centrePos
             );
             case BEDWARS -> new BedwarsGameMap(
-                    null,
+                    structure,
                     this.mapCheckResults.spawnPositionsAsMap(),
                     centrePos,
-                    null,
                     this.mapCheckResults.diamondGens(),
                     this.mapCheckResults.emeraldGens(),
                     this.mapCheckResults.islandGens(),
-                    this.mapCheckResults.bedLocations()
+                    this.mapCheckResults.bedPositions()
             );
-            case PROP_HUNT -> null;
+            case PROP_HUNT -> throw new IllegalArgumentException("prop hunt map saving not yet implemented, please try again later (or yell at Liam)");
         };
 
         NbtCompound mapNbt = map.toNbt(new NbtCompound());
-         */
+
+        try {
+            NbtIo.write(mapNbt, Path.of(getMapDirectory().toString(), String.format("%s.%s", this.mapName, this.mapType.getFileExtension())));
+        } catch (IOException e) {
+            SocWars.LOGGER.error("Failed to write {}.{} to file", this.mapName, this.mapType.getFileExtension());
+            return false;
+        }
 
         player.sendMessage(Text.translatable("map_block.save_success", this.mapName, this.mapType.getFileExtension()));
         return true;

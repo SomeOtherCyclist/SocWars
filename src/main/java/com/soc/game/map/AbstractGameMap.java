@@ -4,29 +4,34 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 
-import static com.soc.lib.SocWarsLib.putBlockPosSet;
+import static com.soc.lib.SocWarsLib.putBlockPosCollection;
 
 public abstract class AbstractGameMap {
     public static final String STRUCTURE_KEY = "structure";
-    public static final String CENTRE_POS_KEY = "centre_position";
-    public static final String SPAWN_POSITIONS_KEY = "spawn_position";
+    public static final String CENTRE_POS_KEY = "centre_positions";
+    public static final String SPAWN_POSITIONS_KEY = "spawn_positions";
+    public static final String SPAWN_TEAMS_KEY = "spawn_teams";
 
     protected final StructureTemplate structure;
-    protected final BlockPos centrePos; //Is currently broken, please fix this future me
+    protected final BlockPos centrePos;
+    protected final BlockPos absoluteCentrePos;
     protected final ImmutableMap<DyeColor, BlockPos> spawnPositions;
 
     protected final ServerWorld world;
@@ -34,14 +39,29 @@ public abstract class AbstractGameMap {
 
     public AbstractGameMap(
             StructureTemplate structure,
-            ImmutableMap<DyeColor, BlockPos> spawnPositions,
-            BlockPos centrePos,
-            ServerWorld world
+            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull BlockPos centrePos,
+            @NotNull BlockPos absoluteCentrePos, //Not marked @NotNull since it can be null when saving the map to file
+            @NotNull ServerWorld world //Not marked @NotNull since it can be null when saving the map to file
     ) {
         this.structure = structure;
         this.spawnPositions = ImmutableMap.copyOf(spawnPositions);
         this.centrePos = centrePos.toImmutable();
+        this.absoluteCentrePos = absoluteCentrePos;
         this.world = world;
+    }
+
+    /// Constructor used only for saving the map to file
+    public AbstractGameMap(
+            StructureTemplate structure,
+            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull BlockPos centrePos
+    ) {
+        this.structure = structure;
+        this.spawnPositions = ImmutableMap.copyOf(spawnPositions);
+        this.centrePos = centrePos.toImmutable();
+        this.absoluteCentrePos = null;
+        this.world = null;
     }
 
     public abstract void tick();
@@ -61,7 +81,8 @@ public abstract class AbstractGameMap {
 
     public NbtCompound toNbt(NbtCompound compound) {
         compound.put(STRUCTURE_KEY, this.structure.writeNbt(new NbtCompound()));
-        putBlockPosSet(compound, SPAWN_POSITIONS_KEY, this.spawnPositions.values());
+        putBlockPosCollection(compound, SPAWN_POSITIONS_KEY, this.spawnPositions.values());
+        compound.putIntArray(SPAWN_TEAMS_KEY, this.spawnPositions.keySet().stream().mapToInt(Enum::ordinal).toArray()); //I love how everything is pass by value god I love it so much
         compound.putLong(CENTRE_POS_KEY, this.centrePos.asLong());
 
         return compound;
@@ -102,6 +123,13 @@ public abstract class AbstractGameMap {
         return playerStack;
     }
     public final BlockPos pos(BlockPos pos) {
-        return pos.add(centrePos);
+        return pos.add(this.absoluteCentrePos);
+    }
+    public final Set<DyeColor> getTeamColours() {
+        return this.spawnPositions.keySet();
+    }
+
+    public final void placeMap() {
+        this.structure.place(this.world, this.absoluteCentrePos.subtract(this.centrePos), this.absoluteCentrePos, new StructurePlacementData(), this.world.random, Block.NOTIFY_LISTENERS);
     }
 }

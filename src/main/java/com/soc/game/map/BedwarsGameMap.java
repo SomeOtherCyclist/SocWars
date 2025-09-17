@@ -2,9 +2,9 @@ package com.soc.game.map;
 
 import com.google.common.collect.*;
 import com.soc.SocWars;
+import com.soc.lib.SocWarsLib;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
 
@@ -34,24 +35,42 @@ public class BedwarsGameMap extends AbstractGameMap {
             StructureTemplate structure,
             @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
             @NotNull BlockPos centrePos,
-            ServerWorld world,
+            @NotNull BlockPos absoluteCentrePos,
+            @NotNull ServerWorld world,
             @NotNull Set<BlockPos> diamondGens,
             @NotNull Set<BlockPos> emeraldGens,
             @NotNull Set<BlockPos> islandGens,
             @NotNull Set<BlockPos> bedPositions
     ) {
-        super(structure, spawnPositions, centrePos, world);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, Set.copyOf(diamondGens.stream().map(super::pos).toList()));
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, Set.copyOf(emeraldGens.stream().map(super::pos).toList()));
         this.islandGens = this.makeIslandGenerators(world, Set.copyOf(islandGens.stream().map(super::pos).toList()), spawnPositions.keySet()); //Double check that this works
         this.bedPositions = mapFromCollections(spawnPositions.keySet(), bedPositions); //Double check that this works
     }
 
-    public static Optional<BedwarsGameMap> loadRandomMap(Set<DyeColor> teams, ServerWorld world) {
-        return loadFromFile(AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null), teams, world);
+    /// Constructor used only for saving the map to file
+    public BedwarsGameMap(
+            StructureTemplate structure,
+            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull BlockPos centrePos,
+            @NotNull Set<BlockPos> diamondGens,
+            @NotNull Set<BlockPos> emeraldGens,
+            @NotNull Set<BlockPos> islandGens,
+            @NotNull Set<BlockPos> bedPositions
+    ) {
+        super(structure, spawnPositions, centrePos);
+        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, Set.copyOf(diamondGens.stream().map(super::pos).toList()));
+        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, Set.copyOf(emeraldGens.stream().map(super::pos).toList()));
+        this.islandGens = this.makeIslandGenerators(world, Set.copyOf(islandGens.stream().map(super::pos).toList()), spawnPositions.keySet()); //Double check that this works
+        this.bedPositions = mapFromCollections(spawnPositions.keySet(), bedPositions); //Double check that this works
     }
 
-    public static Optional<BedwarsGameMap> loadFromFile(File file, Set<DyeColor> teams, ServerWorld world) {
+    public static Optional<BedwarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {
+        return loadFromFile(AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null), world, centrePos);
+    }
+
+    public static Optional<BedwarsGameMap> loadFromFile(File file, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
         NbtCompound compound = null;
         try {
             compound = NbtIo.read(file.toPath());
@@ -61,25 +80,28 @@ public class BedwarsGameMap extends AbstractGameMap {
 
         if (compound == null) return Optional.empty();
 
-        return fromNbt(compound, teams, world);
+        return fromNbt(compound, world, centrePos);
     }
 
-    private static Optional<BedwarsGameMap> fromNbt(NbtCompound compound, Set<DyeColor> teams, ServerWorld world) {
-        StructureTemplateManager templateManager = world.getStructureTemplateManager();
-        Optional<NbtCompound> structureCompound = compound.getCompound(STRUCTURE_KEY);
-        StructureTemplate template = structureCompound.map(templateManager::createTemplate).orElse(null);
+    private static Optional<BedwarsGameMap> fromNbt(@NotNull NbtCompound compound, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
+        final StructureTemplateManager templateManager = world.getStructureTemplateManager();
+        final Optional<NbtCompound> structureCompound = compound.getCompound(STRUCTURE_KEY);
+        final StructureTemplate template = structureCompound.map(templateManager::createTemplate).orElse(null);
 
-        Optional<Long> centrePosLong = compound.getLong(CENTRE_POS_KEY);
+        final Optional<Long> centrePosLong = compound.getLong(CENTRE_POS_KEY);
         if (centrePosLong.isEmpty()) {
             SocWars.LOGGER.error("Failed to load centre position for map; aborting load");
             return Optional.empty();
         }
 
+        final Set<BlockPos> spawn_positions = getBlockPosSet(compound, SPAWN_POSITIONS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load spawn position positions"); return Set.of(); });
+        final Set<DyeColor> spawn_teams = Arrays.stream(compound.getIntArray(SPAWN_TEAMS_KEY).orElse(new int[0])).mapToObj(SocWarsLib::dyeColourFromOrdinal).collect(Collectors.toSet());
+
         return Optional.of(new BedwarsGameMap(
                 template,
-                getBlockPosSet(compound, SPAWN_POSITIONS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load spawn positions"); return Set.of(); }),
+                mapFromCollections(spawn_teams, spawn_positions),
                 BlockPos.fromLong(centrePosLong.get()),
-                teams,
+                centrePos,
                 world,
                 getBlockPosSet(compound, DIAMOND_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load diamond gens"); return Set.of(); }),
                 getBlockPosSet(compound, EMERALD_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load emerald gens"); return Set.of(); }),
@@ -92,28 +114,12 @@ public class BedwarsGameMap extends AbstractGameMap {
     public NbtCompound toNbt(NbtCompound compound) {
         super.toNbt(compound);
 
-        putBlockPosSet(compound, DIAMOND_GENS_KEY, super.spawnPositions.values());
-        putBlockPosSet(compound, EMERALD_GENS_KEY, super.spawnPositions.values());
-        putBlockPosSet(compound, ISLAND_GENS_KEY, super.spawnPositions.values());
-        putBlockPosSet(compound, BED_POSITIONS_KEY, super.spawnPositions.values());
+        putBlockPosCollection(compound, DIAMOND_GENS_KEY, this.diamondGens.stream().map(ResourceGenerator::getPos).toList());
+        putBlockPosCollection(compound, EMERALD_GENS_KEY, this.emeraldGens.stream().map(ResourceGenerator::getPos).toList());
+        putBlockPosCollection(compound, ISLAND_GENS_KEY, this.islandGens.values().stream().map(gens -> gens[0].getPos()).toList());
+        putBlockPosCollection(compound, BED_POSITIONS_KEY, this.bedPositions.values());
 
         return compound;
-    }
-
-    public boolean saveToFile(Path path) {
-        if (super.structure == null) {
-            SocWars.LOGGER.info("Failed to save map as the structure is null");
-            return false;
-        }
-
-        try {
-            NbtIo.write(this.toNbt(new NbtCompound()), path);
-        } catch (IOException e) {
-            SocWars.LOGGER.info("Failed to save map due to an IOException: {}", e.getMessage());
-            return false;
-        }
-
-        return true;
     }
 
     private ImmutableMap<DyeColor, ResourceGenerator[]> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<DyeColor> teams) {

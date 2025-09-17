@@ -1,7 +1,6 @@
 package com.soc.lib;
 
 import com.google.common.collect.ImmutableMap;
-import com.soc.game.manager.GameType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
@@ -31,7 +30,7 @@ public class SocWarsLib {
         return value.map(longs -> Set.copyOf(Arrays.stream(longs).mapToObj(BlockPos::fromLong).toList()));
     }
 
-    public static void putBlockPosSet(NbtCompound compound, String key, Collection<BlockPos> blockPosCollection) {
+    public static void putBlockPosCollection(NbtCompound compound, String key, Collection<BlockPos> blockPosCollection) {
         long[] values = new long[blockPosCollection.size()];
         List<BlockPos> blockPosList = blockPosCollection.stream().toList();
 

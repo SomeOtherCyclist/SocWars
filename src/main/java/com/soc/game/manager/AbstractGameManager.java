@@ -13,6 +13,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -59,6 +60,7 @@ public abstract class AbstractGameManager {
     protected abstract EventQueue buildEventQueue();
 
     public void startGame() {
+        this.getMap().placeMap();
         this.getMap().spreadPlayers(this.teams);
     }
     public void endGame() {
@@ -99,7 +101,7 @@ public abstract class AbstractGameManager {
     }
 
     private void updateEventQueue() {
-        Collection<Pair<Consumer<AbstractGameManager>, String>> events = this.eventQueue.tryPopEvents(this.time);
+        final Collection<Pair<Consumer<AbstractGameManager>, String>> events = this.eventQueue.tryPopEvents(this.time);
         events.forEach(event -> {
             event.getLeft().accept(this);
         });
@@ -111,5 +113,9 @@ public abstract class AbstractGameManager {
 
     public final int getGameId() {
         return this.gameId;
+    }
+    public final BlockPos generateCentrePosition() {
+        final BlockPos initial = new BlockPos(-10000, 0, -10000);
+        return initial.add(0, 0, -500 * this.gameId);
     }
 }
