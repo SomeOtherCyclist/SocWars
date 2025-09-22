@@ -112,7 +112,9 @@
   "map_block.results.no_centre": "⚠ No centre position found",
   "map_block.results.multiple_centres": "⚠ Multiple centre positions found",
   "map_block.results.duplicate_spawn_teams": "⚠ Multiple spawns with same team",
+  "map_block.results.no_spawns": "⚠ No spawn positions",
   "map_block.results.spawn_missing_teams": "⚑ Spawn positions missing teams",
+  "map_block.results.blocks_bordering_area": "⚑ Blocks just outside selection",
   "map_block.results.mismatched_generators": "⚑ Unequal spawns and gens",
   "map_block.results.no_issues": "✔ No issues found!",
   "map_block.results.centre": "Centre: (%s, %s, %s)",
@@ -120,5 +122,16 @@
   "map_block.results.islands": "Islands: %s",
   "map_block.results.diamond_gens": "Diamond gens: %s",
   "map_block.results.emerald_gens": "Emerald gens: %s",
-  "map_block.save_success": "Successfully saved %s.%s"
+  "map_block.results.no_diamond_gens": "⚑ No diamond gens",
+  "map_block.results.no_emerald_gens": "⚑ No emerald gens",
+  "map_block.info.no_centre": "Nowhere to centre the map",
+  "map_block.info.multiple_centres": "Impossible to centre the map on multiple points",
+  "map_block.save_success": "Successfully saved %s.%s",
+  "block_pos": "(%s, %s, %s)",
+  "direction.north": "North",
+  "direction.south": "South",
+  "direction.east": "East",
+  "direction.west": "West",
+  "direction.up": "Up",
+  "direction.down": "Down"
 }

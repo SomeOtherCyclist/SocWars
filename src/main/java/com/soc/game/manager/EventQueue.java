@@ -70,7 +70,7 @@ public class EventQueue {
     public Collection<Pair<Consumer<AbstractGameManager>, String>> tryPopEvents(int time) {
         final ArrayList<Pair<Consumer<AbstractGameManager>, String>> events = new ArrayList<>();
 
-        while (time >= this.events.getFirst().getLeft()) {
+        while (!this.events.isEmpty() && time >= this.events.getFirst().getLeft()) {
             Triple<Integer, Consumer<AbstractGameManager>, String> event = this.events.removeFirst();
             events.add(Pair.of(event.getMiddle(), event.getRight()));
         }

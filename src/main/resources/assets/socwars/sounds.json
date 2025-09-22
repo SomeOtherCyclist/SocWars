@@ -16,5 +16,17 @@
     "sounds": [
       "socwars:nuclear_siren"
     ]
+  },
+  "giga_chad": {
+    "subtitle": "sound.socwars.giga_chad",
+    "sounds": [
+      "socwars:giga_chad"
+    ]
+  },
+  "air_horn": {
+    "subtitle": "sound.socwars.air_horn",
+    "sounds": [
+      "socwars:air_horn"
+    ]
   }
 }

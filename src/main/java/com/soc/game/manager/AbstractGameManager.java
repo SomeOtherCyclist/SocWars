@@ -71,6 +71,7 @@ public abstract class AbstractGameManager {
 
     public void tick() {
         time++;
+        this.map.tick();
         this.updateEventQueue();
     }
 
@@ -115,7 +116,7 @@ public abstract class AbstractGameManager {
         return this.gameId;
     }
     public final BlockPos generateCentrePosition() {
-        final BlockPos initial = new BlockPos(-10000, 0, -10000);
+        final BlockPos initial = new BlockPos(1000, 0, 10000);
         return initial.add(0, 0, -500 * this.gameId);
     }
 }

@@ -13,13 +13,21 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameMap extends AbstractGameMap {
+    public static class IslandTeam {
+        private boolean hasBed = true;
+
+
+        public void breakBed() {
+            this.hasBed = false;
+        }
+    }
+
     public static final String FILE_EXTENSION = "bwmap";
     public static final String DIAMOND_GENS_KEY = "diamond_gens";
     public static final String EMERALD_GENS_KEY = "emerald_gens";
@@ -43,8 +51,8 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> bedPositions
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()));
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()));
+        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
+        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
         this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.keySet()); //Double check that this works
         this.bedPositions = mapFromCollections(spawnPositions.keySet(), bedPositions); //Double check that this works
     }
@@ -60,12 +68,12 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> bedPositions
     ) {
         super(structure, spawnPositions, centrePos);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens);
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens);
+        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens, 30 * 20);
+        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens, 30 * 20);
 
         ImmutableMap.Builder<DyeColor, ResourceGenerator[]> builder = new ImmutableMap.Builder<>();
         for (int i = 0; i < islandGens.size(); i++) {
-            builder.put(dyeColourFromOrdinal(i), new ResourceGenerator[]{new ResourceGenerator(null, null, islandGens.stream().toList().get(i))});
+            builder.put(dyeColourFromOrdinal(i), new ResourceGenerator[]{new ResourceGenerator(null, null, islandGens.stream().toList().get(i), 30 * 20)});
         }
         this.islandGens = builder.build();
 
@@ -131,7 +139,7 @@ public class BedwarsGameMap extends AbstractGameMap {
     private ImmutableMap<DyeColor, ResourceGenerator[]> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<DyeColor> teams) {
         final List<BlockPos> islandGenList = islandGens.stream().toList(); //Should probably revisit this whole function at some point
 
-        final Set<DyeColor> allTeams = new HashSet<>(teams);
+        final List<DyeColor> allTeams = new ArrayList<>(teams);
         allTeams.addAll(Arrays.stream(new DyeColor[islandGens.size() - teams.size()]).toList());
         final List<DyeColor> allTeamList = allTeams.stream().toList();
 
@@ -139,9 +147,9 @@ public class BedwarsGameMap extends AbstractGameMap {
 
         for (int i = 0; i < islandGens.size(); i++) {
             builder.put(allTeamList.get(i), new ResourceGenerator[]{
-                    new ResourceGenerator(Items.IRON_INGOT.getDefaultStack(), world, islandGenList.get(i)),
-                    new ResourceGenerator(Items.GOLD_INGOT.getDefaultStack(), world, islandGenList.get(i)),
-                    new ResourceGenerator(Items.EMERALD.getDefaultStack(), world, islandGenList.get(i)),
+                    new ResourceGenerator(Items.IRON_INGOT.getDefaultStack().copyWithCount(4), world, islandGenList.get(i), 2 * 20),
+                    new ResourceGenerator(Items.GOLD_INGOT.getDefaultStack(), world, islandGenList.get(i), 5 * 20),
+                    new ResourceGenerator(Items.EMERALD.getDefaultStack(), world, islandGenList.get(i), 0),
             });
         }
 

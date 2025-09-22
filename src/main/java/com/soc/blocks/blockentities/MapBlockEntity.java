@@ -3,6 +3,8 @@ package com.soc.blocks.blockentities;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.blocks.ColourStateBlock;
+import com.soc.blocks.MapBlock;
+import com.soc.blocks.util.ModBlocks;
 import com.soc.game.manager.GameType;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.BedwarsGameMap;
@@ -13,6 +15,7 @@ import com.soc.util.BlockTags;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BedPart;
 import net.minecraft.nbt.NbtCompound;
@@ -24,6 +27,7 @@ import net.minecraft.storage.WriteView;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
@@ -67,6 +71,7 @@ public class MapBlockEntity extends BlockEntity {
         //General
         HashSet<Pair<Integer, BlockPos>> spawnPositions = new HashSet<>();
         HashSet<BlockPos> centrePositions = new HashSet<>();
+        HashSet<Direction> flaggedFaces = new HashSet<>();
 
         //Bedwars
         HashSet<BlockPos> diamondGens = new HashSet<>();
@@ -74,15 +79,16 @@ public class MapBlockEntity extends BlockEntity {
         HashSet<BlockPos> islandGens = new HashSet<>();
         HashSet<BlockPos> bedPositions = new HashSet<>();
 
-        final BlockPos minPos = this.getPos();
-        final BlockPos maxPos = this.getPos().add(this.regionSize);
+        //region Main structure check
+        final BlockPos minPos = this.getPos().add(0, 1, 0);
+        final BlockPos maxPos = minPos.add(this.regionSize);
         for (int x = minPos.getX(); x < maxPos.getX(); x++) {
-            for (int y = minPos.getY() + 1; y <= maxPos.getY(); y++) {
+            for (int y = minPos.getY(); y < maxPos.getY(); y++) {
                 for (int z = minPos.getZ(); z < maxPos.getZ(); z++) {
                     final BlockPos currentPos = new BlockPos(x, y, z);
                     final BlockState blockState = this.world.getBlockState(currentPos);
 
-                    if (blockState.streamTags().anyMatch(BlockTags.MAP_PLACEHOLDER::equals)) {
+                    if (blockState.isIn(BlockTags.MAP_PLACEHOLDER)) {
                         switch (blockState.getBlock().getName().getString()) {
                             case "Spawn Placeholder" -> spawnPositions.add(Pair.of(blockState.get(ColourStateBlock.COLOUR), currentPos));
                             case "Centre Placeholder" -> centrePositions.add(currentPos);
@@ -101,8 +107,66 @@ public class MapBlockEntity extends BlockEntity {
                 }
             }
         }
+        //endregion
 
-        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, diamondGens, emeraldGens, islandGens, bedPositions);
+        //region Face bordering checks
+        for (int x: new int[] {minPos.getX() - 1, maxPos.getX()}) {
+            edgeXLoop:
+            for (int y = minPos.getY() - 1; y <= maxPos.getY(); y++) {
+                for (int z = minPos.getZ(); z < maxPos.getZ(); z++) {
+                    final BlockPos currentPos = new BlockPos(x, y, z);
+
+                    if (!this.world.isAir(currentPos)) {
+                        if (x == minPos.getX() - 1) {
+                            flaggedFaces.add(Direction.WEST);
+                        } else {
+                            flaggedFaces.add(Direction.EAST);
+                        }
+                        break edgeXLoop;
+                    }
+                }
+            }
+        }
+
+        for (int y: new int[] {minPos.getY() - 1, maxPos.getY()}) {
+            edgeYLoop:
+            for (int z = minPos.getZ() - 1; z <= maxPos.getZ(); z++) {
+                for (int x = minPos.getX(); x < maxPos.getX(); x++) {
+                    final BlockPos currentPos = new BlockPos(x, y, z);
+
+                    if (!this.world.isAir(currentPos)) {
+                        if (this.world.getBlockState(currentPos).isOf(ModBlocks.MAP_BLOCK)) continue; //Ignore the map block itself
+                        if (y == minPos.getY() - 1) {
+                            flaggedFaces.add(Direction.DOWN);
+                        } else {
+                            flaggedFaces.add(Direction.UP);
+                        }
+                        break edgeYLoop;
+                    }
+                }
+            }
+        }
+
+        for (int z: new int[] {minPos.getZ() - 1, maxPos.getZ()}) {
+            edgeZLoop:
+            for (int x = minPos.getX() - 1; x <= maxPos.getX(); x++) {
+                for (int y = minPos.getY(); y < maxPos.getY(); y++) {
+                    final BlockPos currentPos = new BlockPos(x, y, z);
+
+                    if (!this.world.isAir(currentPos)) {
+                        if (z == minPos.getZ() - 1) {
+                            flaggedFaces.add(Direction.NORTH);
+                        } else {
+                            flaggedFaces.add(Direction.SOUTH);
+                        }
+                        break edgeZLoop;
+                    }
+                }
+            }
+        }
+        //endregion
+
+        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions);
         this.mapCheckInfo = mapCheckResults.generateInfo(this.mapType);
     }
 

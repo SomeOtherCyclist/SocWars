@@ -30,10 +30,8 @@ public class GamesManager {
     public static boolean startGame(AbstractGameManager game) {
         if (game == null) return false;
 
-        final int gameId = getNewGameId();
-
-        if (GAMES.size() > gameId) {
-            GAMES.set(gameId, game);
+        if (GAMES.size() > game.getGameId()) {
+            GAMES.set(game.getGameId(), game);
         } else {
             GAMES.add(game);
         }
@@ -61,9 +59,12 @@ public class GamesManager {
     }
 
     public static void tick(ServerWorld world) {
+        GAMES.forEach(game -> {
+            if (game != null) game.tick();
+        });
+
         if (world.getTime() % 20 == 0) { //Only update queues once per second
             checkQueues();
-            QUEUE_PROGRESS.keySet().forEach(queue -> world.getServer().getPlayerManager().broadcast(Text.literal("Progress for " + queue + ": " + QUEUE_PROGRESS.get(queue)), false));
         }
     }
 

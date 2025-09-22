@@ -1,5 +1,6 @@
 package com.soc.gui.screen;
 
+import com.soc.SocWars;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
 import com.soc.gui.widget.NumberTextFieldWidget;
@@ -25,7 +26,6 @@ import static com.soc.game.map.AbstractGameMap.getMapDirectory;
 
 public class MapBlockScreen extends Screen {
     private final MapBlockEntity blockEntity;
-    private final World world;
     private boolean initialised = false;
 
     private final BlockPos.Mutable regionSize;
@@ -48,7 +48,6 @@ public class MapBlockScreen extends Screen {
     public MapBlockScreen(MapBlockEntity blockEntity, World world) {
         super(Text.translatable("screen.map_block_screen"));
         this.blockEntity = blockEntity;
-        this.world = world;
 
         this.regionSize = blockEntity.getRegionSize().mutableCopy();
         this.mapName = blockEntity.getMapName();
@@ -167,21 +166,14 @@ public class MapBlockScreen extends Screen {
         this.addDrawableChild(this.closeButton);
     }
 
-    /*
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == 257) {
-            if (modifiers == 1) {
-                this.saveSyncClose();
-            } else {
-                this.saveAndSync();
-            }
-            return false;
+            this.saveAndSync();
         }
 
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
-     */
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
@@ -205,16 +197,34 @@ public class MapBlockScreen extends Screen {
 
         this.saveStructureButton.active = !this.mapCheckInfo.hasErrors();
 
-        List<Pair<Text, Text>> warnings = this.mapCheckInfo.getInfo();
-        context.fill(this.width / 2 - 32, 110, this.width / 2 + 148, 110 + 10 * warnings.size() + 8, 0xff000000);
-        context.drawBorder(this.width / 2 - 32, 110, 180, 10 * warnings.size() + 8, -6250336);
+        //region
+        final List<Pair<Text, Text[]>> warnings = this.mapCheckInfo.getInfo();
+
+        final int infoStartX = this.width / 2 - 32;
+        final int infoStartY = 110;
+        final int infoWidth = 180;
+        final int infoTextPadding = 5;
+        final int infoTextHeight = 10;
+        final int infoHeight = infoTextHeight * warnings.size() + 8;
+
+        context.fill(infoStartX, infoStartY, infoStartX + infoWidth, infoStartY + infoHeight, 0xff000000);
+        context.drawBorder(infoStartX, infoStartY, infoWidth, infoHeight, -6250336);
         for (int i = 0; i < warnings.size(); i++) {
-            context.drawTextWithShadow(this.textRenderer, warnings.get(i).getLeft(), this.width / 2 - 27, 115 + 10 * i, -6250336);
+            context.drawTextWithShadow(this.textRenderer, warnings.get(i).getLeft(), infoStartX + infoTextPadding, infoStartY + infoTextPadding + i * infoTextHeight, -6250336);
+        }
+
+        if (mouseX > infoStartX && mouseX < infoStartX + infoWidth && mouseY > infoStartY && mouseY < infoStartY + infoHeight && !warnings.isEmpty()) {
+            final int index = Math.min((mouseY - infoStartY - infoTextPadding + 1) / infoTextHeight, warnings.size() - 1);
+            final Text[] hoverText = warnings.get(index).getRight();
+            for (int i = 0; i < hoverText.length; i++) {
+                context.drawTextWithShadow(this.textRenderer, hoverText[i], mouseX + 6, mouseY + i * infoTextHeight, 0xFFBFBFBF);
+            }
         }
     }
 
     private void doServerMapSave() {
         this.client.setScreen(null);
+        this.saveAndSync();
         ClientPlayNetworking.send(new MapBlockSaveMapPayload(this.blockEntity.getPos().asLong()));
     }
 

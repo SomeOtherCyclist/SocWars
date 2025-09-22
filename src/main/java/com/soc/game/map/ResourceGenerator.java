@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Set;
@@ -15,24 +16,25 @@ public class ResourceGenerator {
     protected int generationTime;
     protected int remainingTime;
 
-    public ResourceGenerator(final ItemStack item, final World world, final BlockPos pos) {
+    public ResourceGenerator(final ItemStack item, final World world, final BlockPos pos, final int generationTime) {
         this.world = world;
         this.pos = pos;
         this.item = item;
 
-        generationTime = 30 * 20;
-        remainingTime = generationTime;
+        this.generationTime = generationTime;
+        this.remainingTime = this.generationTime;
     }
 
-    public static ImmutableSet<ResourceGenerator> resourceGenerators(final ItemStack item, final World world, final Set<BlockPos> positions) {
-        ImmutableSet.Builder<ResourceGenerator> builder = ImmutableSet.builder();
-        positions.forEach(pos -> builder.add(new ResourceGenerator(item, world, pos)));
+    public static ImmutableSet<ResourceGenerator> resourceGenerators(final ItemStack item, final World world, final Set<BlockPos> positions, final int generationTime) {
+        final ImmutableSet.Builder<ResourceGenerator> builder = ImmutableSet.builder();
+        positions.forEach(pos -> builder.add(new ResourceGenerator(item, world, pos, generationTime)));
         return builder.build();
     }
 
     private void generate() {
-        ItemEntity entity = new ItemEntity(this.world, this.pos.getX() + 0.5d, this.pos.getY() + 1, this.pos.getZ() + 0.5d, item);
+        final ItemEntity entity = new ItemEntity(this.world, this.pos.getX() + 0.5d, this.pos.getY() + 1, this.pos.getZ() + 0.5d, item);
         this.world.spawnEntity(entity);
+        entity.setVelocity(Vec3d.ZERO);
     }
 
     public void tick() {
