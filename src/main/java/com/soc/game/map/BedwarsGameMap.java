@@ -21,7 +21,11 @@ import static com.soc.lib.SocWarsLib.*;
 public class BedwarsGameMap extends AbstractGameMap {
     public static class IslandTeam {
         private boolean hasBed = true;
+        private final DyeColor colour;
 
+        public IslandTeam(DyeColor colour) {
+            this.colour = colour;
+        }
 
         public void breakBed() {
             this.hasBed = false;

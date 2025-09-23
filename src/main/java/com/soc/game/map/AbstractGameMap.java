@@ -103,12 +103,7 @@ public abstract class AbstractGameMap {
         return file;
     }
     public static File[] getMaps(String fileExtension) {
-        final var files = getMapDirectory().listFiles((file) -> {
-            final String[] splitName = file.getName().split("\\.");
-            final String extension = splitName[splitName.length - 1];
-
-            return Objects.equals(extension, fileExtension);
-        });
+        final var files = getMapDirectory().listFiles(file -> file.toString().endsWith("." + fileExtension));
 
         return (files != null) ? files : new File[0];
     }
