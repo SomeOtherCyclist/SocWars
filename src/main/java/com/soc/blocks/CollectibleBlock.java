@@ -6,8 +6,6 @@ import com.soc.player.PlayerDataManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.decoration.DisplayEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -17,11 +15,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
 
 public class CollectibleBlock extends BlockWithEntity {
     public CollectibleBlock(Settings settings) {
@@ -49,28 +44,12 @@ public class CollectibleBlock extends BlockWithEntity {
             final RegistryEntry<Item> item = player.getStackInHand(Hand.MAIN_HAND).getRegistryEntry();
             final boolean isNewStack = item != Items.AIR && item != blockEntity.getCollectible();
 
-            if (isNewStack) {
-                final DisplayEntity.ItemDisplayEntity display = getDisplay(blockEntity, world, pos);
-                blockEntity.setCollectible(item);
-                if (!world.isClient()) display.setItemStack(item.value().getDefaultStack());
-            }
+            if (isNewStack) blockEntity.setCollectible(item);
         } else {
             this.collect(player, world, blockEntity);
         }
 
         return ActionResult.SUCCESS;
-    }
-
-    private DisplayEntity.ItemDisplayEntity getDisplay(CollectibleBlockEntity blockEntity, World world, BlockPos pos) {
-        if (blockEntity.getDisplayUuid() == null) {
-            final DisplayEntity.ItemDisplayEntity display = new DisplayEntity.ItemDisplayEntity(EntityType.ITEM_DISPLAY, world);
-            display.setPosition(Vec3d.of(pos).add(0.5f, 2f, 0.5f));
-            world.spawnEntity(display);
-
-            blockEntity.setDisplayUuid(display.getUuidAsString());
-        }
-
-        return (DisplayEntity.ItemDisplayEntity) world.getEntity(UUID.fromString(blockEntity.getDisplayUuid()));
     }
 
     private void collect(PlayerEntity player, World world, CollectibleBlockEntity blockEntity) {

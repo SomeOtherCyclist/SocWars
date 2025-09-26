@@ -1,7 +1,6 @@
 package com.soc.renderer;
 
 import com.soc.blocks.blockentities.MapBlockEntity;
-import net.minecraft.block.entity.CommandBlockBlockEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -9,7 +8,6 @@ import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
 public class MapBlockEntityRenderer implements BlockEntityRenderer<MapBlockEntity> {
