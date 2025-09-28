@@ -4,19 +4,27 @@ import com.soc.SocWars;
 import com.soc.blocks.*;
 import com.soc.entities.BigTntEntity;
 import com.soc.items.util.ModItems;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCollisionHandler;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.function.Function;
 
@@ -36,8 +44,23 @@ public class ModBlocks {
 
     public static final Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", (settings) -> new BigTntBlock(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true);
     public static final Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", (settings) -> new BigTntBlock(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true);
-    public static final Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true);
+    public static final Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).noCollision().nonOpaque(), true); //No collision?
     public static final Block MAP_BLOCK = ModBlocks.register("map_block", MapBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true);
+
+    /*
+    public static final Block SOC_HEAD = ModBlocks.register(
+            "soc_head",
+            settings -> new PlayerSkullBlock(settings),
+            AbstractBlock.Settings.create().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pistonBehavior(PistonBehavior.DESTROY),
+            true
+    );
+    public static final Block ITSEVOCAT_HEAD = ModBlocks.register(
+            "itsevocat_head",
+            settings -> new SkullBlock(SkullBlock.Type.ZOMBIE, settings),
+            AbstractBlock.Settings.create().instrument(NoteBlockInstrument.ZOMBIE).strength(1.0F).pistonBehavior(PistonBehavior.DESTROY),
+            true
+    );
+     */
 
     //public static final Block RED_BEDWARS_BED = ModBlocks.register("red_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.RED, settings), bedSettings(DyeColor.RED), true);
     //public static final Block YELLOW_BEDWARS_BED = ModBlocks.register("yellow_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.YELLOW, settings), bedSettings(DyeColor.YELLOW), true);

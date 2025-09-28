@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/ender_staff/base",
+  "textures": {
+    "layer0": "socwars:item/ender_staff/hold_1"
+  }
+}

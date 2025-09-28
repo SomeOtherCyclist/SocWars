@@ -1,6 +1,5 @@
 package com.soc.gui.screen;
 
-import com.soc.SocWars;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
 import com.soc.gui.widget.NumberTextFieldWidget;
@@ -28,10 +27,12 @@ public class MapBlockScreen extends Screen {
     private final MapBlockEntity blockEntity;
     private boolean initialised = false;
 
+
+
     private final BlockPos.Mutable regionSize;
     private String mapName;
     private GameType mapType;
-    private InfoList mapCheckInfo = new InfoList();
+    private InfoList mapCheckInfo;
 
     private TextFieldWidget mapNameTextField;
     private TextFieldWidget sizeXField;

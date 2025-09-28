@@ -2,53 +2,78 @@ package com.soc.game.manager;
 
 import com.soc.SocWars;
 import com.soc.game.map.SpreadRules;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class GamesManager {
-    private static ServerWorld WORLD;
+    private static final GamesManager INSTANCE = new GamesManager();
 
-    private static final ArrayList<AbstractGameManager> GAMES = new ArrayList<>();
-    private static final MatchmakingQueue<GameType> QUEUE = new MatchmakingQueue<>();
-    private static final HashMap<GameType, Float> QUEUE_PROGRESS = new HashMap<>();
+    private ServerWorld world;
 
-    static {
-        Arrays.stream(GameType.values()).forEach(queue -> QUEUE_PROGRESS.put(queue, 0f));
+    private final ArrayList<AbstractGameManager> games = new ArrayList<>();
+    private final HashMap<ServerPlayerEntity, Integer> playerGameLookup = new HashMap<>();
+
+    private final MatchmakingQueue<GameType> queue = new MatchmakingQueue<>();
+    private final HashMap<GameType, Float> queueProgress = new HashMap<>();
+
+    private GamesManager() {
+        Arrays.stream(GameType.values()).forEach(queue -> this.queueProgress.put(queue, 0f));
+
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> this.world = server.getOverworld());
+        ServerTickEvents.START_WORLD_TICK.register(this::tick);
+
+        this.initialiseEvents();
     }
 
-    public static void initialise() {
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> WORLD = server.getOverworld());
+    public static void initialise() {}
 
-        ServerTickEvents.START_WORLD_TICK.register(GamesManager::tick);
+    public static GamesManager getInstance() {
+        return INSTANCE;
     }
 
-    public static boolean startGame(AbstractGameManager game) {
+    public void initialiseEvents() {
+        ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
+            return this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true);
+        });
+    }
+
+    public boolean startGame(AbstractGameManager game) {
         if (game == null) return false;
 
-        if (GAMES.size() > game.getGameId()) {
-            GAMES.set(game.getGameId(), game);
+        if (this.games.size() > game.getGameId()) {
+            this.games.set(game.getGameId(), game);
         } else {
-            GAMES.add(game);
+            this.games.add(game);
         }
 
-        QUEUE.unqueuePlayers(game.getPlayers());
+        this.queue.unqueuePlayers(game.getPlayers());
 
         game.startGame();
+        game.getPlayers().forEach(player -> this.playerGameLookup.put(player, game.getGameId())); //Bit of gross bookkeeping
 
         return true;
     }
 
-    public static void endGame(int gameId) {
-        GAMES.set(gameId, null);
+    public void endGame(int gameId) {
+        this.games.set(gameId, null);
+        this.playerGameLookup.forEach(this.playerGameLookup::remove); //Tail end of the gross bookkeeping
     }
 
-    private static int getNewGameId() {
-        final Iterator<AbstractGameManager> games = GAMES.iterator();
+    public Optional<AbstractGameManager> getGame(LivingEntity entity) {
+        final Integer id = this.playerGameLookup.get(entity); //Hilarious abuse of HashMap#Get
+        return Optional.ofNullable(id).map(this.games::get);
+    }
+
+    private int getNewGameId() {
+        final Iterator<AbstractGameManager> games = this.games.iterator();
 
         int i = 0;
         while (games.hasNext() && games.next() != null) {
@@ -58,29 +83,29 @@ public class GamesManager {
         return games.hasNext() ? i : ++i;
     }
 
-    public static void tick(ServerWorld world) {
-        GAMES.forEach(game -> {
+    public void tick(ServerWorld world) {
+        this.games.forEach(game -> {
             if (game != null) game.tick();
         });
 
         if (world.getTime() % 20 == 0) { //Only update queues once per second
-            checkQueues();
+            this.checkQueues();
         }
     }
 
-    private static void checkQueues() {
-        QUEUE_PROGRESS.keySet().forEach(queue -> {
-            final float queueProgress = QUEUE.getQueueProgress(queue);
-            QUEUE_PROGRESS.put(queue, queueProgress < Float.MIN_NORMAL ? 0f : QUEUE_PROGRESS.get(queue) + queueProgress); //Update the queue progress of every queue
+    private void checkQueues() {
+        this.queueProgress.keySet().forEach(queue -> {
+            final float queueProgress = this.queue.getQueueProgress(queue);
+            this.queueProgress.put(queue, queueProgress < Float.MIN_NORMAL ? 0f : this.queueProgress.get(queue) + queueProgress); //Update the queue progress of every queue
 
-            final Set<ServerPlayerEntity> players = Set.copyOf(QUEUE.getPlayersInQueue(queue).stream().limit(queue.maxPlayers()).toList()); //Cap the number of players to send into a game to the queue's max player count
+            final Set<ServerPlayerEntity> players = Set.copyOf(this.queue.getPlayersInQueue(queue).stream().limit(queue.maxPlayers()).toList()); //Cap the number of players to send into a game to the queue's max player count
 
-            if (QUEUE_PROGRESS.get(queue) >= 0.02f) {
-                QUEUE_PROGRESS.put(queue, 0f); //Reset the queue progress
+            if (this.queueProgress.get(queue) >= 0.02f) {
+                this.queueProgress.put(queue, 0f); //Reset the queue progress
 
                 final AbstractGameManager game = switch (queue) {
-                    case SKYWARS -> new SkywarsGameManager(WORLD, players, null, getNewGameId());
-                    case BEDWARS -> new BedwarsGameManager(WORLD, players, new SpreadRules(4), getNewGameId());
+                    case SKYWARS -> new SkywarsGameManager(world, players, null, this.getNewGameId());
+                    case BEDWARS -> new BedwarsGameManager(world, players, new SpreadRules(4), this.getNewGameId());
                     case PROP_HUNT -> null; //Maybe get around to writing some of the game logic for prop hunt
                 };
 
@@ -90,11 +115,11 @@ public class GamesManager {
         });
     }
 
-    public static void queuePlayer(ServerPlayerEntity player, GameType queue) {
-        QUEUE.queuePlayer(player, queue);
+    public void queuePlayer(ServerPlayerEntity player, GameType queue) {
+        this.queue.queuePlayer(player, queue);
     }
 
-    public static void unqueuePlayer(ServerPlayerEntity player, GameType queue) {
-        if (!QUEUE.isPlayerInQueue(player, queue)) QUEUE.unqueuePlayer(player);
+    public void unqueuePlayer(ServerPlayerEntity player, GameType queue) {
+        if (!this.queue.isPlayerInQueue(player, queue)) this.queue.unqueuePlayer(player);
     }
 }

@@ -3,6 +3,7 @@ package com.soc.game.manager;
 import com.google.common.collect.ImmutableMultimap;
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.SpreadRules;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DyeColor;
@@ -67,7 +68,7 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public void onPlayerDeath() {
-
+    public boolean onPlayerDeath(ServerPlayerEntity entity, DamageSource source, float amount) {
+        return true;
     }
 }

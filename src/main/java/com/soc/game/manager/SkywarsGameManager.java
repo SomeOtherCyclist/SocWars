@@ -2,14 +2,12 @@ package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.soc.game.map.AbstractGameMap;
-import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.SkywarsGameMap;
 import com.soc.game.map.SpreadRules;
-import net.minecraft.scoreboard.Team;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DyeColor;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -55,7 +53,7 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public void onPlayerDeath() {
-
+    public boolean onPlayerDeath(ServerPlayerEntity entity, DamageSource source, float amount) {
+        return true;
     }
 }

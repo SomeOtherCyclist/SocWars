@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "variants": {
+    "has_collectible=false": {
+      "model": "socwars:block/collectible_block_empty"
+    },
+    "has_collectible=true": {
+      "model": "socwars:block/collectible_block_full"
+    }
+  }
+}

@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
@@ -65,9 +66,11 @@ public abstract class AbstractGameManager {
     }
     public void endGame() {
         this.removeTeams();
-        GamesManager.endGame(this.gameId);
+        GamesManager.getInstance().endGame(this.gameId);
     }
-    public abstract void onPlayerDeath();
+    public boolean onPlayerDeath(ServerPlayerEntity entity, DamageSource source, float amount) {
+        return true;
+    }
 
     public void tick() {
         time++;

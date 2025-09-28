@@ -3,13 +3,14 @@ package com.soc.blocks;
 import com.mojang.serialization.MapCodec;
 import com.soc.blocks.blockentities.CollectibleBlockEntity;
 import com.soc.player.PlayerDataManager;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -19,8 +20,16 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class CollectibleBlock extends BlockWithEntity {
+    public static final BooleanProperty HAS_COLLECTIBLE = BooleanProperty.of("has_collectible");
+
     public CollectibleBlock(Settings settings) {
         super(settings);
+        this.setDefaultState(this.getDefaultState().with(HAS_COLLECTIBLE, false));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(HAS_COLLECTIBLE);
     }
 
     @Override
@@ -28,8 +37,8 @@ public class CollectibleBlock extends BlockWithEntity {
         return createCodec(CollectibleBlock::new);
     }
 
-    @Nullable
     @Override
+    @Nullable
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new CollectibleBlockEntity(pos, state);
     }
@@ -40,14 +49,18 @@ public class CollectibleBlock extends BlockWithEntity {
             return super.onUse(state, world, pos, player, hit);
         }
 
-        if (player.isCreative()) {
-            final RegistryEntry<Item> item = player.getStackInHand(Hand.MAIN_HAND).getRegistryEntry();
-            final boolean isNewStack = item != Items.AIR && item != blockEntity.getCollectible();
-
-            if (isNewStack) blockEntity.setCollectible(item);
-        } else {
+        if (!player.isCreative()) {
             this.collect(player, world, blockEntity);
+            return ActionResult.SUCCESS;
         }
+
+        final ItemStack stack = player.getStackInHand(Hand.MAIN_HAND); //Maybe clean up the spaghetti code below here at some point
+
+        boolean validCollectible = !stack.isEmpty();
+        if (!validCollectible && !player.isSneaking()) return ActionResult.SUCCESS;
+
+        world.setBlockState(pos, state.with(HAS_COLLECTIBLE, validCollectible));
+        blockEntity.setCollectible(validCollectible ? stack.getRegistryEntry() : null);
 
         return ActionResult.SUCCESS;
     }

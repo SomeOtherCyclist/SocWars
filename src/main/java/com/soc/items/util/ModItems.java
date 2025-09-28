@@ -33,6 +33,7 @@ public class ModItems {
         AttackFunctionWeapon.initialise();
         UseFunctionWeapon.initialise();
         PotionWeapon.initialise();
+        DrawableWeapon.initialise();
         GreenSword.initialise();
         InvisibilityRing.initialise();
         PotionRing.initialise();
