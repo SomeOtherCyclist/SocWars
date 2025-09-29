@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/wind_staff/base",
+  "textures": {
+    "layer0": "socwars:item/wind_staff/hold_1"
+  }
+}
