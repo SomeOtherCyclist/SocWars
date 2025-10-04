@@ -39,6 +39,7 @@ public class ModItems {
         PotionRing.initialise();
         DiceOfFate.initialise();
         PotionFood.initialise();
+        EatFunctionFood.initialise();
         SharpenedPokingStick.initialise();
         GamblerArmour.initialise();
         GamblerSword.initialise();

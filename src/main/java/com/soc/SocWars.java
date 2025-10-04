@@ -6,6 +6,7 @@ import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.util.ModItems;
+import com.soc.lib.Coroutines;
 import com.soc.networking.C2SPayloads;
 import com.soc.networking.C2SReceivers;
 import com.soc.networking.S2CPayloads;
@@ -41,5 +42,6 @@ public class SocWars implements ModInitializer {
 		C2SPayloads.initialise();
 		S2CPayloads.initialise();
 		C2SReceivers.initialise();
+		Coroutines.initialise();
 	}
 }

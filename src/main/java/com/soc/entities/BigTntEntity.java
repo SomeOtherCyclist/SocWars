@@ -101,7 +101,7 @@ public class BigTntEntity extends Entity implements Ownable {
 
         @Override
         public float calculateDamage(Explosion explosion, Entity entity, float amount) {
-            return super.calculateDamage(explosion, entity, amount) * 0.125f;
+            return super.calculateDamage(explosion, entity, amount) * 8f;
         }
 
         @Override

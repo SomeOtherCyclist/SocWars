@@ -31,11 +31,7 @@ import static net.minecraft.component.type.PotionContentsComponent.getEffectText
 
 public class PotionFood extends Item {
     private static FoodComponent foodComponent(int nutrition, int saturation) {
-        return new FoodComponent.Builder()
-            .nutrition(nutrition)
-            .saturationModifier((float) saturation / (nutrition * 2))
-            .alwaysEdible()
-            .build();
+        return new FoodComponent(nutrition, saturation, true);
     }
 
     private static ConsumableComponent consumableComponent(EffectRecord[] effectRecords) {
