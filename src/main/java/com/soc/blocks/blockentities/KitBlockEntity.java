@@ -1,7 +1,7 @@
 package com.soc.blocks.blockentities;
 
 import com.mojang.serialization.Codec;
-import com.soc.game.GameKit;
+import com.soc.game.Kit;
 import com.soc.game.manager.GameType;
 import com.soc.screenhandler.KitBlockCreationScreenHandler;
 import net.minecraft.block.BlockState;
@@ -30,12 +30,12 @@ import java.util.Map;
 import static com.soc.blocks.blockentities.ModBlockEntities.KIT_BLOCK_ENTITY;
 
 public class KitBlockEntity extends LockableContainerBlockEntity {
-    private GameKit kit;
+    private Kit kit;
     private Map<GameType, Boolean> allowedGameTypes;
 
     public KitBlockEntity(BlockPos pos, BlockState state) {
         super(KIT_BLOCK_ENTITY, pos, state);
-        this.kit = new GameKit();
+        this.kit = new Kit();
         this.allowedGameTypes = new LinkedHashMap<>();
 
         for (GameType gameType : GameType.values()) {
@@ -45,13 +45,13 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
 
     @Override
     protected void writeData(WriteView view) {
-        view.put("kit", GameKit.CODEC, this.kit);
+        view.put("kit", Kit.CODEC, this.kit);
         view.put("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL), this.allowedGameTypes);
     }
 
     @Override
     protected void readData(ReadView view) {
-        this.kit = view.read("kit", GameKit.CODEC).orElse(new GameKit());
+        this.kit = view.read("kit", Kit.CODEC).orElse(new Kit());
         this.allowedGameTypes = new LinkedHashMap<>(view.read("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL)).orElse(Map.of()));
     }
 
@@ -90,7 +90,7 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
         return this.kit.size();
     }
 
-    public GameKit getKit() {
+    public Kit getKit() {
         return this.kit;
     }
 
@@ -124,7 +124,7 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
         this.allowedGameTypes.put(gameType, isAllowed);
     }
 
-    public static Text getKitSelectionMessage(List<GameType> gameTypes, GameKit kit) {
+    public static Text getKitSelectionMessage(List<GameType> gameTypes, Kit kit) {
         if (gameTypes.isEmpty()) {
             return Text.translatable("message.kit_selection.empty");
         } else {

@@ -17,22 +17,22 @@ import net.minecraft.util.dynamic.Codecs;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameKit implements Inventory {
+public class Kit implements Inventory {
     public static int ITEM_SLOTS = 10;
     public static final String DEFAULT_NAME = "unnamed";
 
-    public static final PacketCodec<RegistryByteBuf, GameKit> PACKET_CODEC = PacketCodec.tuple(
+    public static final PacketCodec<RegistryByteBuf, Kit> PACKET_CODEC = PacketCodec.tuple(
             ItemStack.OPTIONAL_LIST_PACKET_CODEC, kit -> kit.items,
             PacketCodecs.collection(ArrayList::new, StatusEffectInstance.PACKET_CODEC), kit -> kit.effects,
             PacketCodecs.STRING, kit -> kit.name,
-            GameKit::new
+            Kit::new
     );
 
-    public static final Codec<GameKit> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<Kit> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(ItemStack.OPTIONAL_CODEC).fieldOf("items").orElse(DefaultedList.ofSize(0, ItemStack.EMPTY)).forGetter(kit -> kit.items),
             Codec.list(StatusEffectInstance.CODEC).fieldOf("effects").orElse(new ArrayList<>()).forGetter(kit -> kit.effects),
             Codecs.NON_EMPTY_STRING.fieldOf("name").orElse(DEFAULT_NAME).forGetter(kit -> kit.name)
-    ).apply(instance, GameKit::new));
+    ).apply(instance, Kit::new));
 
     private DefaultedList<ItemStack> items;
     private List<StatusEffectInstance> effects;
@@ -40,13 +40,13 @@ public class GameKit implements Inventory {
 
     private boolean isDirty;
 
-    public GameKit(DefaultedList<ItemStack> items, List<StatusEffectInstance> effects, String name) {
+    public Kit(DefaultedList<ItemStack> items, List<StatusEffectInstance> effects, String name) {
         this.items = items;
         this.effects = effects;
         this.name = name;
     }
 
-    private GameKit(List<ItemStack> items, List<StatusEffectInstance> effects, String name) {
+    private Kit(List<ItemStack> items, List<StatusEffectInstance> effects, String name) {
         this.items = DefaultedList.ofSize(ITEM_SLOTS, ItemStack.EMPTY);
         for (int i = 0; i < items.size(); i++) {
             this.items.set(i, items.get(i));
@@ -55,7 +55,7 @@ public class GameKit implements Inventory {
         this.name = name;
     }
 
-    public GameKit() {
+    public Kit() {
         this(DefaultedList.ofSize(ITEM_SLOTS, ItemStack.EMPTY), new ArrayList<>(), DEFAULT_NAME);
     }
 

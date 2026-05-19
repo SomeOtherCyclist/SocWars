@@ -3,55 +3,49 @@ package com.soc.mixin.client;
 import com.soc.player.ClientPlayerDataManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Objects;
 
 import static net.minecraft.client.render.entity.LivingEntityRenderer.getOverlay;
 
-@Mixin(PlayerEntityRenderer.class)
-abstract class RenderPlayerMorph extends LivingEntityRendererBaseMixin {
-	@Unique
-	private BlockRenderManager blockRenderManager;
+@Mixin(EntityRenderDispatcher.class)
+abstract class RenderPlayerMorph {
+	@Inject(method = "render(Lnet/minecraft/client/render/entity/state/EntityRenderState;DDDLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V", at = @At("HEAD"), cancellable = true)
+	protected <S extends EntityRenderState> void socwars_livingEntityRender(S state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, EntityRenderer<?, S> renderer, CallbackInfo ci) {
+		if (state instanceof PlayerEntityRenderState playerState) {
+			final ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
-	@Unique
-	private BlockState morph;
+			final Entity thisEntity = Objects.requireNonNull(MinecraftClient.getInstance().world).getEntityById(playerState.id);
+			final BlockState morph = thisEntity == null ? null : ClientPlayerDataManager.getMorph(thisEntity.getUuid());
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void socwars_assignBlockRenderManager(EntityRendererFactory.Context ctx, boolean slim, CallbackInfo ci){
-		this.blockRenderManager = ctx.getBlockRenderManager();
-	}
-
-	@Override
-	protected void socwars_livingEntityRender(LivingEntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertices, int light, CallbackInfo ci) {
-		final Entity thisEntity = Objects.requireNonNull(MinecraftClient.getInstance().world).getEntityById(((PlayerEntityRenderState)state).id);
-		this.morph = thisEntity == null ? null : ClientPlayerDataManager.getMorph(thisEntity.getUuid());
-		if (this.morph != null) {
-			this.renderMorph(state, matrices, vertices, light, this.morph);
-			ci.cancel();
+			if (morph != null && !thisEntity.isSpectator()) {
+				this.renderMorph(playerState, x, y, z, matrices, vertices, light, morph);
+				if (!player.isSpectator()) ci.cancel();
+			}
 		}
 	}
 
 	@Unique
-	private void renderMorph(LivingEntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertices, int light, BlockState morph) {
+	private void renderMorph(PlayerEntityRenderState state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, BlockState morph) {
 		matrices.push();
+		matrices.translate(x, y, z);
+		matrices.translate(morph.getModelOffset(new BlockPos((int)state.x, (int)state.y, (int)state.z)));
 
-		if (((PlayerEntityRenderState)state).isInSneakingPose) {
+		if (state.isInSneakingPose) {
 			final double xOffset = state.x >= 0d ? -state.x % 1d : -state.x % 1d - 1d;
 			final double yOffset = state.y >= -0.5d ? (-state.y - 0.5d) % 1d + 0.5d : (-state.y - 0.5d) % 1d - 0.5d;
 			final double zOffset = state.z >= 0d ? -state.z % 1d : -state.z % 1d - 1d;
@@ -60,13 +54,8 @@ abstract class RenderPlayerMorph extends LivingEntityRendererBaseMixin {
 			matrices.translate(-0.5d, 0d, -0.5d);
 		}
 
-		this.blockRenderManager.renderBlockAsEntity(morph, matrices, vertices, light, getOverlay(state, this.getAnimationCounter(state)));
+		MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(morph, matrices, vertices, light, getOverlay(state, 0f));
 
 		matrices.pop();
-	}
-
-	@Inject(method = "getPositionOffset(Lnet/minecraft/client/render/entity/state/PlayerEntityRenderState;)Lnet/minecraft/util/math/Vec3d;", at = @At("HEAD"), cancellable = true)
-	private void socwars_noSneakOffsetWhenMorphed(PlayerEntityRenderState playerEntityRenderState, CallbackInfoReturnable<Vec3d> cir) {
-		if (this.morph != null) cir.setReturnValue(Vec3d.ZERO);
 	}
 }

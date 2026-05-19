@@ -62,7 +62,7 @@ public class PlayerDataManager extends PersistentState {
     public Map<UUID, PlayerData> getPlayerDataMap() { return this.playerDataMap; }
 
     public static PlayerData getPlayerData(ServerPlayerEntity player) {
-        return getPersistentState(player.getWorld()).playerDataMap.computeIfAbsent(player.getUuid(), uuid2 -> new PlayerData());
+        return player == null ? null : getPersistentState(player.getWorld()).playerDataMap.computeIfAbsent(player.getUuid(), uuid2 -> new PlayerData());
     }
 
     public static PlayerData getSideLocalPlayerData(PlayerEntity player) {

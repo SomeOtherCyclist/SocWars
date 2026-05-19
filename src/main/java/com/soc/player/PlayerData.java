@@ -2,7 +2,7 @@ package com.soc.player;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.soc.game.GameKit;
+import com.soc.game.Kit;
 import com.soc.game.manager.GameType;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
@@ -31,22 +31,22 @@ public class PlayerData {
 
     public static final Codec<PlayerData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(Codec.BOOL).fieldOf("collectibles").orElse(new ArrayList<>()).forGetter(PlayerData::getCollectibles),
-            Codec.unboundedMap(GameType.CODEC, GameKit.CODEC).fieldOf("equipped_kits").orElse(new HashMap<>()).forGetter(playerData -> playerData.equippedKits),
+            Codec.unboundedMap(GameType.CODEC, Kit.CODEC).fieldOf("equipped_kits").orElse(new HashMap<>()).forGetter(playerData -> playerData.equippedKits),
             Codecs.optional(BlockState.CODEC).fieldOf("morph").orElse(null).forGetter(playerData -> Optional.ofNullable(playerData.morph))
     ).apply(instance, PlayerData::new));
 
     private List<Boolean> collectibles;
-    private Map<GameType, GameKit> equippedKits;
+    private Map<GameType, Kit> equippedKits;
     private BlockState morph;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public PlayerData(List<Boolean> collectibles, Map<GameType, GameKit> equippedKits, Optional<BlockState> morph) {
+    public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, Optional<BlockState> morph) {
         this.collectibles = new ArrayList<>(collectibles);
         this.equippedKits = new HashMap<>(equippedKits);
         this.morph = morph.orElse(null);
     }
 
-    public PlayerData(List<Boolean> collectibles, Map<GameType, GameKit> equippedKits) {
+    public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits) {
         this(collectibles, equippedKits, Optional.empty());
     }
 
@@ -90,7 +90,7 @@ public class PlayerData {
         ifNotNull(this.equippedKits.get(gameType), kit -> kit.apply(player));
     }
 
-    public void setKits(GameKit kit, List<GameType> gameTypes) {
+    public void setKits(Kit kit, List<GameType> gameTypes) {
         for (GameType gameType : gameTypes) {
             this.equippedKits.put(gameType, kit);
         }

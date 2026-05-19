@@ -1,7 +1,6 @@
 package com.soc.networking.c2s;
 
 import com.soc.SocWars;
-import com.soc.game.GameKit;
 import com.soc.game.manager.GameType;
 import com.soc.networking.HoldsBlockEntity;
 import com.soc.networking.helper.BlockLocation;

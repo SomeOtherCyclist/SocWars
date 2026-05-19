@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractBlockMixin",
     "AppendTooltipAtEnd",
+    "BlockOffsetEvaluateNullPos",
     "BowInfinityFix",
     "BucketBlockProtection",
     "CancelItemInteraction",
@@ -19,6 +20,7 @@
     "DoubleJump",
     "DropItemEvent",
     "EnderChestDepositableProperty",
+    "EntityGetBoundingBox",
     "ExplosiveProjectileEntityToggleAddParticles",
     "FluidBlockBreakCancel",
     "GetItemSettingsComponent",
@@ -28,6 +30,7 @@
     "LightweightKnockbackModifier",
     "LivingEntityAttributesMixin",
     "ModifyAppliedDamageMixin",
+    "MorphBoundingBox",
     "MostRecentDamage",
     "NoBlockDropTag",
     "OnBlockPlacedEventTrigger",

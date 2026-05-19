@@ -660,6 +660,14 @@ public final class SocWarsLib {
         return new Vec3d(Math.round(vector.x), Math.round(vector.y), Math.round(vector.z));
     }
 
+    public static Vec3d floor(Vec3d vector) {
+        return new Vec3d(Math.floor(vector.x), Math.floor(vector.y), Math.floor(vector.z));
+    }
+
+    public static Vec3d floorXZ(Vec3d vector) {
+        return new Vec3d(Math.floor(vector.x), vector.y, Math.floor(vector.z));
+    }
+
     public static Vec3d modulo(Vec3d vector, double modulus) {
         return new Vec3d(vector.x % modulus, vector.y % modulus, vector.z % modulus);
     }
