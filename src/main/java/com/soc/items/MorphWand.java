@@ -41,7 +41,7 @@ public class MorphWand extends Item implements CancelsBlockInteraction {
 				final boolean allowMorph = ModEvents.ON_PLAYER_MORPHED.invoker().onPlayerMorphed(serverPlayer, morph);
 				if (allowMorph) {
 					PlayerDataManager.getPlayerData(serverPlayer).setMorph(context.getWorld(), morph);
-					return ActionResult.SUCCESS_SERVER;
+					return ActionResult.SUCCESS;
 				} else {
 					return ActionResult.FAIL;
 				}
