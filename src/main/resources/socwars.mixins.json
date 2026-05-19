@@ -26,6 +26,7 @@
     "GetItemSettingsComponent",
     "GetItemSettingsComponentsMap",
     "HungerTweaks",
+    "JadeBlockMorphSpoof",
     "JadeCrashFix",
     "LightweightKnockbackModifier",
     "LivingEntityAttributesMixin",
