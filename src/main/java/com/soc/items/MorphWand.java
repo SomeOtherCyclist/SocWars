@@ -5,11 +5,13 @@ import com.soc.items.util.CancelsBlockInteraction;
 import com.soc.items.util.ItemGroups;
 import com.soc.items.util.ModItems;
 import com.soc.player.PlayerDataManager;
+import com.soc.util.BlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
@@ -37,6 +39,10 @@ public class MorphWand extends Item implements CancelsBlockInteraction {
 				clearMorph(serverPlayer.getWorld(), serverPlayer);
 			} else {
 				final BlockState morph = context.getWorld().getBlockState(context.getBlockPos());
+				if (morph.isIn(BlockTags.DISALLOW_MORPH)) {
+					serverPlayer.sendMessage(Text.literal("Nice try ;)"));
+					return ActionResult.FAIL;
+				}
 
 				final boolean allowMorph = ModEvents.ON_PLAYER_MORPHED.invoker().onPlayerMorphed(serverPlayer, morph);
 				if (allowMorph) {

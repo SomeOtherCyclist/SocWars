@@ -1,0 +1,9 @@
+{
+  "values": [
+    "minecraft:barrier",
+    "minecraft:light",
+    "minecraft:structure_void",
+    "socwars:display_block",
+    "socwars:collectible_block"
+  ]
+}
