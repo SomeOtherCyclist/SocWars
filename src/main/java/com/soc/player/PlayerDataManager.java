@@ -65,6 +65,10 @@ public class PlayerDataManager extends PersistentState {
         return getPersistentState(player.getWorld()).playerDataMap.computeIfAbsent(player.getUuid(), uuid2 -> new PlayerData());
     }
 
+    public static PlayerData getSideLocalPlayerData(PlayerEntity player) {
+        return getPlayerData((ServerPlayerEntity)player); //I'm gonna mixinto this on the client so this cast should never be a problem. Hopefully. Maybe it has issues with integrated servers. I don't know mate. Also yes I know this is disgusting
+    }
+
     public static PlayerDataManager getPersistentState(ServerWorld serverWorld) {
         final PlayerDataManager state = serverWorld.getServer().getOverworld().getPersistentStateManager().getOrCreate(STATE_TYPE);
         state.markDirty();

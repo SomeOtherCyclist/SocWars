@@ -14,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,12 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Objects;
 
 import static net.minecraft.client.render.entity.LivingEntityRenderer.getOverlay;
-import static net.minecraft.util.math.MathHelper.sign;
 
 @Mixin(PlayerEntityRenderer.class)
 abstract class RenderPlayerMorph extends LivingEntityRendererBaseMixin {
-	@Shadow public abstract Vec3d getPositionOffset(PlayerEntityRenderState playerEntityRenderState);
-
 	@Unique
 	private BlockRenderManager blockRenderManager;
 

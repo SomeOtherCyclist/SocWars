@@ -19,6 +19,7 @@
     "OpenKitBlockSelectionScreen",
     "OpenMapBlockScreen",
     "RenderPlayerMorph",
+    "SideLocalPlayerDataGetter",
     "TransparentGlassArmour",
     "TrueInvisibility"
   ],
