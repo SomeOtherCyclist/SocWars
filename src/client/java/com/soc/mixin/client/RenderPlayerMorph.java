@@ -4,6 +4,7 @@ import com.soc.player.ClientPlayerDataManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -13,6 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,6 +26,10 @@ import static net.minecraft.client.render.entity.LivingEntityRenderer.getOverlay
 
 @Mixin(EntityRenderDispatcher.class)
 abstract class RenderPlayerMorph {
+	@Shadow public Camera camera;
+
+	@Shadow public Entity targetedEntity;
+
 	@Inject(method = "render(Lnet/minecraft/client/render/entity/state/EntityRenderState;DDDLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V", at = @At("HEAD"), cancellable = true)
 	protected <S extends EntityRenderState> void socwars_livingEntityRender(S state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, EntityRenderer<?, S> renderer, CallbackInfo ci) {
 		if (state instanceof PlayerEntityRenderState playerState) {
@@ -34,7 +40,7 @@ abstract class RenderPlayerMorph {
 
 			if (morph != null && !thisEntity.isSpectator()) {
 				this.renderMorph(playerState, x, y, z, matrices, vertices, light, morph);
-				if (!player.isSpectator()) ci.cancel();
+				if (!((player.isCreative() && (this.camera.isThirdPerson() || thisEntity != player)) || player.isSpectator())) ci.cancel();
 			}
 		}
 	}
