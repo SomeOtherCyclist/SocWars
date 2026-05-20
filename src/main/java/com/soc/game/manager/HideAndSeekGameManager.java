@@ -2,6 +2,7 @@ package com.soc.game.manager;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.HideAndSeekTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
