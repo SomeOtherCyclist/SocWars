@@ -40,6 +40,7 @@ abstract class RenderPlayerMorph {
 
 			if (morph != null && !thisEntity.isSpectator()) {
 				this.renderMorph(playerState, x, y, z, matrices, vertices, light, morph);
+
 				if (!((player.isCreative() && (this.camera.isThirdPerson() || thisEntity != player)) || player.isSpectator())) ci.cancel();
 			}
 		}
@@ -48,20 +49,24 @@ abstract class RenderPlayerMorph {
 	@Unique
 	private void renderMorph(PlayerEntityRenderState state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, BlockState morph) {
 		matrices.push();
-		matrices.translate(x, y, z);
 		matrices.translate(morph.getModelOffset(new BlockPos((int)state.x, (int)state.y, (int)state.z)));
 
 		if (state.isInSneakingPose) {
 			final double xOffset = state.x >= 0d ? -state.x % 1d : -state.x % 1d - 1d;
 			final double yOffset = state.y >= -0.5d ? (-state.y - 0.5d) % 1d + 0.5d : (-state.y - 0.5d) % 1d - 0.5d;
 			final double zOffset = state.z >= 0d ? -state.z % 1d : -state.z % 1d - 1d;
-			matrices.translate(xOffset, yOffset, zOffset);
+			matrices.translate(x + xOffset, y + yOffset, z + zOffset);
 		} else {
-			matrices.translate(-0.5d, 0d, -0.5d);
+			matrices.translate(x - 0.5d, y, z - 0.5d);
 		}
 
 		MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(morph, matrices, vertices, light, getOverlay(state, 0f));
 
 		matrices.pop();
+	}
+
+	@Unique
+	private static void a(ClientPlayerEntity player, Entity thisEntity) {
+		if (thisEntity.getBoundingBox().intersects(null, null));
 	}
 }

@@ -11,21 +11,30 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static com.soc.lib.SocWarsLib.floorXZ;
+import static java.lang.Math.floor;
 
 @Mixin(PlayerEntity.class)
 abstract class MorphBoundingBox extends EntityGetBoundingBox {
 	@Unique
 	private static final Box FULL_BOX = new Box(0d, 0d, 0d, 1d, 1d, 1d);
-	@Unique
-	private static final Vec3d HALF_OFFSET = new Vec3d(-0.5d, 0d, -0.5d);
 
 	@Override
 	protected void socwars_getBoundingBox(CallbackInfoReturnable<Box> cir) {
 		final PlayerData playerData = PlayerDataManager.getSideLocalPlayerData((PlayerEntity)(Object)this);
 		if (playerData != null && playerData.getMorph() != null) {
-			final VoxelShape collisionShape = playerData.getMorph().getOutlineShape(this.getWorld(), this.isSneaking() ? this.getBlockPos() : null);
-			final Box boundingBox = collisionShape.isEmpty() ? FULL_BOX : collisionShape.getBoundingBox().offset((this.isSneaking() ? floorXZ(this.getPos()) : this.getPos().add(HALF_OFFSET)));
+			final Vec3d thisPos = this.getPos();
+
+			final Box boundingBox;
+			final VoxelShape collisionShape;
+
+			if (this.isSneaking()) {
+				collisionShape = playerData.getMorph().getOutlineShape(this.getWorld(), this.getBlockPos());
+				boundingBox = collisionShape.isEmpty() ? FULL_BOX : collisionShape.getBoundingBox().offset(floor(thisPos.x), floor(thisPos.y), floor(thisPos.z));
+
+			} else {
+				collisionShape = playerData.getMorph().getOutlineShape(this.getWorld(), null);
+				boundingBox = collisionShape.isEmpty() ? FULL_BOX : collisionShape.getBoundingBox().offset(thisPos.x - 0.5d, thisPos.y, thisPos.z - 0.5d);
+			}
 			cir.setReturnValue(boundingBox.stretch(0d, -collisionShape.getMin(Direction.Axis.Y), 0d));
 		}
 	}
