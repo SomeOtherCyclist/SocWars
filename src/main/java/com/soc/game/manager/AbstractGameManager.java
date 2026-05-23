@@ -131,6 +131,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.map.spreadPlayers(this.teams);
 
         this.removePlayersVelocity();
+        this.removePlayersMorphs();
 
         this.assignPlayersToTeams();
         this.setGameMode(GameMode.ADVENTURE);
@@ -486,6 +487,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected final void removePlayersVelocity() {
         this.getPlayers().forEach(AbstractGameManager::removePlayerVelocity);
+    }
+
+    protected final void removePlayersMorphs() {
+        this.getPlayers().stream().map(PlayerDataManager::getPlayerData).forEach(playerData -> playerData.setMorph(this.world, null));
     }
 
     protected final void clearPlayerInventoriesAndEnderChests() {

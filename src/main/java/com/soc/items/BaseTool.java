@@ -14,6 +14,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.util.Rarity;
 
 import java.util.List;
 
@@ -41,18 +42,18 @@ public class BaseTool extends Item {
         addItemToGroupsAndBaseItemGroup(FISHAXE, ItemGroups.TOOLS);
     }
 
-    public static final Item STONE_SHEARS = ModItems.register("stone_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.STONE)).enchantable(5));
-    public static final Item DIAMOND_SHEARS = ModItems.register("diamond_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.DIAMOND)).enchantable(10));
+    public static final Item STONE_SHEARS = ModItems.register("stone_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.STONE)).enchantable(5).maxDamage(ToolMaterial.STONE.durability()));
+    public static final Item DIAMOND_SHEARS = ModItems.register("diamond_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.DIAMOND)).enchantable(10).maxDamage(ToolMaterial.DIAMOND.durability()));
     public static final Item EMERALD_PICKAXE = ModItems.register("emerald_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.EMERALD, 1f, -2.8f));
     public static final Item EMERALD_AXE = ModItems.register("emerald_axe", BaseTool::new, new Settings().axe(ToolMaterials.EMERALD, 5f, -3f));
     public static final Item UNOBTANIUM_PICKAXE = ModItems.register("unobtanium_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.UNOBTANIUM, 1f, -2.8f));
     public static final Item UNOBTANIUM_AXE = ModItems.register("unobtanium_axe", BaseTool::new, new Settings().axe(ToolMaterials.UNOBTANIUM, 5f, -3f));
-    public static final Item UNOBTANIUM_SHEARS = ModItems.register("unobtanium_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.UNOBTANIUM)).enchantable(30));
-    public static final Item BEDROCK_PICKAXE = ModItems.register("bedrock_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.BEDROCK, 1f, -2.8f));
-    public static final Item BEDROCK_AXE = ModItems.register("bedrock_axe", BaseTool::new, new Settings().axe(ToolMaterials.BEDROCK, 5f, -3f));
-    public static final Item THE_PICKAXE = ModItems.register("the_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.FISH, 1f, -2.8f));
-    public static final Item THE_AXE = ModItems.register("the_axe", BaseTool::new, new Settings().axe(ToolMaterials.FISH, 5f, -3f));
-    public static final Item THE_SHEARS = ModItems.register("the_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.FISH)).enchantable(50));
+    public static final Item UNOBTANIUM_SHEARS = ModItems.register("unobtanium_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.UNOBTANIUM)).enchantable(30).maxDamage(ToolMaterials.UNOBTANIUM.durability()));
+    public static final Item BEDROCK_PICKAXE = ModItems.register("bedrock_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.BEDROCK, 1f, -2.8f).rarity(Rarity.UNCOMMON));
+    public static final Item BEDROCK_AXE = ModItems.register("bedrock_axe", BaseTool::new, new Settings().axe(ToolMaterials.BEDROCK, 5f, -3f).rarity(Rarity.UNCOMMON));
+    public static final Item THE_PICKAXE = ModItems.register("the_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.FISH, 1f, -2.8f).rarity(Rarity.RARE));
+    public static final Item THE_AXE = ModItems.register("the_axe", BaseTool::new, new Settings().axe(ToolMaterials.FISH, 5f, -3f).rarity(Rarity.RARE));
+    public static final Item THE_SHEARS = ModItems.register("the_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.FISH)).enchantable(50).maxDamage(ToolMaterials.FISH.durability()).rarity(Rarity.RARE));
     public static final Item FISHAXE = ModItems.register("fishaxe", BaseTool::new, new Settings()
             .component(DataComponentTypes.TOOL, new ToolComponent(List.of(
                     ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)),
@@ -64,6 +65,7 @@ public class BaseTool extends Item {
             .component(DataComponentTypes.WEAPON, new WeaponComponent(1, 2.5f))
             .enchantable(50)
             .maxDamage(ToolMaterials.FISH.durability() * 3/2)
+            .rarity(Rarity.EPIC)
     );
 
     public static ToolComponent createShearsComponent(ToolMaterial toolMaterial) {

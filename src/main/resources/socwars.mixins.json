@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractBlockMixin",
+    "AccessDebugStickCycle",
     "AppendTooltipAtEnd",
     "BlockOffsetEvaluateNullPos",
     "BowInfinityFix",

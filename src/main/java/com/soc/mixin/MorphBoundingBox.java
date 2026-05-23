@@ -29,7 +29,7 @@ abstract class MorphBoundingBox extends EntityGetBoundingBox {
 
 			if (this.isSneaking()) {
 				collisionShape = playerData.getMorph().getOutlineShape(this.getWorld(), this.getBlockPos());
-				boundingBox = collisionShape.isEmpty() ? FULL_BOX : collisionShape.getBoundingBox().offset(floor(thisPos.x), floor(thisPos.y), floor(thisPos.z));
+				boundingBox = collisionShape.isEmpty() ? FULL_BOX : collisionShape.getBoundingBox().offset(floor(thisPos.x), thisPos.y, floor(thisPos.z));
 			} else {
 				collisionShape = playerData.getMorph().getOutlineShape(this.getWorld(), null);
 				boundingBox = collisionShape.isEmpty() ? FULL_BOX : collisionShape.getBoundingBox().offset(thisPos.x - 0.5d, thisPos.y, thisPos.z - 0.5d);

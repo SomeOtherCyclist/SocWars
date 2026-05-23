@@ -120,7 +120,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         this.map.getBedPositions().forEach((team, pos) -> {
             if (!this.teams.containsKey(team)) {
-                this.world.breakBlock(this.map.pos(pos).down(), false);
+                this.world.breakBlock(this.map.pos(pos), false);
             }
         });
     }
@@ -149,6 +149,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     @Override
     public void endGame(boolean immediate) {
         this.eventQueue.cancelEvents();
+        this.setGameMode(GameMode.SPECTATOR);
 
         final Collection<DyeColor> winningTeams = this.getWinningTeams();
 
@@ -274,6 +275,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        if (player.isSpectator()) return false;
+
         final DyeColor team = this.getTeam(player);
         if (!this.teamStatsMap.get(team).getTrapManager().onPlayerDeath(player, this)) return false;
 

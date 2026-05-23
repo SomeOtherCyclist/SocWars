@@ -27,4 +27,10 @@ public class PropHuntGameManager extends HideAndSeekGameManager {
 	private PropHuntGameMap getMap() {
 		return (PropHuntGameMap)this.map;
 	}
+
+	@Override
+	public void endGame(boolean immediate) {
+		this.removePlayersMorphs();
+		super.endGame(immediate);
+	}
 }

@@ -3,6 +3,7 @@ package com.soc.networking;
 import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
+import com.soc.items.util.OnAttackButtonPressed;
 import com.soc.networking.c2s.*;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -44,6 +45,9 @@ public class C2SReceivers {
 
                 context.player().sendMessage(KitBlockEntity.getKitSelectionMessage(payload.selectedGameTypes(), kitBlockEntity.getKit()));
             }
+        }));
+        ServerPlayNetworking.registerGlobalReceiver(OnAttackButtonPressedPayload.ID, ((payload, context) -> {
+            ((OnAttackButtonPressed)payload.stack().getItem()).onAttackButtonPressed(context.player());
         }));
     }
 }

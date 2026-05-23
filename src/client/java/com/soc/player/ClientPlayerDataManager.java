@@ -33,7 +33,7 @@ public class ClientPlayerDataManager {
     }
 
     public static PlayerData getPlayerData(UUID player) {
-        return instance == null ? null : instance.playerDataMap.get(player);
+        return instance == null ? null : instance.playerDataMap.computeIfAbsent(player, uuid -> new PlayerData());
     }
 
     @Nullable

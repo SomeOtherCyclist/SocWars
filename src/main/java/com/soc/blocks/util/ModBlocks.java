@@ -33,8 +33,8 @@ public interface ModBlocks {
     Block WHITER_CONCRETE = ModBlocks.register("whiter_concrete", Block::new, AbstractBlock.Settings.create().mapColor(DyeColor.WHITE).instrument(NoteBlockInstrument.BASS).sounds(BlockSoundGroup.STONE).requiresTool().strength(1.8f), true, ItemGroups.BLOCKS_KEY);
     Block JONGLE_LOG = ModBlocks.register("jongle_log", PillarBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
     Block JONGLE_PLANKS = ModBlocks.register("jongle_planks", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
-    Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2), true, ItemGroups.BLOCKS_KEY);
-    Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3), true, ItemGroups.BLOCKS_KEY);
+    Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2f), true, ItemGroups.BLOCKS_KEY);
+    Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3f), true, ItemGroups.BLOCKS_KEY);
     Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f), true, ItemGroups.BLOCKS_KEY);
     Block HARDENED_LAVA_BLOCK = ModBlocks.register("hardened_lava_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(50f, 1200f), settings -> settings.rarity(Rarity.RARE), ItemGroups.BLOCKS_KEY);
     Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(120f, 1200f), settings -> settings.rarity(Rarity.RARE), ItemGroups.BLOCKS_KEY);

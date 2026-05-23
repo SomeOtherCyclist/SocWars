@@ -24,6 +24,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -96,6 +97,8 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
     @Override
     public void endGame(boolean immediate) {
+        this.setGameMode(GameMode.SPECTATOR);
+
         this.playerMap.forEach((uuid, stats) -> {
             final Text message;
             final SoundEvent sound;
@@ -160,6 +163,8 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        if (player.isSpectator()) return false;
+
         super.onPlayerDeath(player, source, amount);
 
         final int livesRemaining = this.playerMap.get(player.getUuid()).kill();

@@ -30,7 +30,7 @@ public abstract class BaseTable implements GetFields, TableName {
     }
 
     public final String createSqlTableRequest() {
-        Iterator<String> sqlFields = this.getValidFields(SqlHelper::getSqlFieldNameAndType); //Turn line below into
+        final Iterator<String> sqlFields = this.getValidFields(SqlHelper::getSqlFieldNameAndType); //Turn line below into
 
         final StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS " + this.getTableName() + " (" + sqlFields.next() + " primary key");
         sqlFields.forEachRemaining(sqlField -> builder.append(", ").append(sqlField));
@@ -81,7 +81,7 @@ public abstract class BaseTable implements GetFields, TableName {
     }
 
     public final String updateSqlRequest() {
-        Iterator<String> sqlValues = this.getValidFields(field -> getSqlUpdateValue(field, this));
+        final Iterator<String> sqlValues = this.getValidFields(field -> getSqlUpdateValue(field, this));
         sqlValues.next();
 
         StringBuilder builder = new StringBuilder("UPDATE ").append(this.getTableName()).append("\nSET ");

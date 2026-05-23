@@ -98,7 +98,7 @@ public class PlayerData {
 
     public void setMorph(World world, BlockState morph) {
         this.morph = morph;
-		PlayerDataManager.sendDataToAll(Objects.requireNonNull(world.getServer()));
+		ifNotNull(world.getServer(), PlayerDataManager::sendDataToAll);
     }
 
     public BlockState getMorph() {
