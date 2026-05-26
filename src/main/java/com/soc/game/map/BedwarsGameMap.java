@@ -25,10 +25,10 @@ import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "bwmap";
-    public static final Map<String, RangedIntField> MAP_FIELDS = Stream.of(
+    public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
             new RangedIntField("min_build_height", -384, 384, AbstractGameMap::setMinBuildY),
             new RangedIntField("max_build_height", -384, 384, AbstractGameMap::setMaxBuildY)
-    ).collect(Collectors.toMap(RangedIntField::name, Function.identity(), (a, b) -> a, LinkedHashMap::new));
+    );
 
     public static final String DIAMOND_GENS_KEY = "diamond_gens";
     public static final String EMERALD_GENS_KEY = "emerald_gens";
@@ -99,7 +99,7 @@ public class BedwarsGameMap extends AbstractGameMap {
         this.individualShops = individualShops;
         this.teamShops = teamShops;
 
-        fields.forEach((key, value) -> MAP_FIELDS.get(key).apply(this, value));
+        this.applyFields(fields, MAP_FIELDS);
     }
 
     private Map<DyeColor, BlockPos> makeBedPositions(Set<SpawnPosition> spawnPositions, Set<BlockPos> bedPositions) {

@@ -200,7 +200,7 @@ public class GamesManager {
         final AbstractGameManager<?, ?, ?> game = switch (queue) {
             case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
             case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
-            case PROP_HUNT -> null; //Maybe get around to writing some of the game logic for prop hunt
+            case PROP_HUNT -> new PropHuntGameManager(this.world, players, null, gameId);
             case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.world, players, null, gameId);
         };
 

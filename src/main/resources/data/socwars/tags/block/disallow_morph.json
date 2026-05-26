@@ -3,7 +3,9 @@
     "minecraft:barrier",
     "minecraft:light",
     "minecraft:structure_void",
+    "minecraft:tripwire",
     "socwars:display_block",
-    "socwars:collectible_block"
+    "socwars:collectible_block",
+    "#socwars:map_placeholder_without_beds"
   ]
 }

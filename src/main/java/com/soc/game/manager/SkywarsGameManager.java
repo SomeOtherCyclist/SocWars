@@ -194,6 +194,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     }
 
     @Override
+    @Nullable
     public Entity getWinningPlayer(@Nullable Entity except) {
         if (this.playerMap.size() == 1) return except;
 

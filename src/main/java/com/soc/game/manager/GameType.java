@@ -1,10 +1,7 @@
 package com.soc.game.manager;
 
 import com.mojang.serialization.Codec;
-import com.soc.game.map.BedwarsGameMap;
-import com.soc.game.map.HideAndSeekGameMap;
-import com.soc.game.map.RangedIntField;
-import com.soc.game.map.SkywarsGameMap;
+import com.soc.game.map.*;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -20,11 +17,12 @@ import java.util.Map;
 public enum GameType implements QueueProgress, StringIdentifiable {
     SKYWARS(1, 8, "skywars", SkywarsGameMap.FILE_EXTENSION, Map.of()),
     BEDWARS(1, 16, "bedwars", BedwarsGameMap.FILE_EXTENSION, BedwarsGameMap.MAP_FIELDS),
-    PROP_HUNT(2, 8, "prop_hunt", "phmap", Map.of()),
+    PROP_HUNT(1, 8, "prop_hunt", PropHuntGameMap.FILE_EXTENSION, PropHuntGameMap.MAP_FIELDS),
     HIDE_AND_SEEK(1, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION, Map.of());
 
     public static final PacketCodec<RegistryByteBuf, GameType> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, GameType::ordinal, GameType::fromOrdinal);
     public static final Codec<GameType> CODEC = StringIdentifiable.createCodec(GameType::values);
+
     private final int minPlayers;
     private final int maxPlayers;
     private final String name;

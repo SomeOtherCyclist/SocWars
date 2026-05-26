@@ -587,5 +587,6 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return this.world;
     }
 
+    @Nullable
     public abstract Entity getWinningPlayer(@Nullable Entity except);
 }

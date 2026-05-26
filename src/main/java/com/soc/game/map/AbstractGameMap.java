@@ -36,6 +36,9 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.soc.lib.SocWarsLib.iterateInCube;
 
@@ -349,6 +352,14 @@ public abstract class AbstractGameMap {
 
     public String getName() {
         return this.name;
+    }
+
+    public static Map<String, RangedIntField> buildFields(RangedIntField... fields) {
+        return Arrays.stream(fields).collect(Collectors.toMap(RangedIntField::name, Function.identity(), (a, b) -> a, LinkedHashMap::new));
+    }
+
+    public void applyFields(Map<String, Integer> fields, Map<String, RangedIntField> mapFields) {
+        fields.forEach((key, value) -> mapFields.get(key).apply(this, value));
     }
 
     public static void setMinBuildY(AbstractGameMap map, int minBuildY) {

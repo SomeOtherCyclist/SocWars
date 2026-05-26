@@ -231,7 +231,13 @@ public class MapBlockEntity extends BlockEntity {
                     this.mapCheckResults.getRelative(this.mapCheckResults.teamShops()),
                     this.fields
             );
-            case PROP_HUNT -> throw new IllegalArgumentException("prop hunt map saving not yet implemented, please try again later (or yell at Liam)");
+            case PROP_HUNT -> new PropHuntGameMap(
+                    structure,
+                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
+                    centrePos,
+                    blockProtectionOverlay,
+                    this.fields
+            );
             case HIDE_AND_SEEK -> new HideAndSeekGameMap(
                     structure,
                     this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
