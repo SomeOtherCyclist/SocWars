@@ -2,25 +2,17 @@ package com.soc.database.stats;
 
 import java.util.UUID;
 
-public class HideAndSeekTable extends BaseGameTable {
-    private int finds = 0;
-    public void grantFind() {
-        this.finds++;
-    }
-    private int founds = 0;
-    public void grantFound() {
-        this.founds++;
-    }
+public class HideAndSeekTable extends SeekingTable {
+	public HideAndSeekTable(UUID player) {
+		super(player);
+	}
 
-    public HideAndSeekTable(UUID player) {
-        super(player);
-    }
-    public HideAndSeekTable() {
-        this(null);
-    }
+	public HideAndSeekTable() {
+		super();
+	}
 
-    @Override
-    public String getTableName() {
-        return "HIDEANDSEEK";
-    }
+	@Override
+	public String getTableName() {
+		return "HIDEANDSEEK";
+	}
 }

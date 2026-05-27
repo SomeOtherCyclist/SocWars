@@ -2,17 +2,15 @@ package com.soc.game.manager;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.soc.database.stats.HideAndSeekTable;
+import com.soc.database.stats.SeekingTable;
 import com.soc.game.map.AbstractHidingGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.items.AttackFunctionWeapon;
 import com.soc.lib.Events;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.scoreboard.Team;
@@ -23,8 +21,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,9 +28,8 @@ import java.util.*;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.game.map.AbstractHidingGameMap.*;
-import static com.soc.lib.SocWarsLib.scaleEntity;
 
-public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMap, TABLE extends HideAndSeekTable, EVENT extends AbstractHidingGameManager<?, ?, ?>> extends AbstractGameManager<MAP, TABLE, EVENT> {
+public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMap, TABLE extends SeekingTable, EVENT extends AbstractHidingGameManager<?, ?, ?>> extends AbstractGameManager<MAP, TABLE, EVENT> {
 	protected AbstractHidingGameManager(GameType gameType, ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
 		super(gameType, world, players, spreadRules, gameId);
 	}
@@ -58,7 +53,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 			final Text message;
 			final SoundEvent sound;
-			final HideAndSeekTable dbTable = this.getDbTable(player);
+			final SeekingTable dbTable = this.getDbTable(player);
 			if (playerTeam == winningTeam) {
 				message = Text.translatable("game.hiding.win." + playerTeamSuffix);
 				sound = SoundEvents.ENTITY_PLAYER_LEVELUP;

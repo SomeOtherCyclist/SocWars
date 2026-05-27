@@ -1,10 +1,7 @@
 package com.soc.database;
 
 import com.soc.SocWars;
-import com.soc.database.stats.BedwarsTable;
-import com.soc.database.stats.HideAndSeekTable;
-import com.soc.database.stats.LobbyTable;
-import com.soc.database.stats.SkywarsTable;
+import com.soc.database.stats.*;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -52,10 +49,11 @@ public final class Database {
         new SkywarsTable().createSqlTable(STATEMENT);
         new BedwarsTable().createSqlTable(STATEMENT);
         new HideAndSeekTable().createSqlTable(STATEMENT);
+        new PropHuntTable().createSqlTable(STATEMENT);
 
         ServerPlayerEvents.JOIN.register(player -> {
                 if (player.getPermissionLevel() >= 2) {
-                    Text status = isConnected() ? Text.translatable("database.status.connected").formatted(Formatting.DARK_GREEN) : Text.translatable("database.status.disconnected").formatted(Formatting.RED);
+                    final Text status = isConnected() ? Text.translatable("database.status.connected").formatted(Formatting.DARK_GREEN) : Text.translatable("database.status.disconnected").formatted(Formatting.RED);
                     player.sendMessage(Text.translatable("database.status.op_message", status).formatted(Formatting.GOLD), false);
                 }
 
@@ -63,6 +61,7 @@ public final class Database {
                 new SkywarsTable(player.getUuid()).blankInsert(STATEMENT);
                 new BedwarsTable(player.getUuid()).blankInsert(STATEMENT);
                 new HideAndSeekTable(player.getUuid()).blankInsert(STATEMENT);
+                new PropHuntTable(player.getUuid()).blankInsert(STATEMENT);
         });
     }
 }

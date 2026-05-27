@@ -1,6 +1,8 @@
 package com.soc.game.manager;
 
 import com.soc.database.stats.HideAndSeekTable;
+import com.soc.database.stats.PropHuntTable;
+import com.soc.database.stats.SeekingTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
@@ -27,7 +29,7 @@ import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
 import static com.soc.lib.SocWarsLib.scaleEntity;
 
-public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameMap, HideAndSeekTable, PropHuntGameManager> {
+public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameMap, PropHuntTable, PropHuntGameManager> {
 	protected PropHuntGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules, int gameId) {
 		super(GameType.HIDE_AND_SEEK, world, players, spreadRules, gameId);
 	}
@@ -73,8 +75,8 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	}
 
 	@Override
-	protected Function<UUID, HideAndSeekTable> dbTableBuilder() {
-		return HideAndSeekTable::new;
+	protected Function<UUID, PropHuntTable> dbTableBuilder() {
+		return PropHuntTable::new;
 	}
 
 	@Override

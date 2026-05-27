@@ -24,6 +24,7 @@
     "EntityGetBoundingBox",
     "ExplosiveProjectileEntityToggleAddParticles",
     "FluidBlockBreakCancel",
+    "GetBlockEntityEvaluateNullPos",
     "GetItemSettingsComponent",
     "GetItemSettingsComponentsMap",
     "HungerTweaks",
