@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.events.ModEvents;
 import com.soc.networking.s2c.AllSyncPlayerDataPayload;
 import com.soc.networking.s2c.SinglePlayerDataPayload;
-import com.soc.util.Codecs;
+import com.soc.util.ModCodecs;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,7 +44,7 @@ public class PlayerDataManager extends PersistentState {
 	}
 
     public static final Codec<PlayerDataManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(Codecs.UUID, PlayerData.CODEC).fieldOf("player_data_map").forGetter(PlayerDataManager::getPlayerDataMap)
+            Codec.unboundedMap(ModCodecs.UUID, PlayerData.CODEC).fieldOf("player_data_map").forGetter(PlayerDataManager::getPlayerDataMap)
     ).apply(instance, PlayerDataManager::new));
 
     public static PersistentStateType<PlayerDataManager> STATE_TYPE = new PersistentStateType<>("player_data_manager", PlayerDataManager::new, CODEC, null);

@@ -6,9 +6,13 @@ import com.soc.game.Kit;
 import com.soc.game.manager.GameType;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.world.World;
 
@@ -20,27 +24,27 @@ public class PlayerData {
     //Maybe I should just replace this with a normal tuple codec. --> What is now the present me says yes that was a good idea it was much easier thank you.
     public static final PacketCodec<ByteBuf, PlayerData> PACKET_CODEC = PacketCodec.tuple(
             PacketCodecs.collection(ArrayList::new, PacketCodecs.BOOLEAN), PlayerData::getCollectibles,
-            PacketCodecs.optional(com.soc.networking.PacketCodecs.BLOCK_STATE), playerData -> Optional.ofNullable(playerData.morph),
+            PacketCodecs.optional(Morph.PACKET_CODEC), playerData -> Optional.ofNullable(playerData.morph),
             PlayerData::new
     );
 
     public static final PacketCodec<ByteBuf, PlayerData> ALL_SYNC_PACKET_CODEC = PacketCodec.tuple(
-			PacketCodecs.optional(com.soc.networking.PacketCodecs.BLOCK_STATE), playerData -> Optional.ofNullable(playerData.morph),
+			PacketCodecs.optional(Morph.PACKET_CODEC), playerData -> Optional.ofNullable(playerData.morph),
             PlayerData::new
     );
 
     public static final Codec<PlayerData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(Codec.BOOL).fieldOf("collectibles").orElse(new ArrayList<>()).forGetter(PlayerData::getCollectibles),
             Codec.unboundedMap(GameType.CODEC, Kit.CODEC).fieldOf("equipped_kits").orElse(new HashMap<>()).forGetter(playerData -> playerData.equippedKits),
-            Codecs.optional(BlockState.CODEC).fieldOf("morph").orElse(null).forGetter(playerData -> Optional.ofNullable(playerData.morph))
+            Codecs.optional(Morph.CODEC).fieldOf("morph").orElse(null).forGetter(playerData -> Optional.ofNullable(playerData.morph))
     ).apply(instance, PlayerData::new));
 
     private List<Boolean> collectibles;
     private Map<GameType, Kit> equippedKits;
-    private BlockState morph;
+    private Morph morph;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, Optional<BlockState> morph) {
+    public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, Optional<Morph> morph) {
         this.collectibles = new ArrayList<>(collectibles);
         this.equippedKits = new HashMap<>(equippedKits);
         this.morph = morph.orElse(null);
@@ -51,7 +55,7 @@ public class PlayerData {
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public PlayerData(List<Boolean> collectibles, Optional<BlockState> morph) {
+    public PlayerData(List<Boolean> collectibles, Optional<Morph> morph) {
         this(collectibles, new HashMap<>(), morph);
     }
 
@@ -60,7 +64,7 @@ public class PlayerData {
     }
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	public PlayerData(Optional<BlockState> morph) {
+	public PlayerData(Optional<Morph> morph) {
 		this(new ArrayList<>(), new HashMap<>(), morph);
 	}
 
@@ -96,12 +100,17 @@ public class PlayerData {
         }
     }
 
-    public void setMorph(World world, BlockState morph) {
-        this.morph = morph;
+    public void setMorph(World world, BlockState morph, PlayerEntity player) {
+        this.morph = morph == null ? null : Morph.of(morph, world);
+        if (this.morph == null) {
+            Objects.requireNonNull(player.getAttributeInstance(EntityAttributes.MAX_HEALTH)).removeModifier(Morph.HEALTH_MODIFIER_ID);
+        } else {
+            Objects.requireNonNull(player.getAttributeInstance(EntityAttributes.MAX_HEALTH)).overwritePersistentModifier(new EntityAttributeModifier(Morph.HEALTH_MODIFIER_ID, this.morph.health() - 20f, EntityAttributeModifier.Operation.ADD_VALUE));
+        }
 		ifNotNull(world.getServer(), PlayerDataManager::sendDataToAll);
     }
 
-    public BlockState getMorph() {
+    public Morph getMorph() {
         return this.morph;
     }
 

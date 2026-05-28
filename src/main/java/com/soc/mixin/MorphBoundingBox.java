@@ -4,9 +4,7 @@ import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -24,17 +22,13 @@ abstract class MorphBoundingBox extends EntityGetBoundingBox {
 		if (playerData != null && playerData.getMorph() != null) {
 			final Vec3d thisPos = this.getPos();
 
-			final Box boundingBox;
-			final VoxelShape collisionShape;
+			final Box boundingBox = playerData.getMorph().boundingBox();
 
-			if (this.isSneaking()) {
-				collisionShape = playerData.getMorph().getOutlineShape(this.getWorld(), this.getBlockPos());
-				boundingBox = collisionShape.isEmpty() ? FULL_BOX : collisionShape.getBoundingBox().offset(floor(thisPos.x), thisPos.y, floor(thisPos.z));
-			} else {
-				collisionShape = playerData.getMorph().getOutlineShape(this.getWorld(), null);
-				boundingBox = collisionShape.isEmpty() ? FULL_BOX : collisionShape.getBoundingBox().offset(thisPos.x - 0.5d, thisPos.y, thisPos.z - 0.5d);
-			}
-			cir.setReturnValue(boundingBox.stretch(0d, -collisionShape.getMin(Direction.Axis.Y), 0d));
+			cir.setReturnValue(
+					this.isSneaking() ?
+					boundingBox.offset(floor(thisPos.x), thisPos.y, floor(thisPos.z)) :
+					boundingBox.offset(thisPos.x - 0.5d, thisPos.y, thisPos.z - 0.5d)
+			);
 		}
 	}
 }

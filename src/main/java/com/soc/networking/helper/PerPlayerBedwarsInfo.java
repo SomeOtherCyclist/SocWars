@@ -1,6 +1,7 @@
 package com.soc.networking.helper;
 
 import com.soc.game.manager.bedwars.PlayerStats;
+import com.soc.networking.ModPacketCodecs;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -9,7 +10,7 @@ import java.util.UUID;
 
 public final class PerPlayerBedwarsInfo {
     public static final PacketCodec<RegistryByteBuf, PerPlayerBedwarsInfo> PACKET_CODEC = PacketCodec.tuple(
-            com.soc.networking.PacketCodecs.UUID, PerPlayerBedwarsInfo::player,
+            ModPacketCodecs.UUID, PerPlayerBedwarsInfo::player,
             PacketCodecs.BOOLEAN, PerPlayerBedwarsInfo::isAlive,
             PerPlayerBedwarsInfo::new
     );

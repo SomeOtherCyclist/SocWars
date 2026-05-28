@@ -6,6 +6,7 @@ import com.soc.items.util.ItemGroups;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.OnAttackButtonPressed;
 import com.soc.mixin.AccessDebugStickCycle;
+import com.soc.player.Morph;
 import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
 import com.soc.util.BlockTags;
@@ -88,7 +89,7 @@ public class MorphWand extends Item implements CancelsBlockInteraction, OnAttack
 
 		final boolean allowMorph = ModEvents.ON_PLAYER_MORPHED.invoker().onPlayerMorphed(player, blockState);
 		if (allowMorph) {
-			PlayerDataManager.getPlayerData(player).setMorph(world, blockState);
+			PlayerDataManager.getPlayerData(player).setMorph(world, blockState, player);
 			return ActionResult.SUCCESS;
 		} else {
 			return ActionResult.FAIL;
@@ -96,16 +97,16 @@ public class MorphWand extends Item implements CancelsBlockInteraction, OnAttack
 	}
 
 	private static ActionResult clearMorph(World world, ServerPlayerEntity serverPlayer) {
-		PlayerDataManager.getPlayerData(serverPlayer).setMorph(world, null);
+		PlayerDataManager.getPlayerData(serverPlayer).setMorph(world, null, serverPlayer);
 		return ActionResult.SUCCESS;
 	}
 
 	private static void rotateMorph(World world, PlayerEntity player, boolean reverse) {
 		final PlayerData playerData = PlayerDataManager.getSideLocalPlayerData(player);
-		final BlockState morph = playerData.getMorph();
+		final Morph morph = playerData.getMorph();
 
-		if (morph != null) CYCLING_PROPERTIES.stream().filter(morph::contains).findFirst().ifPresent(property -> {
-			playerData.setMorph(world, AccessDebugStickCycle.cycle(morph, property, reverse));
+		if (morph != null) CYCLING_PROPERTIES.stream().filter(morph::hasProperty).findFirst().ifPresent(property -> {
+			playerData.setMorph(world, AccessDebugStickCycle.cycle(morph.blockState(), property, reverse), player);
 			player.getItemCooldownManager().set(player.getStackInHand(Hand.OFF_HAND), 3 * 20);
 		});
 	}

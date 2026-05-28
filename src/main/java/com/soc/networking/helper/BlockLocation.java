@@ -2,7 +2,7 @@ package com.soc.networking.helper;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.soc.networking.PacketCodecs;
+import com.soc.networking.ModPacketCodecs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.codec.PacketCodec;
@@ -16,8 +16,8 @@ import java.util.Optional;
 
 public record BlockLocation(RegistryKey<World> world, BlockPos pos) {
     public static final PacketCodec<ByteBuf, BlockLocation> PACKET_CODEC = PacketCodec.tuple(
-            PacketCodecs.WORLD_KEY, BlockLocation::world,
-            PacketCodecs.BLOCK_POS, BlockLocation::pos,
+            ModPacketCodecs.WORLD_KEY, BlockLocation::world,
+            ModPacketCodecs.BLOCK_POS, BlockLocation::pos,
             BlockLocation::new
     );
 

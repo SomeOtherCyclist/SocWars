@@ -1,7 +1,7 @@
 package com.soc.networking.s2c;
 
 import com.soc.SocWars;
-import com.soc.networking.PacketCodecs;
+import com.soc.networking.ModPacketCodecs;
 import com.soc.player.PlayerData;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -14,7 +14,7 @@ public record SinglePlayerDataPayload(UUID uuid, PlayerData playerData) implemen
     public static final Identifier PLAYER_DATA_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "single_player_data");
     public static final Id<SinglePlayerDataPayload> ID = new Id<>(PLAYER_DATA_PAYLOAD_ID);
     public static final PacketCodec<RegistryByteBuf, SinglePlayerDataPayload> CODEC = PacketCodec.tuple(
-            PacketCodecs.UUID, SinglePlayerDataPayload::uuid,
+            ModPacketCodecs.UUID, SinglePlayerDataPayload::uuid,
             PlayerData.PACKET_CODEC, SinglePlayerDataPayload::playerData,
             SinglePlayerDataPayload::new
     );

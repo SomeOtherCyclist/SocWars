@@ -1,7 +1,6 @@
 package com.soc.player;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +36,7 @@ public class ClientPlayerDataManager {
     }
 
     @Nullable
-    public static BlockState getMorph(UUID player) {
+    public static Morph getMorph(UUID player) {
         final PlayerData playerData = getPlayerData(player);
         return playerData == null ? null : playerData.getMorph();
     }

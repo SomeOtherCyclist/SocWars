@@ -11,6 +11,7 @@ import com.soc.lib.Events;
 import com.soc.networking.s2c.EventQueuePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
+import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
 import com.soc.util.BlockTags;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -490,7 +491,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected final void removePlayersMorphs() {
-        this.getPlayers().stream().map(PlayerDataManager::getPlayerData).forEach(playerData -> playerData.setMorph(this.world, null));
+        this.getPlayers().forEach(player -> PlayerDataManager.getPlayerData(player).setMorph(this.world, null, player));
     }
 
     protected final void clearPlayerInventoriesAndEnderChests() {

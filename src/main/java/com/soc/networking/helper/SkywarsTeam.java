@@ -1,5 +1,6 @@
 package com.soc.networking.helper;
 
+import com.soc.networking.ModPacketCodecs;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -9,7 +10,7 @@ import java.util.stream.Stream;
 
 public class SkywarsTeam implements GameTeam {
     public static final PacketCodec<RegistryByteBuf, SkywarsTeam> PACKET_CODEC = PacketCodec.tuple(
-            com.soc.networking.PacketCodecs.UUID, SkywarsTeam::getPlayer,
+            ModPacketCodecs.UUID, SkywarsTeam::getPlayer,
             PacketCodecs.INTEGER, team -> team.lives,
             SkywarsTeam::new
     );

@@ -2,9 +2,9 @@ package com.soc.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import com.soc.player.Morph;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
@@ -27,12 +27,12 @@ abstract class JadeBlockMorphSpoof implements IMixinConfigPlugin {
 		final EntityHitResult entityHitResult = (EntityHitResult)hitResult.get();
 		if (!(entityHitResult.getEntity() instanceof PlayerEntity playerEntity)) return;
 
-		final BlockState morph = PlayerDataManager.getSideLocalPlayerData(playerEntity).getMorph();
+		final Morph morph = PlayerDataManager.getSideLocalPlayerData(playerEntity).getMorph();
 		if (morph == null) return;
 
 		final BlockHitResult blockTarget = new BlockHitResult(entityHitResult.getPos(), Direction.DOWN, entityHitResult.getEntity().getBlockPos(), false);
 		hitResult.set(blockTarget);
-		accessor.set(WailaClientRegistration.instance().blockAccessor().blockState(morph).blockEntity((BlockEntity)null).hit(blockTarget).requireVerification().build());
+		accessor.set(WailaClientRegistration.instance().blockAccessor().blockState(morph.blockState()).blockEntity((BlockEntity)null).hit(blockTarget).requireVerification().build());
 	}
 
 	@Override
