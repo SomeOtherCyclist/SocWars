@@ -33,6 +33,10 @@ public interface ModBlocks {
     Block WHITER_CONCRETE = ModBlocks.register("whiter_concrete", Block::new, AbstractBlock.Settings.create().mapColor(DyeColor.WHITE).instrument(NoteBlockInstrument.BASS).sounds(BlockSoundGroup.STONE).requiresTool().strength(1.8f), true, ItemGroups.BLOCKS_KEY);
     Block JONGLE_LOG = ModBlocks.register("jongle_log", PillarBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
     Block JONGLE_PLANKS = ModBlocks.register("jongle_planks", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
+    Block BRICKCRETE = ModBlocks.register("brickcrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
+    Block BRICKCRETE_CORNER_LEFT = ModBlocks.register("brickcrete_corner_left", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
+    Block BRICKCRETE_CORNER_RIGHT = ModBlocks.register("brickcrete_corner_right", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
+
     Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2f), true, ItemGroups.BLOCKS_KEY);
     Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3f), true, ItemGroups.BLOCKS_KEY);
     Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f), true, ItemGroups.BLOCKS_KEY);

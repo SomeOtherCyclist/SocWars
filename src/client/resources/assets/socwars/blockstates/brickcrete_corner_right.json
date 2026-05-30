@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "socwars:block/brickcrete_corner_right/north"
+    },
+    "facing=east": {
+      "model": "socwars:block/brickcrete_corner_right/east"
+    },
+    "facing=south": {
+      "model": "socwars:block/brickcrete_corner_right/south"
+    },
+    "facing=west": {
+      "model": "socwars:block/brickcrete_corner_right/west"
+    }
+  }
+}

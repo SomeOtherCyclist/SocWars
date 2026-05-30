@@ -40,7 +40,7 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
     protected void onFinishCountdown() {
         this.map.spawnCages(false, HIDER_COLOUR);
         this.getPlayers(HIDER_COLOUR).forEach(hider -> {
-            hider.changeGameMode(GameMode.SURVIVAL);
+            hider.changeGameMode(GameMode.ADVENTURE);
             scaleEntity(hider, 0.75f);
         });
 
@@ -53,7 +53,7 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
         PrescheduledEvents.playCountdown(() -> {
             this.map.spawnCages(false, SEEKER_COLOUR);
             this.getPlayers(SEEKER_COLOUR).forEach(seeker -> {
-                seeker.changeGameMode(GameMode.SURVIVAL);
+                seeker.changeGameMode(GameMode.ADVENTURE);
 
                 final Optional<Vec3d> seekerSpawn = this.map.getSpawnPositionNoOffset(SEEKER_COLOUR).map(BlockPos::toCenterPos);
                 seekerSpawn.ifPresent(pos -> seeker.requestTeleport(pos.x, pos.y, pos.z));
@@ -77,16 +77,16 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
 
     @Override
     protected EventQueue<HideAndSeekGameManager> buildEventQueue() {
-        final EventQueue<HideAndSeekGameManager> hideAndSeekGameManagerEventQueue = super.buildEventQueue();
+        final EventQueue<HideAndSeekGameManager> eventQueue = super.buildEventQueue();
 
         for (int i = 1; i < 5; i++) {
-            hideAndSeekGameManagerEventQueue.addEvent(i * 60 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(player -> {
+            eventQueue.addEvent(i * 60 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(player -> {
                 this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));
             }), Text.translatable("events.hide_and_seek.ping." + i));
         }
-        hideAndSeekGameManagerEventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
+        eventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
 
-        return hideAndSeekGameManagerEventQueue;
+        return eventQueue;
     }
 }

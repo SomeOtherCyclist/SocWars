@@ -15,15 +15,14 @@ import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
 public record Morph(BlockState blockState, Box boundingBox, float health) {
-	public static final Box EMPTY_BOX = new Box(0d, 0d, 0d, 0d, 0d, 0d);
-
 	public static final Codec<Morph> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			BlockState.CODEC.fieldOf("block_state").orElse(null).forGetter(Morph::blockState),
-			ModCodecs.BOX.fieldOf("bounding_box").orElse(EMPTY_BOX).forGetter(Morph::boundingBox),
+			ModCodecs.BOX.fieldOf("bounding_box").orElse(VoxelShapes.fullCube().getBoundingBox()).forGetter(Morph::boundingBox),
 			Codecs.POSITIVE_FLOAT.fieldOf("health").orElse(20f).forGetter(Morph::health)
 	).apply(instance, Morph::new));
 
