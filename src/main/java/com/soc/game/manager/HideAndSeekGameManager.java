@@ -5,6 +5,7 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.AttackFunctionWeapon;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -88,5 +89,10 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
         eventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
 
         return eventQueue;
+    }
+
+    @Override
+    public void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
+        this.findPlayer(seeker, hider);
     }
 }

@@ -257,7 +257,7 @@ public class AttackFunctionWeapon extends Item {
     public static final Item SEEKING_STICK = ModItems.register("seeking_stick", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 GamesManager.getInstance().getGame(target).ifPresent(game -> {
                     if (game instanceof HideAndSeekGameManager hideAndSeekGameManager) {
-                        hideAndSeekGameManager.findPlayer(attacker, (ServerPlayerEntity)target);
+                        hideAndSeekGameManager.tryFindPlayer(attacker, (ServerPlayerEntity)target);
                     }
                 });
             }), new Settings()

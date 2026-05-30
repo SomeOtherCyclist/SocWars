@@ -121,10 +121,15 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 		return teams;
 	}
 
-	public void findPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
+	public abstract void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider);
+
+	protected void findPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
 		hider.changeGameMode(GameMode.SPECTATOR);
-		hider.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(hider.getId(), hider.getPos().subtract(seeker.getPos()).normalize().multiply(2.5d)));
-		hider.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.hiding.found", seeker.getDisplayName())));
+
+		if (seeker != null) {
+			hider.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(hider.getId(), hider.getPos().subtract(seeker.getPos()).normalize().multiply(2.5d)));
+			hider.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.hiding.found", seeker.getDisplayName())));
+		}
 		this.getDbTable(hider).grantFound();
 
 		if (seeker instanceof ServerPlayerEntity seekerEntity) {
@@ -132,8 +137,8 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 			this.getDbTable(seeker).grantFind();
 		}
 
-		super.teams.remove(HIDER_COLOUR, hider.getUuid());
-		super.teams.put(FOUND_COLOUR, hider.getUuid());
+		this.teams.remove(HIDER_COLOUR, hider.getUuid());
+		this.teams.put(FOUND_COLOUR, hider.getUuid());
 
 		if (this.getAlivePlayers().isEmpty()) {
 			this.endGame(false, SEEKER_COLOUR);

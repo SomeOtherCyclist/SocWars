@@ -9,6 +9,8 @@ import com.soc.game.map.SpreadRules;
 import com.soc.items.AttackFunctionWeapon;
 import com.soc.items.MorphWand;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -30,6 +32,7 @@ import java.util.function.Function;
 
 import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
+import static com.soc.lib.SocWarsLib.getPlayerAttacker;
 
 public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameMap, PropHuntTable, PropHuntGameManager> {
 	protected PropHuntGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules, int gameId) {
@@ -68,6 +71,21 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	}
 
 	@Override
+	public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+		if (player.isSpectator()) return false;
+
+		healPlayer(player);
+
+		if (this.getTeam(player) == SEEKER_COLOUR) {
+			this.endGame(false, HIDER_COLOUR);
+		} else {
+			this.findPlayer(getPlayerAttacker(player).orElse(null), player);
+		}
+
+		return false;
+	}
+
+	@Override
 	protected PropHuntGameMap buildMap() {
 		final Optional<PropHuntGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), PropHuntGameMap::fromNbt, PropHuntGameMap.FILE_EXTENSION);
 
@@ -99,5 +117,10 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 		eventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
 
 		return eventQueue;
+	}
+
+	@Override
+	public void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
+
 	}
 }
