@@ -90,7 +90,7 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 
 	@Override
 	protected PropHuntGameMap buildMap() {
-		final Optional<PropHuntGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), PropHuntGameMap::fromNbt, PropHuntGameMap.FILE_EXTENSION);
+		final Optional<PropHuntGameMap> map = AbstractGameMap.loadRandomMap(this.world, this.generateCentrePosition(), PropHuntGameMap::fromNbt, PropHuntGameMap.FILE_EXTENSION);
 
 		if (map.isEmpty()) throw new IllegalStateException("No Prop Hunt map found");
 		return map.get();

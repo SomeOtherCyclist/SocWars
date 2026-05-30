@@ -89,7 +89,7 @@ public abstract class AbstractGameMap {
         this.absoluteCentrePos = absoluteCentrePos;
         this.blockProtectionOverlay = blockProtectionOverlay;
         this.world = world;
-        this.name = file == null ? null : file.getName().split("\\.")[0]; //Figure out a system for this properly
+        this.name = file == null ? null : file.getName().split("\\.")[0]; //TODO: Figure out a system for this properly
 
         this.minBuildY = minBuildY + this.absoluteCentrePos.getY();
         this.maxBuildY = maxBuildY + this.absoluteCentrePos.getY();

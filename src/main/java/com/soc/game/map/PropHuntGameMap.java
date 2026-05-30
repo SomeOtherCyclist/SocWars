@@ -29,7 +29,7 @@ public class PropHuntGameMap extends AbstractHidingGameMap {
 	);
 
 	private final Set<Block> disallowedMorphs;
-	private float minBlockSize;
+	private float minBlockSize = 0f;
 
 	public PropHuntGameMap(
 			StructureTemplate structure,
