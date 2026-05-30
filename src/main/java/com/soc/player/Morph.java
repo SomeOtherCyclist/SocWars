@@ -50,9 +50,12 @@ public record Morph(BlockState blockState, Box boundingBox, float health) {
 	}
 
 	private static float calculateMaxHealth(BlockState blockState, BlockView world) {
+		return (float)Math.clamp(Math.sqrt(calculateBlockVolume(blockState, world)) * 20f, 2f, 40f);
+	}
+
+	public static double calculateBlockVolume(BlockState blockState, BlockView world) {
 		final VoxelShape shape = getShape(blockState, world);
-		final double volume = shape.getBoundingBoxes().stream().map(Morph::getBoxVolume).reduce(0d, Double::sum);
-		return (float)Math.clamp(Math.sqrt(volume) * 20f, 2f, 40f);
+		return shape.getBoundingBoxes().stream().map(Morph::getBoxVolume).reduce(0d, Double::sum);
 	}
 
 	private static VoxelShape getShape(BlockState blockState, BlockView world) {

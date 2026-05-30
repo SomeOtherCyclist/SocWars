@@ -411,6 +411,7 @@
   "game.hiding.win.hider": "Violent §mtax§r seeker evasion",
   "game.hiding.lose.seeker": "Seek better next time lmao",
   "game.hiding.lose.hider": "Have you tried hiding?",
+  "game.prop_hunt.deny_morph": "This block is too small! It must be at least %s% of a full block!",
   "database.status.op_message": "Database status: %s",
   "database.status.connected": "Connected",
   "database.status.disconnected": "Not Connected",

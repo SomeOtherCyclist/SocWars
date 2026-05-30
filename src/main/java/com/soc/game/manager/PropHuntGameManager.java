@@ -1,8 +1,6 @@
 package com.soc.game.manager;
 
-import com.soc.database.stats.HideAndSeekTable;
 import com.soc.database.stats.PropHuntTable;
-import com.soc.database.stats.SeekingTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
@@ -67,7 +65,12 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 
 	@Override
 	public boolean onPlayerMorphed(ServerPlayerEntity player, BlockState morph) {
-		return this.map.allowsMorph(morph);
+		if (this.map.allowsMorph(morph, player.getWorld())) {
+			return true;
+		} else {
+			player.sendMessage(Text.translatable("game.prop_hunt.deny_morph", this.map.getMinimumMorphPercentage()));
+			return false;
+		}
 	}
 
 	@Override
@@ -108,8 +111,8 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	protected EventQueue<PropHuntGameManager> buildEventQueue() {
 		final EventQueue<PropHuntGameManager> eventQueue = super.buildEventQueue();
 
-		for (int i = 1; i < 30; i++) {
-			eventQueue.addEvent(i * 10 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(player -> {
+		for (int i = 1; i < 20; i++) {
+			eventQueue.addEvent(i * 15 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(player -> {
 				this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
 				player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));
 			}), Text.translatable("events.hide_and_seek.ping." + i));

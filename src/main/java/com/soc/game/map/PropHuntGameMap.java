@@ -10,6 +10,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -17,6 +18,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.soc.player.Morph.calculateBlockVolume;
 
 public class PropHuntGameMap extends AbstractHidingGameMap {
 	public static final String FILE_EXTENSION = "phmap";
@@ -59,8 +62,12 @@ public class PropHuntGameMap extends AbstractHidingGameMap {
 		this.applyFields(fields, MAP_FIELDS);
 	}
 
-	public boolean allowsMorph(BlockState morph) {
-		return !this.disallowedMorphs.contains(morph.getBlock());
+	public boolean allowsMorph(BlockState morph, World world) {
+		return !this.disallowedMorphs.contains(morph.getBlock()) && calculateBlockVolume(morph, world) >= this.minBlockSize;
+	}
+
+	public int getMinimumMorphPercentage() {
+		return (int)(this.minBlockSize * 100f);
 	}
 
 	public static Optional<PropHuntGameMap> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos, File file) {
