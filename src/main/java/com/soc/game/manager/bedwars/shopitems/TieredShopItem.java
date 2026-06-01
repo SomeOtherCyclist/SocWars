@@ -38,7 +38,7 @@ public abstract class TieredShopItem<INHERITOR> implements ShopItem<INHERITOR> {
     public boolean buy(PlayerEntity player, AbstractShopScreenHandler context) {
         if (this.tier == this.costs.size() || !this.getCost().canAfford(player)) return false;
 
-        this.takeItems(player);
+        this.takeItems(player, context);
 
         this.tier++;
         this.getIcon().setCount(Math.min(this.tier + 1, this.costs.size()));

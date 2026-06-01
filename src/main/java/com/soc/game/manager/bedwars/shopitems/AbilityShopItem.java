@@ -60,7 +60,7 @@ public class AbilityShopItem implements ShopItem<AbilityShopItem>, TooltipProvid
 
         final boolean queueHasSpace = player.getWorld().isClient ? context instanceof BedwarsTeamShopScreenHandler teamHandler && teamHandler.hasRoomInAbilities() : manager.buyAbility((ServerPlayerEntity)player, this.ability);
         if (queueHasSpace) {
-            this.takeItems(player);
+            this.takeItems(player, context);
             if (context instanceof BedwarsTeamShopScreenHandler teamShopScreenHandler) teamShopScreenHandler.onBuyAbility(this);
         }
         return queueHasSpace;

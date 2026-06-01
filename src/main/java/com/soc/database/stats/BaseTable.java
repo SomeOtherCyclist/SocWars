@@ -49,7 +49,7 @@ public abstract class BaseTable implements GetFields, TableName {
     }
 
     public final String blankInsertRequest() {
-        Iterator<String> sqlValues = this.getValidFields(field -> getSqlFieldValue(field, this));
+        final Iterator<String> sqlValues = this.getValidFields(field -> getSqlFieldValue(field, this));
 
         final StringBuilder builder = new StringBuilder(String.format("""
                 DO $$

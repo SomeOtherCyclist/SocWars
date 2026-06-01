@@ -75,7 +75,7 @@ public class TeamShopItem implements ShopItem<TeamShopItem>, TeamItem {
     @Override
     public boolean buy(PlayerEntity player, AbstractShopScreenHandler context) {
         final boolean gaveStack = this.giveStack(this.getStack(), player, OptionalInt.empty());
-        if (gaveStack) this.takeItems(player);
+        if (gaveStack) this.takeItems(player, context);
 
         return gaveStack;
     }

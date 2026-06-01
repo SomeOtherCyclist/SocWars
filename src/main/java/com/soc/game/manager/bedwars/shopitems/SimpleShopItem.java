@@ -69,7 +69,7 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem>, TooltipProvider
     @Override
     public boolean buy(PlayerEntity player, AbstractShopScreenHandler context) {
         final boolean gaveStack = this.giveStack(this.stack, player, OptionalInt.empty());
-        if (gaveStack) this.takeItems(player);
+        if (gaveStack) this.takeItems(player, context);
 
         return gaveStack;
     }

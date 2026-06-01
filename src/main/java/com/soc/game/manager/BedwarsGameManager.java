@@ -18,6 +18,7 @@ import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
 import com.soc.networking.s2c.TeamEliminatedPayload;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
+import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
@@ -534,4 +535,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         this.broadcastPacket(new TeamEliminatedPayload(team, GameType.BEDWARS));
         this.broadcast(Text.translatable("game.bedwars.eliminate.team", colouredTextFromColour(team)), false);
     }
+
+	public void onBuyItem(Cost cost, PlayerEntity player) {
+        ifNotNull(this.getDbTable(player), table -> table.spendCost(cost));
+	}
 }

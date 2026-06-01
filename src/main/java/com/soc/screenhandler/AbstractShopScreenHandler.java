@@ -3,6 +3,7 @@ package com.soc.screenhandler;
 import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
+import com.soc.resourcedata.deserialisation.Cost;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -50,4 +51,8 @@ public abstract class AbstractShopScreenHandler extends ScreenHandler {
     public abstract int getPlayerInventorySlotHeight();
 
     public abstract void setShopContents(BedwarsShopContents shopContents);
+
+    public void onBuyItem(Cost cost) {
+        this.manager.onBuyItem(cost, this.player);
+    }
 }

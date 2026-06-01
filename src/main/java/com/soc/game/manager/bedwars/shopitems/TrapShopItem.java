@@ -7,12 +7,10 @@ import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -62,7 +60,7 @@ public class TrapShopItem implements ShopItem<TrapShopItem>, TooltipProvider {
 
         final boolean queueHasSpace = player.getWorld().isClient ? context instanceof BedwarsTeamShopScreenHandler teamHandler && teamHandler.hasRoomInTraps() : manager.buyTrap((ServerPlayerEntity)player, this.trap);
         if (queueHasSpace) {
-            this.takeItems(player);
+            this.takeItems(player, context);
             if (context instanceof BedwarsTeamShopScreenHandler teamShopScreenHandler) teamShopScreenHandler.onBuyTrap(this);
         }
         return queueHasSpace;

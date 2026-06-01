@@ -102,7 +102,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
 
         if (gaveStack) {
             this.tier++;
-            this.takeItems(player);
+            this.takeItems(player, context);
             context.refreshItems();
         }
 
