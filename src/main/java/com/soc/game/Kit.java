@@ -2,6 +2,8 @@ package com.soc.game;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
@@ -60,7 +62,14 @@ public class Kit implements Inventory {
     }
 
     public void apply(ServerPlayerEntity player) {
-        this.items.forEach(item -> player.giveItemStack(item.copy()));
+        this.items.forEach(item -> {
+            final EquippableComponent equippableComponent = item.get(DataComponentTypes.EQUIPPABLE);
+            if (equippableComponent == null || !player.getEquippedStack(equippableComponent.slot()).isEmpty()) {
+                player.giveItemStack(item.copy());
+            } else {
+                player.equipStack(equippableComponent.slot(), item.copy());
+            }
+        });
         this.effects.forEach(effect -> player.addStatusEffect(new StatusEffectInstance(effect)));
     }
 
