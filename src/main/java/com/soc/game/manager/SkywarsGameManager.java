@@ -229,14 +229,27 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
     @Override
     protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) (this.getDbTable(player)).fallInVoid();
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) this.getDbTable(player).fallInVoid();
 
         final SkywarsTable targetTable = this.getDbTable(player);
 
-        targetTable.grantDeath();
+        final boolean isFinal = !this.canRespawn(player);
+
+        if (isFinal) {
+            targetTable.eliminate();
+        } else {
+            targetTable.grantDeath();
+        }
+
         getPlayerAttacker(player).ifPresent(killer -> {
             final SkywarsTable killerTable = this.getDbTable(killer);
-            if (killerTable != null) killerTable.grantKill();
+            if (killerTable == null) return;
+
+            if (isFinal) {
+                targetTable.grantElimination();
+            } else {
+                targetTable.grantKill();
+            }
         });
     }
 
