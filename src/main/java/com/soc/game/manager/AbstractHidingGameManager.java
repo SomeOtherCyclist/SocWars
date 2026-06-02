@@ -28,6 +28,7 @@ import java.util.*;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.game.map.AbstractHidingGameMap.*;
+import static com.soc.lib.SocWarsLib.ifNotNull;
 
 public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMap, TABLE extends SeekingTable, EVENT extends AbstractHidingGameManager<?, ?, ?>> extends AbstractGameManager<MAP, TABLE, EVENT> {
 	protected AbstractHidingGameManager(GameType gameType, ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
@@ -57,7 +58,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 			if (playerTeam == winningTeam) {
 				message = Text.translatable("game.hiding.win." + playerTeamSuffix);
 				sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
-				dbTable.win();
+				dbTable.win(this);
 			} else {
 				message = Text.translatable("game.hiding.lose." + playerTeamSuffix);
 				sound = SoundEvents.BLOCK_BELL_USE;
@@ -83,13 +84,22 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 		if (player.isSpectator()) return false;
 
 		healPlayer(player);
-		this.map.getSpawnPosition(this.getTeam(player.getUuid())).ifPresent(pos -> player.requestTeleport(pos.getX(), pos.getY(), pos.getZ()));
 
 		if (this.getTeam(player) == SEEKER_COLOUR) {
-			this.endGame(false, HIDER_COLOUR);
+			this.onSeekerDeath(player, source, amount);
+		} else {
+			this.onHiderDeath(player, source, amount);
 		}
 
 		return false;
+	}
+
+	protected abstract void onHiderDeath(ServerPlayerEntity player, DamageSource source, float amount);
+
+	protected void onSeekerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+		ifNotNull(this.getDbTable(source.getSource()), SeekingTable::killSeeker);
+
+		this.endGame(false, HIDER_COLOUR);
 	}
 
 	@Override
@@ -130,11 +140,11 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 			hider.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(hider.getId(), hider.getPos().subtract(seeker.getPos()).normalize().multiply(2.5d)));
 			hider.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.hiding.found", seeker.getDisplayName())));
 		}
-		this.getDbTable(hider).grantFound();
+		this.getDbTable(hider).find();
 
 		if (seeker instanceof ServerPlayerEntity seekerEntity) {
 			seekerEntity.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.hiding.find", hider.getDisplayName())));
-			this.getDbTable(seeker).grantFind();
+			this.getDbTable(seeker).findPlayer();
 		}
 
 		this.teams.remove(HIDER_COLOUR, hider.getUuid());

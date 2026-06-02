@@ -1,6 +1,7 @@
 package com.soc.game.manager;
 
 import com.soc.database.stats.PropHuntTable;
+import com.soc.database.stats.SeekingTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
@@ -31,6 +32,7 @@ import java.util.function.Function;
 import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
 import static com.soc.lib.SocWarsLib.getPlayerAttacker;
+import static com.soc.lib.SocWarsLib.ifNotNull;
 
 public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameMap, PropHuntTable, PropHuntGameManager> {
 	protected PropHuntGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules, int gameId) {
@@ -74,18 +76,15 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	}
 
 	@Override
-	public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
-		if (player.isSpectator()) return false;
+	protected void onHiderDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+		this.findPlayer(getPlayerAttacker(player).orElse(null), player);
+	}
 
-		healPlayer(player);
+	@Override
+	public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
+		ifNotNull(this.getDbTable(source.getSource()), PropHuntTable::hitPlayer);
 
-		if (this.getTeam(player) == SEEKER_COLOUR) {
-			this.endGame(false, HIDER_COLOUR);
-		} else {
-			this.findPlayer(getPlayerAttacker(player).orElse(null), player);
-		}
-
-		return false;
+		return super.onPlayerDamage(player, source, amount);
 	}
 
 	@Override

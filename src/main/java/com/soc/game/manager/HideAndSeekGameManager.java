@@ -6,6 +6,7 @@ import com.soc.game.map.HideAndSeekGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.AttackFunctionWeapon;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
@@ -61,6 +62,11 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
                 seeker.fallDistance = 0d;
             });
         }, this, 15, 20, SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(), true);
+    }
+
+    @Override
+    protected void onHiderDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        this.map.getSpawnPosition(this.getTeam(player.getUuid())).ifPresent(pos -> player.requestTeleport(pos.getX(), pos.getY(), pos.getZ()));
     }
 
     @Override
