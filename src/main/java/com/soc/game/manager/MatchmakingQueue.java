@@ -13,10 +13,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MatchmakingQueue<T extends QueueProgress> {
     private final HashMap<ServerPlayerEntity, T> queue = new HashMap<>();
 
-    public boolean queuePlayer(ServerPlayerEntity player, T queueType) {
+    public void queuePlayer(ServerPlayerEntity player, T queueType) {
         final boolean playerAlreadyInQueue = this.queue.containsKey(player);
         if (playerAlreadyInQueue && this.queue.get(player) == queueType) {
-            return false;
+            return;
         }
 
         if (playerAlreadyInQueue) ServerPlayNetworking.send(player, new LeaveQueuePayload(this.queue.get(player).toString()));
@@ -24,16 +24,13 @@ public class MatchmakingQueue<T extends QueueProgress> {
         ServerPlayNetworking.send(player, new JoinQueuePayload(queueType.toString()));
         this.queue.put(player, queueType);
 
-        return true;
     }
 
-    public boolean unqueuePlayer(ServerPlayerEntity player) {
-        if (!this.queue.containsKey(player)) return false;
-
-        ServerPlayNetworking.send(player, new LeaveQueuePayload(this.queue.toString()));
-        this.queue.remove(player);
-
-        return true;
+    public void unqueuePlayer(ServerPlayerEntity player) {
+        if (this.queue.containsKey(player)) {
+            ServerPlayNetworking.send(player, new LeaveQueuePayload(this.queue.toString()));
+            this.queue.remove(player);
+        }
     }
 
     public void unqueuePlayers(Collection<ServerPlayerEntity> players) {
@@ -69,5 +66,9 @@ public class MatchmakingQueue<T extends QueueProgress> {
 
     public boolean isPlayerInQueue(ServerPlayerEntity player, T queueType) {
         return this.queue.get(player) == queueType;
+    }
+
+    public boolean isPlayerInQueue(ServerPlayerEntity player) {
+        return this.queue.containsKey(player);
     }
 }

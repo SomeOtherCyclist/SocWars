@@ -19,7 +19,6 @@ public abstract class SeekingTable extends BaseGameTable {
         this.wins++;
         this.hiderWins++;
     }
-
     public void win(AbstractHidingGameManager<?, ?, ?> manager) {
         final DyeColor playerColour = manager.getTeam(this.player);
 

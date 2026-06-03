@@ -11,10 +11,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItem;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -214,5 +211,9 @@ public class GamesManager {
 
     public void unqueuePlayer(ServerPlayerEntity player) {
         this.queue.unqueuePlayer(player);
+    }
+
+    public List<ServerPlayerEntity> getPlayersNotInGame() {
+        return this.world.getPlayers().stream().filter(player -> !this.queue.isPlayerInQueue(player)).toList();
     }
 }

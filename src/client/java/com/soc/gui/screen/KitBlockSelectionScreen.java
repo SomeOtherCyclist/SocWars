@@ -87,8 +87,6 @@ public class KitBlockSelectionScreen extends Screen {
 
     @Override
     protected void init() {
-        super.init();
-
         if (!this.initialised) {
             this.createWidgets();
             this.initialised = true;

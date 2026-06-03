@@ -656,6 +656,10 @@ public final class SocWarsLib {
         return mapEnumerate(collection.stream(), mapper);
     }
 
+    public static <I, O> Stream<O> mapEnumerate(I[] array, BiFunction<Integer, I, O> mapper) {
+        return mapEnumerate(Arrays.stream(array), mapper);
+    }
+
     public static Vec3d round(Vec3d vector) {
         return new Vec3d(Math.round(vector.x), Math.round(vector.y), Math.round(vector.z));
     }

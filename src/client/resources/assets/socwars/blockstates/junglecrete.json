@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "socwars:block/junglecrete/north"
+    },
+    "facing=east": {
+      "model": "socwars:block/junglecrete/east"
+    },
+    "facing=south": {
+      "model": "socwars:block/junglecrete/south"
+    },
+    "facing=west": {
+      "model": "socwars:block/junglecrete/west"
+    }
+  }
+}
