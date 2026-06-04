@@ -60,8 +60,9 @@ public class C2SReceivers {
             GamesManager.getInstance().setPlayerQueues(context.player(), payload.queues());
         });
         ServerPlayNetworking.registerGlobalReceiver(RequestOpenQueueScreenPayload.ID, (payload, context) -> {
-            if (!GamesManager.getInstance().isPlayerInGame(context.player())) {
-                ServerPlayNetworking.send(context.player(), new OpenQueueScreenPayload(GamesManager.getInstance().getPlayerQueues(context.player())));
+            final GamesManager gamesManager = GamesManager.getInstance();
+            if (!gamesManager.isPlayerInGame(context.player())) {
+                ServerPlayNetworking.send(context.player(), new OpenQueueScreenPayload(gamesManager.getPlayerQueues(context.player()), gamesManager.allowsMultiQueue()));
             }
         });
     }

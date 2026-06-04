@@ -21,7 +21,6 @@ import java.util.Map;
 import static com.soc.lib.SocWarsLib.*;
 
 public class QueueScreen extends Screen {
-	private static final boolean SINGLE_QUEUE = true;
 	private static final Map<GameType, Identifier> BACKGROUND_TEXTURES = Map.of(
 			GameType.SKYWARS, Identifier.of(SocWars.MOD_ID, "widget/game_icons/skywars"),
 			GameType.BEDWARS, Identifier.of(SocWars.MOD_ID, "widget/game_icons/bedwars"),
@@ -32,11 +31,12 @@ public class QueueScreen extends Screen {
 	private boolean initialised = false;
 
 	private final Map<GameType, Boolean> selectedGameTypes;
-
 	private List<ButtonWidget> queueButtons;
+	private final boolean allowsMultiQueue;
 
-	public QueueScreen(Collection<GameType> selectedGameTypes) {
+	public QueueScreen(Collection<GameType> selectedGameTypes, boolean allowsMultiQueue) {
 		super(Text.translatable(""));
+		this.allowsMultiQueue = allowsMultiQueue;
 
 		this.selectedGameTypes = HashMap.newHashMap(GameType.values().length);
 		for (GameType selectedGameType : selectedGameTypes) {
@@ -48,7 +48,7 @@ public class QueueScreen extends Screen {
 		this.queueButtons = mapEnumerate(GameType.values(), (i, gameType) -> ButtonWidget.builder(Text.empty(), widget -> {
 			boolean currentValue = this.selectedGameTypes.getOrDefault(gameType, false);
 
-			if (SINGLE_QUEUE) this.selectedGameTypes.clear();
+			if (!this.allowsMultiQueue) this.selectedGameTypes.clear();
 
 			this.selectedGameTypes.put(gameType, !currentValue);
 			//this.syncSelectedQueuesToServer();

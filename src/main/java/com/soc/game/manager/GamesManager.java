@@ -219,4 +219,8 @@ public class GamesManager {
     public boolean isPlayerInGame(ServerPlayerEntity player) {
         return this.playerGameLookup.get(player.getUuid()) != null;
     }
+
+    public boolean allowsMultiQueue() {
+        return this.queue.allowsMultiQueue();
+    }
 }

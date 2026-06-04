@@ -103,7 +103,7 @@ public class S2CReceivers {
 
     private static void queues() {
         ClientPlayNetworking.registerGlobalReceiver(OpenQueueScreenPayload.ID, (payload, context) -> {
-            MinecraftClient.getInstance().setScreen(new QueueScreen(payload.queues()));
+            MinecraftClient.getInstance().setScreen(new QueueScreen(payload.queues(), payload.allowsMultiQueue()));
         });
     }
 

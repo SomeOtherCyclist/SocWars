@@ -18,7 +18,7 @@ import static com.soc.lib.SocWarsLib.*;
 public class MatchmakingQueue {
     private final World world;
 
-    private final boolean allowMultiQueue = false; //TODO: Implement this
+    private final boolean allowMultiQueue = false;
 
     private final Multimap<GameType, ServerPlayerEntity> queue;
     private final HashMap<GameType, Long> queueCompletionTime;
@@ -32,6 +32,8 @@ public class MatchmakingQueue {
     }
 
     public void queuePlayer(ServerPlayerEntity player, GameType queueType) {
+        if (!this.allowMultiQueue) this.unqueuePlayer(player);
+
         this.queue.put(queueType, player);
         this.queueCompletionTime.putIfAbsent(queueType, this.world.getTime() + 30 * 20);
     }
@@ -101,6 +103,10 @@ public class MatchmakingQueue {
 
     public Set<ServerPlayerEntity> getLimitedPlayers(GameType queueType) {
         return this.queue.get(queueType).stream().limit(queueType.maxPlayers()).collect(Collectors.toSet());
+    }
+
+    public boolean allowsMultiQueue() {
+        return this.allowMultiQueue;
     }
 
     public QueueProgressPayload getProgressPayload() {
