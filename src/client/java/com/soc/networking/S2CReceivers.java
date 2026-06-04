@@ -7,6 +7,7 @@ import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import com.soc.gui.hud.sidebar.EventsHud;
 import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
 import com.soc.gui.screen.KitBlockCreationScreen;
+import com.soc.gui.screen.QueueScreen;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
@@ -43,6 +44,7 @@ import static com.soc.lib.SocWarsLib.randomCentredVec3d;
 
 public class S2CReceivers {
     public static void initialise() {
+        queues();
         player();
         genericGame();
         traps();
@@ -97,6 +99,12 @@ public class S2CReceivers {
                 kitBlockCreationScreen.setBlockEntity(kitBlockEntity);
             }
         }));
+    }
+
+    private static void queues() {
+        ClientPlayNetworking.registerGlobalReceiver(OpenQueueScreenPayload.ID, (payload, context) -> {
+            MinecraftClient.getInstance().setScreen(new QueueScreen(payload.queues()));
+        });
     }
 
     private static void player() {

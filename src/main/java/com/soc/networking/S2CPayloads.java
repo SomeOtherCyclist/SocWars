@@ -11,6 +11,7 @@ public class S2CPayloads {
     public static void initialise() {
         PayloadTypeRegistry.playS2C().register(SinglePlayerDataPayload.ID, SinglePlayerDataPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(QueueProgressPayload.ID, QueueProgressPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(OpenQueueScreenPayload.ID, OpenQueueScreenPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(AllSyncPlayerDataPayload.ID, AllSyncPlayerDataPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(AddVelocityPayload.ID, AddVelocityPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(JoinBedwarsPayload.ID, JoinBedwarsPayload.CODEC);

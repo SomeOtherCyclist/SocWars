@@ -6,6 +6,7 @@ import com.soc.game.manager.GameType;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.util.OnAttackButtonPressed;
 import com.soc.networking.c2s.*;
+import com.soc.networking.s2c.OpenQueueScreenPayload;
 import com.soc.networking.s2c.QueuePayload;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -60,7 +61,7 @@ public class C2SReceivers {
         });
         ServerPlayNetworking.registerGlobalReceiver(RequestOpenQueueScreenPayload.ID, (payload, context) -> {
             if (!GamesManager.getInstance().isPlayerInGame(context.player())) {
-
+                ServerPlayNetworking.send(context.player(), new OpenQueueScreenPayload(GamesManager.getInstance().getPlayerQueues(context.player())));
             }
         });
     }

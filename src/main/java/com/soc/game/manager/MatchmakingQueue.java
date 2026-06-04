@@ -18,6 +18,8 @@ import static com.soc.lib.SocWarsLib.*;
 public class MatchmakingQueue {
     private final World world;
 
+    private final boolean allowMultiQueue = false; //TODO: Implement this
+
     private final Multimap<GameType, ServerPlayerEntity> queue;
     private final HashMap<GameType, Long> queueCompletionTime;
     private final BiConsumer<GameType, Set<ServerPlayerEntity>> queueCompletionFunction;
@@ -46,19 +48,21 @@ public class MatchmakingQueue {
         }
     }
 
-    public void setPlayerQueues(ServerPlayerEntity player, Collection<GameType> queueTypes) {
+    public void unqueuePlayers(Collection<ServerPlayerEntity> players) {
         for (GameType queueType : GameType.values()) {
-            if (queueTypes.contains(queueType)) {
-                this.queue.put(queueType, player);
-            } else {
+            for (ServerPlayerEntity player : players) {
                 this.queue.remove(queueType, player);
+                if (this.queue.get(queueType).isEmpty()) this.queueCompletionTime.remove(queueType);
             }
         }
     }
 
-    public void unqueuePlayers(Collection<ServerPlayerEntity> players) {
+    public void setPlayerQueues(ServerPlayerEntity player, Collection<GameType> queueTypes) {
         for (GameType queueType : GameType.values()) {
-            for (ServerPlayerEntity player : players) {
+            if (queueTypes.contains(queueType)) {
+                this.queue.put(queueType, player);
+                this.queueCompletionTime.putIfAbsent(queueType, this.world.getTime() + 30 * 20);
+            } else {
                 this.queue.remove(queueType, player);
             }
         }
@@ -78,10 +82,6 @@ public class MatchmakingQueue {
 
     public Collection<GameType> getPlayerQueues(ServerPlayerEntity player) {
         return this.queue.asMap().entrySet().stream().filter(entry -> entry.getValue().contains(player)).map(Map.Entry::getKey).toList();
-    }
-
-    public QueueProgressPayload getProgressPayload() {
-        return new QueueProgressPayload(mapFromArray(GameType.values(), queueType -> new QueueProgress(this.queue.get(queueType).size(), this.queueCompletionTime.getOrDefault(queueType, -1L))));
     }
 
     public void checkQueues() {
@@ -106,5 +106,9 @@ public class MatchmakingQueue {
 
     public Set<ServerPlayerEntity> getLimitedPlayers(GameType queueType) {
         return this.queue.get(queueType).stream().limit(queueType.maxPlayers()).collect(Collectors.toSet());
+    }
+
+    public QueueProgressPayload getProgressPayload() {
+        return new QueueProgressPayload(mapFromArray(GameType.values(), queueType -> new QueueProgress(this.queue.get(queueType).size(), this.queueCompletionTime.getOrDefault(queueType, -1L))));
     }
 }

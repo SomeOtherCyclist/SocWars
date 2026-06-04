@@ -13,6 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.joml.Matrix3x2fStack;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,13 @@ public class QueueScreen extends Screen {
 
 	private List<ButtonWidget> queueButtons;
 
-	public QueueScreen(Text title) {
-		super(title);
+	public QueueScreen(Collection<GameType> selectedGameTypes) {
+		super(Text.translatable(""));
 
 		this.selectedGameTypes = HashMap.newHashMap(GameType.values().length);
+		for (GameType selectedGameType : selectedGameTypes) {
+			this.selectedGameTypes.put(selectedGameType, true);
+		}
 	}
 
 	private void createWidgets() {
