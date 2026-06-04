@@ -43,27 +43,22 @@ public class MatchmakingQueue {
 
     public void unqueuePlayer(ServerPlayerEntity player) {
         for (GameType queueType : GameType.values()) {
-            this.queue.remove(queueType, player);
-            if (this.queue.get(queueType).isEmpty()) this.queueCompletionTime.remove(queueType);
+            this.unqueuePlayer(player, queueType);
         }
     }
 
     public void unqueuePlayers(Collection<ServerPlayerEntity> players) {
-        for (GameType queueType : GameType.values()) {
-            for (ServerPlayerEntity player : players) {
-                this.queue.remove(queueType, player);
-                if (this.queue.get(queueType).isEmpty()) this.queueCompletionTime.remove(queueType);
-            }
+        for (ServerPlayerEntity player : players) {
+            this.unqueuePlayer(player);
         }
     }
 
     public void setPlayerQueues(ServerPlayerEntity player, Collection<GameType> queueTypes) {
         for (GameType queueType : GameType.values()) {
             if (queueTypes.contains(queueType)) {
-                this.queue.put(queueType, player);
-                this.queueCompletionTime.putIfAbsent(queueType, this.world.getTime() + 30 * 20);
+                this.queuePlayer(player, queueType);
             } else {
-                this.queue.remove(queueType, player);
+                this.unqueuePlayer(player, queueType);
             }
         }
     }
