@@ -4,11 +4,9 @@ import com.soc.lib.SocWarsLib;
 import com.soc.lib.json.Time;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class EventQueue<T extends AbstractGameManager<?, ?, ?>> {
     private final SortedSet<Event<T>> events;
@@ -32,7 +30,7 @@ public class EventQueue<T extends AbstractGameManager<?, ?, ?>> {
 
         while (time >= this.events.getFirst().time()) {
             Event<T> event = this.events.getFirst();
-            events.add(Text.translatable("event.name_and_time", event.name(), SocWarsLib.getTimeFromTicks(event.time(), false)));
+            events.add(Text.translatable("event.name_and_time", event.name(), SocWarsLib.getTimeFromSeconds(event.time(), false)));
         }
 
         return events;

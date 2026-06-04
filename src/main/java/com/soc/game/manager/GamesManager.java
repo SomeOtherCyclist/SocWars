@@ -5,7 +5,6 @@ import com.mojang.brigadier.suggestion.Suggestion;
 import com.soc.SocWars;
 import com.soc.events.ModEvents;
 import com.soc.game.map.SpreadRules;
-import com.soc.lib.SocWarsLib;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -16,7 +15,6 @@ import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 import java.util.*;
@@ -32,15 +30,12 @@ public class GamesManager {
     public static final int QUEUE_CHECK_INTERVAL = 20;
 
     private ServerWorld world;
+    private MatchmakingQueue queue;
 
     private final ArrayList<AbstractGameManager<?, ?, ?>> games = new ArrayList<>();
     private final ConcurrentHashMap<UUID, Integer> playerGameLookup = new ConcurrentHashMap<>();
 
-    private final MatchmakingQueue<GameType> queue = new MatchmakingQueue<>();
-    private final HashMap<GameType, Float> queueProgress = new HashMap<>();
-
     private GamesManager() {
-        for (GameType queue : GameType.values()) this.queueProgress.put(queue, 0f);
         this.initialiseEvents();
     }
 
@@ -51,8 +46,12 @@ public class GamesManager {
     }
 
     public void initialiseEvents() {
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> this.world = server.getOverworld());
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            this.world = server.getOverworld();
+            this.queue = new MatchmakingQueue(this.world, this::finishQueue);
+        });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.endAllGames());
+
         ServerPlayerEvents.LEAVE.register(player -> {
             if (!player.getWorld().getServer().isDedicated()) this.endAllGames();
         });
@@ -92,7 +91,7 @@ public class GamesManager {
 
     private void endAllGames() {
         this.games.forEach(game -> {
-                if (game != null) game.endGame(true);
+            if (game != null) game.endGame(true);
         });
     }
 
@@ -167,42 +166,8 @@ public class GamesManager {
         });
 
         if (this.world.getTime() % QUEUE_CHECK_INTERVAL == 0) { //Only update queues once per second
-            this.checkQueues();
+            this.queue.checkQueues();
         }
-    }
-
-    private void checkQueues() {
-        this.queueProgress.keySet().forEach(queueType -> {
-            final float currentProgress = this.queueProgress.get(queueType);
-            final float queueProgressDelta = this.queue.getQueueProgress(queueType) * QUEUE_CHECK_INTERVAL;
-
-            final Set<ServerPlayerEntity> players = this.queue.getPlayersInQueue(queueType).stream().limit(queueType.maxPlayers()).collect(Collectors.toSet()); //Cap the number of players to send into options game to the queueType's max player count
-
-            this.queueProgress.put(queueType, queueProgressDelta < Float.MIN_NORMAL || players.size() < queueType.minPlayers() ? 0f : currentProgress + queueProgressDelta); //Update the queueType progress of every queueType
-
-            final int remainingTime = (int)((QUEUE_PROGRESS_THRESHOLD - currentProgress) / queueProgressDelta);
-            players.forEach(player -> player.sendMessage(remainingTime > 1000f ? Text.translatable("hud.queue_not_starting", players.size(), queueType.minPlayers()) : Text.translatable("hud.queue_time_remaining", SocWarsLib.getTimeFromTicks(remainingTime, false)), true));
-
-            if (currentProgress >= QUEUE_PROGRESS_THRESHOLD) {
-                this.finishQueue(queueType, players);
-            }
-        });
-    }
-
-    private void finishQueue(GameType queue, Set<ServerPlayerEntity> players) {
-        this.queueProgress.put(queue, 0f); //Reset the queueType progress
-
-        final int gameId = this.getNewGameId();
-
-        final AbstractGameManager<?, ?, ?> game = switch (queue) {
-            case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
-            case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
-            case PROP_HUNT -> new PropHuntGameManager(this.world, players, null, gameId);
-            case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.world, players, null, gameId);
-        };
-
-        final boolean startedGame = this.startGame(game);
-        if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
     }
 
     public void queuePlayer(ServerPlayerEntity player, GameType queue) {
@@ -213,7 +178,45 @@ public class GamesManager {
         this.queue.unqueuePlayer(player);
     }
 
+    public void setPlayerQueues(ServerPlayerEntity player, Collection<GameType> queues) {
+        this.queue.setPlayerQueues(player, queues);
+    }
+
+    public boolean isPlayerInQueue(ServerPlayerEntity player) {
+        return this.queue.isPlayerInQueue(player);
+    }
+
+    public Collection<GameType> getPlayerQueues(ServerPlayerEntity player) {
+        return this.queue.getPlayerQueues(player);
+    }
+
     public List<ServerPlayerEntity> getPlayersNotInGame() {
         return this.world.getPlayers().stream().filter(player -> !this.queue.isPlayerInQueue(player)).toList();
+    }
+
+    private boolean finishQueue(GameType queueType, Set<ServerPlayerEntity> players) {
+        if (players.isEmpty()) return false;
+
+        final int gameId = this.getNewGameId();
+
+        final AbstractGameManager<?, ?, ?> game = switch (queueType) {
+            case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
+            case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
+            case PROP_HUNT -> new PropHuntGameManager(this.world, players, null, gameId);
+            case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.world, players, null, gameId);
+        };
+
+        final boolean startedGame = this.startGame(game);
+        if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
+
+        return true;
+    }
+
+    public boolean completeQueue(GameType queueType) { //Make this less gross maybe
+        return this.finishQueue(queueType, this.queue.getLimitedPlayers(queueType));
+    }
+
+    public boolean isPlayerInGame(ServerPlayerEntity player) {
+        return this.playerGameLookup.get(player.getUuid()) != null;
     }
 }

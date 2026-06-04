@@ -1,74 +1,110 @@
 package com.soc.game.manager;
 
-import com.soc.networking.s2c.JoinQueuePayload;
-import com.soc.networking.s2c.LeaveQueuePayload;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.soc.lib.SocWarsLib;
+import com.soc.networking.helper.QueueProgress;
+import com.soc.networking.s2c.QueueProgressPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
-public class MatchmakingQueue<T extends QueueProgress> {
-    private final HashMap<ServerPlayerEntity, T> queue = new HashMap<>();
+import static com.soc.lib.SocWarsLib.*;
 
-    public void queuePlayer(ServerPlayerEntity player, T queueType) {
-        final boolean playerAlreadyInQueue = this.queue.containsKey(player);
-        if (playerAlreadyInQueue && this.queue.get(player) == queueType) {
-            return;
-        }
+public class MatchmakingQueue {
+    private final World world;
 
-        if (playerAlreadyInQueue) ServerPlayNetworking.send(player, new LeaveQueuePayload(this.queue.get(player).toString()));
+    private final Multimap<GameType, ServerPlayerEntity> queue;
+    private final HashMap<GameType, Long> queueCompletionTime;
+    private final BiConsumer<GameType, Set<ServerPlayerEntity>> queueCompletionFunction;
 
-        ServerPlayNetworking.send(player, new JoinQueuePayload(queueType.toString()));
-        this.queue.put(player, queueType);
+    public MatchmakingQueue(World world, BiConsumer<GameType, Set<ServerPlayerEntity>> queueCompletionFunction) {
+		this.world = world;
+		this.queue = HashMultimap.create();
+        this.queueCompletionTime = new HashMap<>();
+		this.queueCompletionFunction = queueCompletionFunction;
+    }
 
+    public void queuePlayer(ServerPlayerEntity player, GameType queueType) {
+        this.queue.put(queueType, player);
+        this.queueCompletionTime.putIfAbsent(queueType, this.world.getTime() + 30 * 20);
+    }
+
+    public void unqueuePlayer(ServerPlayerEntity player, GameType queueType) {
+        this.queue.remove(queueType, player);
+        if (this.queue.get(queueType).isEmpty()) this.queueCompletionTime.remove(queueType);
     }
 
     public void unqueuePlayer(ServerPlayerEntity player) {
-        if (this.queue.containsKey(player)) {
-            ServerPlayNetworking.send(player, new LeaveQueuePayload(this.queue.toString()));
-            this.queue.remove(player);
+        for (GameType queueType : GameType.values()) {
+            this.queue.remove(queueType, player);
+            if (this.queue.get(queueType).isEmpty()) this.queueCompletionTime.remove(queueType);
+        }
+    }
+
+    public void setPlayerQueues(ServerPlayerEntity player, Collection<GameType> queueTypes) {
+        for (GameType queueType : GameType.values()) {
+            if (queueTypes.contains(queueType)) {
+                this.queue.put(queueType, player);
+            } else {
+                this.queue.remove(queueType, player);
+            }
         }
     }
 
     public void unqueuePlayers(Collection<ServerPlayerEntity> players) {
-        players.forEach(this.queue::remove);
+        for (GameType queueType : GameType.values()) {
+            for (ServerPlayerEntity player : players) {
+                this.queue.remove(queueType, player);
+            }
+        }
     }
 
-    public ArrayList<ServerPlayerEntity> getPlayersInQueue(T queueType) {
-        final ArrayList<ServerPlayerEntity> players = new ArrayList<>(this.queue.size()); //Probably not great for very large player counts but this should never deal with more than options few players at options time
-        this.queue.entrySet().iterator().forEachRemaining(entry -> {
-            if (entry.getValue() == queueType) players.add(entry.getKey());
-        });
-
-        return players;
+    public Collection<ServerPlayerEntity> getPlayersInQueue(GameType queueType) {
+        return this.queue.get(queueType);
     }
 
-    public int getNumPlayersInQueue(T queueType) {
-        final AtomicInteger count = new AtomicInteger();
-        this.queue.entrySet().iterator().forEachRemaining(entry -> {
-            if (entry.getValue() == queueType) count.getAndIncrement();
-        });
-
-        return count.get();
-    }
-
-    public float getQueueProgress(T queueType) {
-        int players = this.getNumPlayersInQueue(queueType);
-        return queueType.getQueueProgress(players);
-    }
-
-    public Collection<T> getQueues() {
-        return queue.values();
-    }
-
-    public boolean isPlayerInQueue(ServerPlayerEntity player, T queueType) {
-        return this.queue.get(player) == queueType;
+    public boolean isPlayerInQueue(ServerPlayerEntity player, GameType queueType) {
+        return this.queue.containsEntry(queueType, player);
     }
 
     public boolean isPlayerInQueue(ServerPlayerEntity player) {
-        return this.queue.containsKey(player);
+        return this.queue.containsValue(player);
+    }
+
+    public Collection<GameType> getPlayerQueues(ServerPlayerEntity player) {
+        return this.queue.asMap().entrySet().stream().filter(entry -> entry.getValue().contains(player)).map(Map.Entry::getKey).toList();
+    }
+
+    public QueueProgressPayload getProgressPayload() {
+        return new QueueProgressPayload(mapFromArray(GameType.values(), queueType -> new QueueProgress(this.queue.get(queueType).size(), this.queueCompletionTime.getOrDefault(queueType, -1L))));
+    }
+
+    public void checkQueues() {
+        for (GameType queueType : GameType.values()) {
+            final Set<ServerPlayerEntity> players = this.getLimitedPlayers(queueType);
+
+            ifNotNullElse(this.queueCompletionTime.get(queueType), time -> {
+                for (ServerPlayerEntity player : players) {
+                    player.sendMessage(Text.translatable("hud.queue_time_remaining", SocWarsLib.getTimeFromSeconds((time - this.world.getTime()) * 0.05f, false)), true);
+                }
+
+                if (this.world.getTime() > time) {
+                    this.queueCompletionFunction.accept(queueType, players);
+                }
+            }, () -> {
+                for (ServerPlayerEntity player : players) {
+                    player.sendMessage(Text.translatable("hud.queue_not_starting", players.size(), queueType.minPlayers()), true);
+                }
+            });
+        }
+    }
+
+    public Set<ServerPlayerEntity> getLimitedPlayers(GameType queueType) {
+        return this.queue.get(queueType).stream().limit(queueType.maxPlayers()).collect(Collectors.toSet());
     }
 }

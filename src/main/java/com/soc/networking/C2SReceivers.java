@@ -3,14 +3,17 @@ package com.soc.networking;
 import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
+import com.soc.game.manager.GamesManager;
 import com.soc.items.util.OnAttackButtonPressed;
 import com.soc.networking.c2s.*;
+import com.soc.networking.s2c.QueuePayload;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.util.math.BlockPos;
 
 public class C2SReceivers {
     public static void initialise() {
+        queues();
         ServerPlayNetworking.registerGlobalReceiver(MapBlockUpdatePayload.ID, (payload, context) -> {
             if (payload.getBlockEntity(context) instanceof MapBlockEntity mapBlockEntity) {
                 mapBlockEntity.setRegionSize(BlockPos.fromLong(payload.regionSize()).mutableCopy());
@@ -49,5 +52,16 @@ public class C2SReceivers {
         ServerPlayNetworking.registerGlobalReceiver(OnAttackButtonPressedPayload.ID, ((payload, context) -> {
             ((OnAttackButtonPressed)payload.stack().getItem()).onAttackButtonPressed(context.player());
         }));
+    }
+
+    private static void queues() {
+        ServerPlayNetworking.registerGlobalReceiver(QueuePayload.ID, (payload, context) -> {
+            GamesManager.getInstance().setPlayerQueues(context.player(), payload.queues());
+        });
+        ServerPlayNetworking.registerGlobalReceiver(RequestOpenQueueScreenPayload.ID, (payload, context) -> {
+            if (!GamesManager.getInstance().isPlayerInGame(context.player())) {
+
+            }
+        });
     }
 }

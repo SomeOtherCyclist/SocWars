@@ -7,14 +7,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
 import java.util.Map;
 
-public enum GameType implements QueueProgress, StringIdentifiable {
+public enum GameType implements StringIdentifiable {
     SKYWARS(1, 8, "skywars", SkywarsGameMap.FILE_EXTENSION, Map.of()),
     BEDWARS(1, 16, "bedwars", BedwarsGameMap.FILE_EXTENSION, BedwarsGameMap.MAP_FIELDS),
     PROP_HUNT(1, 8, "prop_hunt", PropHuntGameMap.FILE_EXTENSION, PropHuntGameMap.MAP_FIELDS),
@@ -51,15 +49,6 @@ public enum GameType implements QueueProgress, StringIdentifiable {
 
     public int maxPlayers() {
         return this.maxPlayers;
-    }
-
-    @Override
-    public float getQueueProgress(int playerCount) {
-        if (playerCount < this.minPlayers) return 0;
-
-        float offset = (float) this.maxPlayers / (8 * this.minPlayers);
-        float rawProgress = (playerCount - this.minPlayers + offset) / (this.maxPlayers - this.minPlayers + offset);
-        return (float) Math.pow(rawProgress, 2.5f);
     }
 
     public MutableText getVariantName() {

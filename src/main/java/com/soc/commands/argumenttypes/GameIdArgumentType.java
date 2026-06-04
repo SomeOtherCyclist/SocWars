@@ -1,4 +1,4 @@
-package com.soc.commands;
+package com.soc.commands.argumenttypes;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.StringReader;

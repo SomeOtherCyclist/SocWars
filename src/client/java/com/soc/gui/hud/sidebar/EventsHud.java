@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-import static com.soc.lib.SocWarsLib.getTimeFromTicks;
+import static com.soc.lib.SocWarsLib.getTimeFromSeconds;
 
 public class EventsHud implements VerticallyStackedHudComponent {
     public static final @NotNull Reference<EventsHud> INSTANCE = new Reference<>(null);
@@ -64,7 +64,7 @@ public class EventsHud implements VerticallyStackedHudComponent {
         for (int i = 0; i < 2; i++) {
             if (i < this.events.size()) {
                 final Event.ClientDisplayEvent event = this.events.get(i);
-                final Text text = Text.translatable("hud.upcoming_event", event.name(), getTimeFromTicks((event.time() + (this.startTime - time)) * 0.05f, false, TIME_COLOURS));
+                final Text text = Text.translatable("hud.upcoming_event", event.name(), getTimeFromSeconds((event.time() + (this.startTime - time)) * 0.05f, false, TIME_COLOURS));
                 drawContext.drawText(textRenderer, text, x + 8, y + 18 + i * 14, 0xffffffff, true);
             }
         }

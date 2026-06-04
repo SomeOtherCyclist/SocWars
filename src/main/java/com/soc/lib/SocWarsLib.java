@@ -421,7 +421,7 @@ public final class SocWarsLib {
         }
     }
 
-    public static Text getTimeFromTicks(float time, boolean includeTicks, int... colours) {
+    public static Text getTimeFromSeconds(float time, boolean includeTicks, int... colours) {
         final int minutes = (int)(time / 60);
         final int seconds = (int)time % 60;
 
@@ -595,6 +595,14 @@ public final class SocWarsLib {
 
     public static <T> void ifNotNull(@Nullable T o, Consumer<T> f) {
         if (o != null) f.accept(o);
+    }
+
+    public static <T> void ifNotNullElse(@Nullable T o, Consumer<T> f, Runnable r) {
+        if (o != null) {
+            f.accept(o);
+        } else {
+            r.run();
+        }
     }
 
     public static <T, U> U mapIfNotNull(@Nullable T o, Function<T, U> mapper, U def) {

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.soc.commands.argumenttypes.GameIdArgumentType;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.GamesManager;
 import net.minecraft.command.CommandRegistryAccess;

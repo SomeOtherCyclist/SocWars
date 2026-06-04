@@ -110,14 +110,13 @@ public class UseFunctionWeapon extends Item {
     }
 
     public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
-                float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
-                float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.5f;
+                final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
+                final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
+                final float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.5f;
 
                 user.addVelocity(user.getRotationVector().multiply(dashStrength));
 
-                ItemStack item = user.getStackInHand(hand);
-                item.damage(Math.round(pitchStrength * 10), user, hand);
+		        user.getStackInHand(hand).damage(Math.round(pitchStrength * 10), user, hand);
 
                 return ActionResult.SUCCESS;
             }), new Settings()
@@ -126,9 +125,9 @@ public class UseFunctionWeapon extends Item {
             .rarity(Rarity.RARE)
     );
     public static final Item VELOCITY_STAFF = ModItems.register("velocity_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
-                float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
-                float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.85f;
+                final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
+                final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
+                final float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 1.5f;
 
                 user.addVelocity(user.getRotationVector().multiply(dashStrength));
 
@@ -137,7 +136,7 @@ public class UseFunctionWeapon extends Item {
                 return ActionResult.SUCCESS;
             }), new Settings()
             .maxDamage(300)
-            .useCooldown(1.2f)
+            .useCooldown(2f)
             .rarity(Rarity.RARE)
     );
     public static final Item VEXING_STAFF = ModItems.register("vexing_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {

@@ -13,6 +13,7 @@ import com.soc.lib.Events;
 import com.soc.model.EntityModelLayers;
 import com.soc.networking.S2CReceivers;
 import com.soc.player.ClientPlayerDataManager;
+import com.soc.player.Hotkeys;
 import com.soc.renderer.*;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import com.soc.resourcedata.listeners.SkywarsLootData;
@@ -47,8 +48,6 @@ import static com.soc.blocks.blockentities.ModBlockEntities.*;
 
 @Environment(EnvType.CLIENT)
 public class SocWarsClient implements ClientModInitializer {
-	private static KeyBinding KEY_BINDING;
-	private static KeyBinding KEY_BINDING_2;
 
 	@Override
 	public void onInitializeClient() {
@@ -62,38 +61,12 @@ public class SocWarsClient implements ClientModInitializer {
 		S2CReceivers.initialise();
 		HandledScreens.initialise();
 		ClientPlayerDataManager.initialise();
+		Hotkeys.initialise();
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (!client.isIntegratedServerRunning()) {
 				Coroutines.getInstance().runCoroutines();
 				Events.getInstance().tryRunEvents();
-			}
-		});
-
-		KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.socwars.print_held_components",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_H,
-				"category.socwars.debug"
-		));
-
-		KEY_BINDING_2 = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.socwars.test",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_U,
-				"category.socwars.debug"
-		));
-
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (KEY_BINDING.wasPressed()) {
-				final ClientPlayerEntity player = client.player;
-				player.getStackInHand(Hand.MAIN_HAND).getComponents().forEach(component -> player.sendMessage(Text.literal(component.toString()), false));
-
-				final Map<Integer, SkywarsItemData> dataMap = SkywarsLootData.INSTANCE.getSkywarsItemData().getPoolsForKey(player.getStackInHand(Hand.MAIN_HAND).getItem());
-				dataMap.forEach((pool, data) -> player.sendMessage(Text.translatable("debug.skywars_item_weights", pool, data.weightT1(), data.weightT2(), data.weightT3(), data.weightT4()), false));
-			}
-			while (KEY_BINDING_2.wasPressed()) {
-				MinecraftClient.getInstance().setScreen(new QueueScreen(Text.of("aaa")));
 			}
 		});
 

@@ -25,7 +25,7 @@ abstract class MorphBoundingBox extends EntityGetBoundingBox {
 			final Box boundingBox = playerData.getMorph().boundingBox();
 
 			cir.setReturnValue(
-					this.isSneaking() ?
+					this.isInSneakingPose() ?
 					boundingBox.offset(floor(thisPos.x), thisPos.y, floor(thisPos.z)) :
 					boundingBox.offset(thisPos.x - 0.5d, thisPos.y, thisPos.z - 0.5d)
 			);

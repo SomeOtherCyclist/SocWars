@@ -1,10 +1,13 @@
 package com.soc.networking;
 
 import com.soc.networking.c2s.*;
+import com.soc.networking.s2c.QueuePayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class C2SPayloads {
     public static void initialise() {
+        PayloadTypeRegistry.playC2S().register(QueuePayload.ID, QueuePayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(RequestOpenQueueScreenPayload.ID, RequestOpenQueueScreenPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(MapBlockUpdatePayload.ID, MapBlockUpdatePayload.CODEC);
         PayloadTypeRegistry.playC2S().register(MapBlockStructureCheckPayload.ID, MapBlockStructureCheckPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(MapBlockSaveMapPayload.ID, MapBlockSaveMapPayload.CODEC);

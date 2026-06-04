@@ -21,6 +21,8 @@ abstract class EntityGetBoundingBox {
 
 	@Shadow public abstract boolean isSneaking();
 
+	@Shadow public abstract boolean isInSneakingPose();
+
 	@Inject(method = "getBoundingBox", at = @At("HEAD"), cancellable = true)
 	protected void socwars_getBoundingBox(CallbackInfoReturnable<Box> cir) {}
 }

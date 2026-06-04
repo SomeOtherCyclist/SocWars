@@ -17,12 +17,10 @@ import com.soc.networking.s2c.skywars.JoinSkywarsPayload;
 import com.soc.networking.s2c.skywars.LeaveSkywarsPayload;
 import com.soc.networking.s2c.skywars.SetTeamLivesPayload;
 import com.soc.player.ClientPlayerDataManager;
-import com.soc.player.PlayerData;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -51,12 +49,6 @@ public class S2CReceivers {
         bedwars();
         skywars();
 
-        ClientPlayNetworking.registerGlobalReceiver(JoinQueuePayload.ID, (payload, context) -> {
-                context.player().sendMessage(Text.translatable("queue.join", payload.queue()), false);
-        });
-        ClientPlayNetworking.registerGlobalReceiver(LeaveQueuePayload.ID, (payload, context) -> {
-                context.player().sendMessage(Text.translatable("queue.leave", payload.queue()), false);
-        });
         ClientPlayNetworking.registerGlobalReceiver(UpdateHotbarPayload.ID, (payload, context) -> {
             final PlayerEntity player = context.player();
             final PlayerScreenHandler screenHandler = player.playerScreenHandler;

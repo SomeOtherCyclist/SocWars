@@ -565,7 +565,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public static BiPredicate<BlockPos, BlockState> getBlockDamagePredicate(World world, boolean blockDamage, @Nullable Entity causingEntity) {
-        return (pos, state) -> getBlockDamageThreshold(world, blockDamage, causingEntity).apply(pos, state) > 0f;
+        return (pos, state) -> getBlockDamageThreshold(world, blockDamage, causingEntity).apply(pos, state) < 10f;
     }
 
     public static BiFunction<BlockPos, BlockState, Float> getBlockDamageThreshold(World world, boolean blockDamage, @Nullable Entity causingEntity) {

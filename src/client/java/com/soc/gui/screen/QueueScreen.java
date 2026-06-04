@@ -2,6 +2,8 @@ package com.soc.gui.screen;
 
 import com.soc.SocWars;
 import com.soc.game.manager.GameType;
+import com.soc.networking.s2c.QueuePayload;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -45,6 +47,8 @@ public class QueueScreen extends Screen {
 			if (SINGLE_QUEUE) this.selectedGameTypes.clear();
 
 			this.selectedGameTypes.put(gameType, !currentValue);
+			//this.syncSelectedQueuesToServer();
+			ClientPlayNetworking.send(new QueuePayload(this.selectedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList()));
 		}).build()).toList();
 	}
 
@@ -97,4 +101,8 @@ public class QueueScreen extends Screen {
 			matrices.popMatrix();
 		});
 	}
+
+	//private void syncSelectedQueuesToServer() {
+		//ClientPlayNetworking.send(new QueuePayload(this.selectedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList()));
+	//}
 }
