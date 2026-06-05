@@ -199,8 +199,6 @@ public class GamesManager {
     }
 
     private boolean finishQueue(GameType queueType, Set<ServerPlayerEntity> players) {
-        if (players.isEmpty()) return false;
-
         final int gameId = this.getNewGameId();
 
         final AbstractGameManager<?, ?, ?> game = switch (queueType) {
@@ -226,5 +224,13 @@ public class GamesManager {
 
     public boolean allowsMultiQueue() {
         return this.queue.allowsMultiQueue();
+    }
+
+    public void allowSinglePlayer(GameType gameType) {
+        this.queue.allowSinglePlayer(gameType);
+    }
+
+    public void disallowSinglePlayer(GameType gameType) {
+        this.queue.disallowSinglePlayer(gameType);
     }
 }

@@ -4,7 +4,9 @@ import com.soc.SocWars;
 import com.soc.game.manager.GameType;
 import com.soc.networking.helper.QueueProgress;
 import com.soc.networking.s2c.QueuePayload;
+import com.soc.player.Hotkeys;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -78,14 +80,11 @@ public class QueueScreen extends Screen {
 
 		final Matrix3x2fStack matrices = context.getMatrices();
 
-		this.drawBackgrounds(context);
-
-
-
-		this.drawText(context, matrices);
+		this.drawBackgroundImages(context);
+		this.drawLabels(context, matrices);
 	}
 
-	private void drawBackgrounds(DrawContext context) {
+	private void drawBackgroundImages(DrawContext context) {
 		enumerate(GameType.values(), (i, gameType) -> {
 			final int xStart = this.width / 2 + 192 * (i - 2) + 8;
 			final int yStart = this.height / 2 - 140;
@@ -94,7 +93,7 @@ public class QueueScreen extends Screen {
 		});
 	}
 
-	private void drawText(DrawContext context, Matrix3x2fStack matrices) {
+	private void drawLabels(DrawContext context, Matrix3x2fStack matrices) {
 		enumerate(GameType.values(), (i, gameType) -> {
 			//Draw dark band first
 			final int xStart = this.width / 2 + 192 * (i - 2) + 8;
@@ -120,5 +119,19 @@ public class QueueScreen extends Screen {
 
 	private void syncSelectedQueuesToServer() {
 		ClientPlayNetworking.send(new QueuePayload(this.selectedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList()));
+	}
+
+	@Override
+	public boolean shouldPause() {
+		return false;
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (Hotkeys.OPEN_QUEUE_SCREEN.matchesKey(keyCode, scanCode)) {
+			this.close();
+			return true;
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 }

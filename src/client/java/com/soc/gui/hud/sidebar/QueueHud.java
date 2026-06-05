@@ -73,11 +73,11 @@ public class QueueHud implements VerticallyStackedHudComponent {
 		final long time = Objects.requireNonNull(MinecraftClient.getInstance().world).getTime();
 		enumerateMap(this.progressMap, (i, gameType, progress) -> {
 			final int yStart = y + i * BLOCK_SIZE + 14;
-			final MutableText timeText = SocWarsLib.getTimeFromSeconds((progress.completeTime() - time) * 0.05f, false, TIME_COLOURS);
+			final MutableText timeText = SocWarsLib.getTimeFromSeconds(Math.max(0, (progress.completeTime() - time)) * 0.05f, false, TIME_COLOURS);
 
 			drawContext.drawText(textRenderer, gameType.getVariantName(), x + 8, yStart + 4, 0xffffffff, true);
 
-			final Formatting playerCountColour = progress.players() == 1 ? Formatting.RED : progress.players() < gameType.maxPlayers() ? Formatting.GREEN : Formatting.DARK_GREEN;
+			final Formatting playerCountColour = progress.players() < gameType.minPlayers() ? Formatting.RED : progress.players() < gameType.maxPlayers() ? Formatting.GREEN : Formatting.DARK_GREEN;
 			final MutableText playerCountText = Text.translatable("hud.queue.player_count", progress.players(), gameType.maxPlayers()).formatted(playerCountColour);
 			drawContext.drawText(textRenderer, Text.translatable("hud.queue.players", playerCountText), x + 8, yStart + 18, 0xffffffff, true);
 			drawContext.drawText(textRenderer, Text.translatable("hud.queue.progress", timeText), x + 8, yStart + 32, 0xffffffff, true);

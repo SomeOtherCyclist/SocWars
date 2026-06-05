@@ -18,11 +18,12 @@ import static com.soc.lib.SocWarsLib.*;
 public class MatchmakingQueue {
     private final World world;
 
-    private final boolean allowMultiQueue = false || true;
+    private final boolean allowMultiQueue = false;
 
     private final Multimap<GameType, ServerPlayerEntity> queue;
     private final HashMap<GameType, Long> queueCompletionTime;
     private final BiConsumer<GameType, Set<ServerPlayerEntity>> queueCompletionFunction;
+    private final Set<GameType> allowedSinglePlayerQueues;
 
     private boolean dirty = false;
 
@@ -31,27 +32,34 @@ public class MatchmakingQueue {
 		this.queue = HashMultimap.create();
         this.queueCompletionTime = new HashMap<>();
 		this.queueCompletionFunction = queueCompletionFunction;
+        this.allowedSinglePlayerQueues = new HashSet<>(GameType.values().length);
     }
 
-    public void queuePlayer(ServerPlayerEntity player, GameType queueType) {
+    public void queuePlayer(ServerPlayerEntity player, GameType gameType) {
         if (!this.allowMultiQueue) this.unqueuePlayer(player);
 
-        this.queue.put(queueType, player);
-        this.queueCompletionTime.putIfAbsent(queueType, this.world.getTime() + 30 * 20);
+        this.queue.put(gameType, player);
+        this.queueCompletionTime.putIfAbsent(gameType, this.world.getTime() + 30 * 20);
 
         this.markDirty();
     }
 
-    public void unqueuePlayer(ServerPlayerEntity player, GameType queueType) {
-        this.queue.remove(queueType, player);
-        if (this.queue.get(queueType).isEmpty()) this.queueCompletionTime.remove(queueType);
+    public void unqueuePlayer(ServerPlayerEntity player, GameType gameType) {
+        this.queue.remove(gameType, player);
+        if (this.queue.get(gameType).isEmpty()) this.queueCompletionTime.remove(gameType);
 
         this.markDirty();
     }
 
     public void unqueuePlayer(ServerPlayerEntity player) {
-        for (GameType queueType : GameType.values()) {
-            this.unqueuePlayer(player, queueType);
+        for (GameType gameType : GameType.values()) {
+            this.unqueuePlayer(player, gameType);
+        }
+    }
+
+    public void unqueuePlayers(Collection<ServerPlayerEntity> players, GameType gameType) {
+        for (ServerPlayerEntity player : players) {
+            this.unqueuePlayer(player, gameType);
         }
     }
 
@@ -61,22 +69,22 @@ public class MatchmakingQueue {
         }
     }
 
-    public void setPlayerQueues(ServerPlayerEntity player, Collection<GameType> queueTypes) {
-        for (GameType queueType : GameType.values()) {
-            if (queueTypes.contains(queueType)) {
-                this.queuePlayer(player, queueType);
+    public void setPlayerQueues(ServerPlayerEntity player, Collection<GameType> gameTypes) {
+        for (GameType gameType : GameType.values()) {
+            if (gameTypes.contains(gameType)) {
+                this.queuePlayer(player, gameType);
             } else {
-                this.unqueuePlayer(player, queueType);
+                this.unqueuePlayer(player, gameType);
             }
         }
     }
 
-    public Collection<ServerPlayerEntity> getPlayersInQueue(GameType queueType) {
-        return this.queue.get(queueType);
+    public Collection<ServerPlayerEntity> getPlayersInQueue(GameType gameType) {
+        return this.queue.get(gameType);
     }
 
-    public boolean isPlayerInQueue(ServerPlayerEntity player, GameType queueType) {
-        return this.queue.containsEntry(queueType, player);
+    public boolean isPlayerInQueue(ServerPlayerEntity player, GameType gameType) {
+        return this.queue.containsEntry(gameType, player);
     }
 
     public boolean isPlayerInQueue(ServerPlayerEntity player) {
@@ -88,12 +96,17 @@ public class MatchmakingQueue {
     }
 
     public void checkQueues() {
-        for (GameType queueType : GameType.values()) {
-            final Set<ServerPlayerEntity> players = this.getLimitedPlayers(queueType);
+        for (GameType gameType : GameType.values()) {
+            final Set<ServerPlayerEntity> players = this.getLimitedPlayers(gameType);
 
-            ifNotNull(this.queueCompletionTime.get(queueType), time -> {
+            ifNotNull(this.queueCompletionTime.get(gameType), time -> {
                 if (this.world.getTime() > time) {
-                    this.queueCompletionFunction.accept(queueType, players);
+                    if (players.size() >= gameType.minPlayers() || this.allowedSinglePlayerQueues.contains(gameType)) {
+                        this.allowedSinglePlayerQueues.remove(gameType);
+                        this.queueCompletionFunction.accept(gameType, players);
+                    } else {
+                        this.unqueuePlayers(players, gameType);
+                    }
                 }
             });
         }
@@ -104,8 +117,8 @@ public class MatchmakingQueue {
         }
     }
 
-    public Set<ServerPlayerEntity> getLimitedPlayers(GameType queueType) {
-        return this.queue.get(queueType).stream().limit(queueType.maxPlayers()).collect(Collectors.toSet());
+    public Set<ServerPlayerEntity> getLimitedPlayers(GameType gameType) {
+        return this.queue.get(gameType).stream().limit(gameType.maxPlayers()).collect(Collectors.toSet());
     }
 
     public boolean allowsMultiQueue() {
@@ -117,10 +130,18 @@ public class MatchmakingQueue {
     }
 
     public void sendQueueProgress() {
-        final QueueProgressPayload payload = new QueueProgressPayload(this.queueCompletionTime.keySet().stream().collect(Collectors.toMap(Function.identity(), queueType -> new QueueProgress(this.queue.get(queueType).size(), this.queueCompletionTime.get(queueType)))));
+        final QueueProgressPayload payload = new QueueProgressPayload(this.queueCompletionTime.keySet().stream().collect(Collectors.toMap(Function.identity(), gameType -> new QueueProgress(this.queue.get(gameType).size(), this.queueCompletionTime.get(gameType)))));
 
         for (ServerPlayerEntity player : GamesManager.getInstance().getPlayersNotInGame()) {
             ServerPlayNetworking.send(player, payload);
         }
+    }
+
+    public void allowSinglePlayer(GameType gameType) {
+        this.allowedSinglePlayerQueues.add(gameType);
+    }
+
+    public void disallowSinglePlayer(GameType gameType) {
+        this.allowedSinglePlayerQueues.remove(gameType);
     }
 }

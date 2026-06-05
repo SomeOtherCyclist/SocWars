@@ -1,13 +1,11 @@
 package com.soc.player;
 
-import com.soc.gui.screen.QueueScreen;
 import com.soc.networking.c2s.RequestOpenQueueScreenPayload;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import com.soc.resourcedata.listeners.SkywarsLootData;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -18,13 +16,13 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Map;
 
 public class Hotkeys {
-	private static final KeyBinding PRINT_HELD_COMPONENTS = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+	public static final KeyBinding PRINT_HELD_COMPONENTS = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 			"key.socwars.print_held_components",
 			InputUtil.Type.KEYSYM,
 			GLFW.GLFW_KEY_H,
 			"category.socwars.debug"
 	));
-	private static final KeyBinding OPEN_QUEUE_SCREEN = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+	public static final KeyBinding OPEN_QUEUE_SCREEN = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 			"key.socwars.open_queue_screen",
 			InputUtil.Type.KEYSYM,
 			GLFW.GLFW_KEY_U,

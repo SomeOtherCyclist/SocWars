@@ -318,7 +318,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     private void assignPlayersToTeams() {
-        this.playersForEach((team, player) -> world.getScoreboard().addScoreHolderToTeam(player.getNameForScoreboard(), this.scoreboardTeams.get(team)));
+        this.playersForEach((team, player) -> this.world.getScoreboard().addScoreHolderToTeam(player.getNameForScoreboard(), this.scoreboardTeams.get(team)));
     }
 
     @SuppressWarnings("unchecked")
