@@ -4,6 +4,7 @@ import com.soc.blocks.util.ModBlocks;
 import com.soc.gui.hud.*;
 import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
 import com.soc.gui.hud.sidebar.EventsHud;
+import com.soc.gui.hud.sidebar.QueueHud;
 import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
 import com.soc.gui.screen.HandledScreens;
 import com.soc.gui.screen.QueueScreen;
@@ -133,6 +134,7 @@ public class SocWarsClient implements ClientModInitializer {
 		BedwarsTeamsHud.initialise();
 		SkywarsTeamsHud.initialise();
 		EventsHud.initialise();
+		QueueHud.initialise();
 		BlockProtectionManagerAndHud.initialise();
 		EntityModelLayers.initialise();
 		EntityRenderers.initialise();

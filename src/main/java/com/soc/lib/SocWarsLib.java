@@ -48,6 +48,7 @@ import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -405,7 +406,7 @@ public final class SocWarsLib {
     }
 
     @SafeVarargs
-    public static Text getTimeFromTicksDynColours(float time, boolean includeTicks, UnaryOperator<Integer>... colours) {
+    public static MutableText getTimeFromTicksDynColours(float time, boolean includeTicks, UnaryOperator<Integer>... colours) {
         final int minutes = (int)(time / 60);
         final int seconds = (int)time % 60;
 
@@ -421,7 +422,7 @@ public final class SocWarsLib {
         }
     }
 
-    public static Text getTimeFromSeconds(float time, boolean includeTicks, int... colours) {
+    public static MutableText getTimeFromSeconds(float time, boolean includeTicks, int... colours) {
         final int minutes = (int)(time / 60);
         final int seconds = (int)time % 60;
 
@@ -567,6 +568,11 @@ public final class SocWarsLib {
         for (int i = 0; i < array.length; i++) {
             function.accept(i, array[i]);
         }
+    }
+
+    public static <K, V> void enumerateMap(Map<K, V> map, TriConsumer<Integer, K, V> function) {
+        final AtomicInteger i = new AtomicInteger(0);
+        map.forEach((key, value) -> function.accept(i.getAndIncrement(), key, value));
     }
 
     public static double sqrDistanceToUnitVector(Vec3d origin, Vec3d unitDirection, Vec3d point) {

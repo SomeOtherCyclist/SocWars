@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,8 @@ import java.util.Objects;
 public class SidebarHud {
     public static final int BACKGROUND_COLOUR = 0x38000000;
     public static final int SIDEBAR_WIDTH = 128;
+    private static final int TIME_COLOUR = Objects.requireNonNull(Formatting.DARK_GREEN.getColorValue()) | 0xff000000;
+    public static final int[] TIME_COLOURS = {TIME_COLOUR, TIME_COLOUR};
 
     public static void initialise() {
         HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, "sidebar_hud"), SidebarHud::render);

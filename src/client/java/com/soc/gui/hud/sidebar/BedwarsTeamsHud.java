@@ -25,7 +25,7 @@ public class BedwarsTeamsHud extends BaseTeamsHud<BedwarsTeam> {
         SidebarHud.addHudElement(INSTANCE);
     }
 
-    private static final @NotNull Reference<BedwarsTeamsHud> INSTANCE = new Reference<>(null);
+    private static final @NotNull Reference<BedwarsTeamsHud> INSTANCE = new Reference<>();
 
     private BedwarsTeamsHud(Map<DyeColor, BedwarsTeam> teams) {
         super(teams);

@@ -7,6 +7,10 @@ import java.util.function.Consumer;
 import static com.soc.lib.SocWarsLib.ifNotNull;
 
 public class Reference<T> {
+    public Reference() {
+        this.value = null;
+    }
+
     public Reference(@Nullable T value) {
         this.value = value;
     }
@@ -27,5 +31,9 @@ public class Reference<T> {
 
     public void ifPresent(Consumer<T> function) {
         ifNotNull(this.value, function);
+    }
+
+    public boolean isNull() {
+        return this.value == null;
     }
 }

@@ -49,7 +49,7 @@ public class JoinQueueBlock extends Block {
         final GameType queue = world.getBlockState(pos).get(QUEUE);
 
         if (player.isSneaking()) {
-            GamesManager.getInstance().unqueuePlayer((ServerPlayerEntity)player);
+            GamesManager.getInstance().unqueuePlayer((ServerPlayerEntity)player, queue);
         } else {
             GamesManager.getInstance().queuePlayer((ServerPlayerEntity)player, queue);
         }

@@ -2,6 +2,7 @@ package com.soc.gui.screen;
 
 import com.soc.SocWars;
 import com.soc.game.manager.GameType;
+import com.soc.networking.helper.QueueProgress;
 import com.soc.networking.s2c.QueuePayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gl.RenderPipelines;
@@ -34,6 +35,8 @@ public class QueueScreen extends Screen {
 	private List<ButtonWidget> queueButtons;
 	private final boolean allowsMultiQueue;
 
+	private Map<GameType, QueueProgress> queueProgress;
+
 	public QueueScreen(Collection<GameType> selectedGameTypes, boolean allowsMultiQueue) {
 		super(Text.translatable(""));
 		this.allowsMultiQueue = allowsMultiQueue;
@@ -51,8 +54,7 @@ public class QueueScreen extends Screen {
 			if (!this.allowsMultiQueue) this.selectedGameTypes.clear();
 
 			this.selectedGameTypes.put(gameType, !currentValue);
-			//this.syncSelectedQueuesToServer();
-			ClientPlayNetworking.send(new QueuePayload(this.selectedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList()));
+			this.syncSelectedQueuesToServer();
 		}).build()).toList();
 	}
 
@@ -76,24 +78,30 @@ public class QueueScreen extends Screen {
 
 		final Matrix3x2fStack matrices = context.getMatrices();
 
+		this.drawBackgrounds(context);
+
+
+
+		this.drawText(context, matrices);
+	}
+
+	private void drawBackgrounds(DrawContext context) {
 		enumerate(GameType.values(), (i, gameType) -> {
 			final int xStart = this.width / 2 + 192 * (i - 2) + 8;
 			final int yStart = this.height / 2 - 140;
 
 			ifNotNull(BACKGROUND_TEXTURES.get(gameType), texture -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, xStart, yStart, 176, 300));
 		});
-
-		enumerate(GameType.values(), (i, gameType) -> {
-			final int xStart = this.width / 2 + 192 * (i - 2) + 8;
-			final int yStart = this.height / 2 + 70;
-			context.fill(xStart, yStart, xStart + 176, yStart + 36, 0x80000000);
-		});
-
-		this.drawText(context, matrices);
 	}
 
 	private void drawText(DrawContext context, Matrix3x2fStack matrices) {
 		enumerate(GameType.values(), (i, gameType) -> {
+			//Draw dark band first
+			final int xStart = this.width / 2 + 192 * (i - 2) + 8;
+			final int yStart = this.height / 2 + 70;
+			context.fill(xStart, yStart, xStart + 176, yStart + 36, 0x80000000);
+
+			//Then actually draw the text afterwards idiot
 			final MutableText variantName = gameType.getVariantName();
 			final boolean enabled = this.selectedGameTypes.getOrDefault(gameType, false);
 
@@ -106,7 +114,11 @@ public class QueueScreen extends Screen {
 		});
 	}
 
-	//private void syncSelectedQueuesToServer() {
-		//ClientPlayNetworking.send(new QueuePayload(this.selectedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList()));
-	//}
+	public void setQueueProgress(Map<GameType, QueueProgress> queueProgress) {
+		this.queueProgress = queueProgress;
+	}
+
+	private void syncSelectedQueuesToServer() {
+		ClientPlayNetworking.send(new QueuePayload(this.selectedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList()));
+	}
 }

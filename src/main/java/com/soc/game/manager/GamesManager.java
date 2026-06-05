@@ -19,15 +19,11 @@ import net.minecraft.util.ActionResult;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import static java.util.stream.IntStream.range;
 
 public class GamesManager {
     private static final GamesManager INSTANCE = new GamesManager();
-
-    public static final float QUEUE_PROGRESS_THRESHOLD = 1f;
-    public static final int QUEUE_CHECK_INTERVAL = 20;
 
     private ServerWorld world;
     private MatchmakingQueue queue;
@@ -125,6 +121,8 @@ public class GamesManager {
             if (id == gameId) this.playerGameLookup.remove(player);
         }); //Tail end of the gross bookkeeping
         this.games.set(gameId, null);
+
+        this.queue.sendQueueProgress();
     }
 
     public Optional<AbstractGameManager<?, ?, ?>> getGame(UUID uuid) {
@@ -165,9 +163,7 @@ public class GamesManager {
             if (game != null) game.tick();
         });
 
-        if (this.world.getTime() % QUEUE_CHECK_INTERVAL == 0) { //Only update queues once per second
-            this.queue.checkQueues();
-        }
+        this.queue.checkQueues();
     }
 
     public void queuePlayer(ServerPlayerEntity player, GameType queue) {
@@ -176,6 +172,10 @@ public class GamesManager {
 
     public void unqueuePlayer(ServerPlayerEntity player) {
         this.queue.unqueuePlayer(player);
+    }
+
+    public void unqueuePlayer(ServerPlayerEntity player, GameType queueType) {
+        this.queue.unqueuePlayer(player, queueType);
     }
 
     public void setPlayerQueues(ServerPlayerEntity player, Collection<GameType> queues) {
@@ -190,8 +190,12 @@ public class GamesManager {
         return this.queue.getPlayerQueues(player);
     }
 
-    public List<ServerPlayerEntity> getPlayersNotInGame() {
+    public List<ServerPlayerEntity> getPlayersNotInQueue() {
         return this.world.getPlayers().stream().filter(player -> !this.queue.isPlayerInQueue(player)).toList();
+    }
+
+    public List<ServerPlayerEntity> getPlayersNotInGame() {
+        return this.world.getPlayers().stream().filter(player -> !this.playerGameLookup.containsKey(player.getUuid())).toList();
     }
 
     private boolean finishQueue(GameType queueType, Set<ServerPlayerEntity> players) {

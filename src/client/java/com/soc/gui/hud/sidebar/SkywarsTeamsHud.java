@@ -22,12 +22,12 @@ import static com.soc.gui.hud.SidebarHud.BACKGROUND_COLOUR;
 import static com.soc.gui.hud.SidebarHud.SIDEBAR_WIDTH;
 import static net.minecraft.util.math.ColorHelper.lerp;
 
-public class SkywarsTeamsHud extends BaseTeamsHud<SkywarsTeam> { //Maybe I'll subclass this and BedwarsTeamsHud under GameTeamsHud or something and make a lof of the drawing code common
+public class SkywarsTeamsHud extends BaseTeamsHud<SkywarsTeam> { //Maybe I'll subclass this and BedwarsTeamsHud under GameTeamsHud or something and make a lof of the drawing code common //I did this it was good
     public static void initialise() {
         SidebarHud.addHudElement(INSTANCE);
     }
 
-    private static final @NotNull Reference<SkywarsTeamsHud> INSTANCE = new Reference<>(null);
+    private static final @NotNull Reference<SkywarsTeamsHud> INSTANCE = new Reference<>();
 
     private static final Identifier FULL_HEART_NORMAL = Identifier.ofVanilla("hud/heart/full");
     private static final Identifier FULL_HEART_HARDCORE = Identifier.ofVanilla("hud/heart/hardcore_full");

@@ -9,6 +9,7 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
 import com.soc.networking.s2c.EventQueuePayload;
+import com.soc.networking.s2c.JoinGamePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
 import com.soc.player.PlayerData;
@@ -109,6 +110,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected void sendJoinGamePayload(ServerPlayerEntity player) {
+        ServerPlayNetworking.send(player, new JoinGamePayload());
+
         ifNotNull(this.map.getBlockProtectionPacket(), packet -> ServerPlayNetworking.send(player, packet));
         if (!this.eventQueue.isEmpty()) ServerPlayNetworking.send(player, new EventQueuePayload(this.eventQueue));
     }

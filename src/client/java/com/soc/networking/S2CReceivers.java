@@ -5,6 +5,7 @@ import com.soc.gui.hud.JumpscareHud;
 import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
 import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import com.soc.gui.hud.sidebar.EventsHud;
+import com.soc.gui.hud.sidebar.QueueHud;
 import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
 import com.soc.gui.screen.KitBlockCreationScreen;
 import com.soc.gui.screen.QueueScreen;
@@ -30,7 +31,6 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
@@ -105,6 +105,12 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(OpenQueueScreenPayload.ID, (payload, context) -> {
             MinecraftClient.getInstance().setScreen(new QueueScreen(payload.queues(), payload.allowsMultiQueue()));
         });
+        ClientPlayNetworking.registerGlobalReceiver(QueueProgressPayload.ID, (payload, context) -> {
+            if (MinecraftClient.getInstance().currentScreen instanceof QueueScreen queueScreen) {
+                queueScreen.setQueueProgress(payload.progressMap());
+            }
+            QueueHud.receiveUpdate(payload.progressMap());
+        });
     }
 
     private static void player() {
@@ -162,6 +168,9 @@ public class S2CReceivers {
                 case SKYWARS -> SkywarsTeamsHud.eliminateTeam(payload.team());
             }
         });
+        ClientPlayNetworking.registerGlobalReceiver(JoinGamePayload.ID, ((payload, context) -> {
+            QueueHud.onJoinGame();
+        }));
         ClientPlayNetworking.registerGlobalReceiver(LeaveGamePayload.ID, ((payload, context) -> {
             BlockProtectionManagerAndHud.INSTANCE.clearBlockProtection();
             EventsHud.clear();

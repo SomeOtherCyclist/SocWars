@@ -27,6 +27,7 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(JumpscarePayload.ID, JumpscarePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SilencePayload.ID, SilencePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(EventQueuePayload.ID, EventQueuePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(JoinGamePayload.ID, JoinGamePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(LeaveGamePayload.ID, LeaveGamePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SetAnglesPayload.ID, SetAnglesPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(TeamEliminatedPayload.ID, TeamEliminatedPayload.CODEC);
