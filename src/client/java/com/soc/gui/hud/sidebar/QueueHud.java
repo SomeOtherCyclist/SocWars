@@ -67,9 +67,7 @@ public class QueueHud implements VerticallyStackedHudComponent {
 
 	@Override
 	public void render(DrawContext drawContext, RenderTickCounter renderTickCounter, TextRenderer textRenderer, int x, int y) {
-		//final Matrix3x2fStack matrices = drawContext.getMatrices();
-
-		MutableText title = Text.translatable("hud.queue.header");
+		final MutableText title = Text.translatable("hud.queue.header");
 		drawContext.drawText(textRenderer, title, x + (SIDEBAR_WIDTH - textRenderer.getWidth(title) >> 1), y + 4, 0xffffffff, true);
 
 		final long time = Objects.requireNonNull(MinecraftClient.getInstance().world).getTime();
