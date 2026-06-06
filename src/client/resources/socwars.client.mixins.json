@@ -6,6 +6,7 @@
     "BlockProtectionOnBreak",
     "BlockProtectionOnPlace",
     "BlockProtectionRenderOutline",
+    "CancelItemInteractionClient",
     "CollectibleBlockEntitySparkles",
     "DragonFireballTooltip",
     "FovTweaks",
