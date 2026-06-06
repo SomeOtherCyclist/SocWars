@@ -14,6 +14,6 @@ abstract class CancelItemInteraction {
 	@Redirect(method = "interactBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;shouldCancelInteraction()Z"))
 	private boolean socwars_shouldCancelInteraction(ServerPlayerEntity player, @Local(argsOnly = true) Hand hand) {
 		if (player.getStackInHand(hand).getItem() instanceof CancelsBlockInteraction cancelsBlockInteraction) return cancelsBlockInteraction.shouldCancelInteraction();
-		return false;
+		return player.shouldCancelInteraction();
 	}
 }

@@ -58,6 +58,8 @@ public interface ModBlocks {
         }
     }, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).noCollision().nonOpaque(), false, ItemGroups.MAP_MAKING_TOOLS_KEY);
 
+    Block POWERUP_PLACEHOLDER = ModBlocks.register("powerup_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
+
     Block DIAMOND_GEN_PLACEHOLDER = ModBlocks.register("diamond_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
     Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
     Block ISLAND_GEN_PLACEHOLDER = ModBlocks.register("island_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);

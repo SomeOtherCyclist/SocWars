@@ -106,8 +106,6 @@ public class GamesManager {
             this.games.add(game);
         }
 
-        this.queue.unqueuePlayers(game.getPlayers());
-
         game.startGame();
         game.getPlayers().forEach(player -> this.playerGameLookup.put(player.getUuid(), game.getGameId())); //Bit of gross bookkeeping
 
@@ -203,6 +201,8 @@ public class GamesManager {
     }
 
     private boolean finishQueue(GameType queueType, Set<ServerPlayerEntity> players) {
+        if (players.isEmpty()) return false;
+
         final int gameId = this.getNewGameId();
 
         final AbstractGameManager<?, ?, ?> game = switch (queueType) {

@@ -39,8 +39,8 @@ public class InfoList {
     public void addEmpty() {
         this.info.add(Pair.of(Text.empty(), new Text[0]));
     }
-    public void addEmpty(BooleanSupplier predicate) {
-        if (predicate.getAsBoolean()) this.info.add(Pair.of(Text.empty(), new Text[0]));
+    public void addEmpty(boolean shouldAdd) {
+        if (shouldAdd) this.info.add(Pair.of(Text.empty(), new Text[0]));
     }
 
     public void add(@Nullable InfoType infoType, Text display, Text... hoverable) {

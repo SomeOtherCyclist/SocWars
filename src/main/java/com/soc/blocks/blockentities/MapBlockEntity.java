@@ -57,6 +57,7 @@ public class MapBlockEntity extends BlockEntity {
             EMERALD_GEN_PLACEHOLDER,
             ISLAND_GEN_PLACEHOLDER,
             CHEST_PLACEHOLDER,
+            POWERUP_PLACEHOLDER,
             INDIVIDUAL_SHOP_PLACEHOLDER,
             TEAM_SHOP_PLACEHOLDER,
             Blocks.AIR,
@@ -100,6 +101,9 @@ public class MapBlockEntity extends BlockEntity {
         //Skywars
         final HashSet<SkywarsChest> lootChests = new HashSet<>();
 
+        //Hiding
+        final HashSet<BlockPos> powerups = new HashSet<>();
+
         //region Main structure check
         final BlockPos minPos = this.getPos().add(0, 1, 0);
         final BlockPos maxPos = minPos.add(this.regionSize);
@@ -120,6 +124,8 @@ public class MapBlockEntity extends BlockEntity {
                 final BlockState state = world.getBlockState(pos);
                 lootChests.add(new SkywarsChest(pos, state.get(TierBlock.TIER), state.get(HorizontalFacingBlock.FACING).getOpposite()));
             }
+
+            else if (block == POWERUP_PLACEHOLDER) powerups.add(pos);
             else {
                 if (blockState.getBlock() instanceof BedBlock && blockState.get(BedBlock.PART) == BedPart.HEAD) {
                     bedPositions.add(pos);
@@ -185,7 +191,7 @@ public class MapBlockEntity extends BlockEntity {
             }
         }
         //endregion
-        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions, individualShops, teamShops, lootChests);
+        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions, individualShops, teamShops, lootChests, powerups);
         this.mapCheckInfo = this.mapCheckResults.generateInfo(this.mapType);
     }
 
@@ -243,6 +249,7 @@ public class MapBlockEntity extends BlockEntity {
                     this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
                     centrePos,
                     blockProtectionOverlay,
+                    this.mapCheckResults.getRelative(this.mapCheckResults.powerups()),
                     this.fields
             );
         };

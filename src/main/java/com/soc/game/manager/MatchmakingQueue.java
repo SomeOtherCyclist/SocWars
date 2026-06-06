@@ -6,6 +6,9 @@ import com.soc.networking.helper.QueueProgress;
 import com.soc.networking.s2c.QueueProgressPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -21,7 +24,7 @@ public class MatchmakingQueue {
     private final boolean allowMultiQueue = false;
 
     private final Multimap<GameType, ServerPlayerEntity> queue;
-    private final HashMap<GameType, Long> queueCompletionTime;
+    private final HashMap<GameType, Long> queueCountdowns;
     private final BiConsumer<GameType, Set<ServerPlayerEntity>> queueCompletionFunction;
     private final Set<GameType> allowedSinglePlayerQueues;
 
@@ -30,24 +33,37 @@ public class MatchmakingQueue {
     public MatchmakingQueue(World world, BiConsumer<GameType, Set<ServerPlayerEntity>> queueCompletionFunction) {
 		this.world = world;
 		this.queue = HashMultimap.create();
-        this.queueCompletionTime = new HashMap<>();
+        this.queueCountdowns = new HashMap<>();
 		this.queueCompletionFunction = queueCompletionFunction;
         this.allowedSinglePlayerQueues = new HashSet<>(GameType.values().length);
     }
 
     public void queuePlayer(ServerPlayerEntity player, GameType gameType) {
-        if (!this.allowMultiQueue && !this.isPlayerInQueue(player, gameType)) this.unqueuePlayer(player);
+        if (this.isPlayerInQueue(player, gameType)) return;
 
+        if (!this.allowMultiQueue) this.unqueuePlayer(player);
         this.queue.put(gameType, player);
-        this.queueCompletionTime.putIfAbsent(gameType, this.world.getTime() + 30 * 20);
+
+        if (!this.queueCountdowns.containsKey(gameType)) {
+            this.startCountdown(player, gameType);
+        }
 
         this.markDirty();
+    }
+
+    private void startCountdown(ServerPlayerEntity player, GameType gameType) {
+        this.queueCountdowns.put(gameType, this.world.getTime() + 30 * 20);
+
+        final Text text = Text.translatable("message.queue.queue_started", Objects.requireNonNull((MutableText)player.getDisplayName()).formatted(Formatting.GREEN), gameType.getVariantName().formatted(Formatting.GOLD));
+        for (ServerPlayerEntity playerNotInGame : GamesManager.getInstance().getPlayersNotInGame()) {
+            playerNotInGame.sendMessage(text, false);
+        }
     }
 
     public void unqueuePlayer(ServerPlayerEntity player, GameType gameType) {
         this.queue.remove(gameType, player);
         if (this.queue.get(gameType).isEmpty()) {
-            this.queueCompletionTime.remove(gameType);
+            this.queueCountdowns.remove(gameType);
             this.allowedSinglePlayerQueues.remove(gameType);
         }
 
@@ -102,11 +118,13 @@ public class MatchmakingQueue {
         for (GameType gameType : GameType.values()) {
             final Set<ServerPlayerEntity> players = this.getLimitedPlayers(gameType);
 
-            ifNotNull(this.queueCompletionTime.get(gameType), time -> {
+            ifNotNull(this.queueCountdowns.get(gameType), time -> {
                 if (this.world.getTime() > time) {
                     if (players.size() >= gameType.minPlayers() || this.allowedSinglePlayerQueues.contains(gameType)) {
                         this.allowedSinglePlayerQueues.remove(gameType);
                         this.queueCompletionFunction.accept(gameType, players);
+
+                        this.unqueuePlayers(players);
                     } else {
                         this.unqueuePlayers(players, gameType);
                     }
@@ -133,7 +151,7 @@ public class MatchmakingQueue {
     }
 
     public void sendQueueProgress() {
-        final QueueProgressPayload payload = new QueueProgressPayload(this.queueCompletionTime.keySet().stream().collect(Collectors.toMap(Function.identity(), gameType -> new QueueProgress(this.queue.get(gameType).size(), this.queueCompletionTime.get(gameType), this.allowedSinglePlayerQueues.contains(gameType)))));
+        final QueueProgressPayload payload = new QueueProgressPayload(this.queueCountdowns.keySet().stream().collect(Collectors.toMap(Function.identity(), gameType -> new QueueProgress(this.queue.get(gameType).size(), this.queueCountdowns.get(gameType), this.allowedSinglePlayerQueues.contains(gameType)))));
 
         for (ServerPlayerEntity player : GamesManager.getInstance().getPlayersNotInGame()) {
             ServerPlayNetworking.send(player, payload);

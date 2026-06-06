@@ -81,7 +81,7 @@ public class QueueHud implements VerticallyStackedHudComponent {
 			final MutableText playerCountText = Text.translatable("hud.queue.player_count", progress.players(), gameType.maxPlayers()).formatted(playerCountColour);
 			drawContext.drawText(textRenderer, Text.translatable("hud.queue.players", playerCountText), x + 8, yStart + 18, 0xffffffff, true);
 
-			final String startingTextKey = "hud.queue.progress." + (progress.players() > gameType.minPlayers() ? "starting" : progress.allowSinglePlayer() ? "force_starting" : "not_starting");
+			final String startingTextKey = "hud.queue.progress." + (progress.players() >= gameType.minPlayers() ? "starting" : progress.allowSinglePlayer() ? "force_starting" : "not_starting");
 			drawContext.drawText(textRenderer, Text.translatable(startingTextKey, timeText), x + 8, yStart + 32, 0xffffffff, true);
 		});
 	}

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
 
-public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Set<BlockPos> individualShops, Set<BlockPos> teamShops, Set<SkywarsChest> lootChests) {
+public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Set<BlockPos> individualShops, Set<BlockPos> teamShops, Set<SkywarsChest> lootChests, Set<BlockPos> powerups) {
     public InfoList generateWarnings(GameType mapType) {
         final InfoList warnings = new InfoList();
 
@@ -78,27 +78,18 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                         Text.translatable("map_block.results.no_emerald_gens").formatted(Formatting.YELLOW)
                 );
             }
-            case SKYWARS -> {}
-            case PROP_HUNT -> {}
-            case HIDE_AND_SEEK -> {
+            case SKYWARS -> {
                 warnings.add(
-                        () -> this.spawnPositions.stream().noneMatch(spawn -> spawn.dyeColour() == HideAndSeekGameMap.SEEKER_COLOUR),
-                        InfoList.InfoType.ERROR,
-                        Text.translatable("map_block.results.no_seeker_spawns").formatted(Formatting.DARK_RED),
-                        Text.translatable("map_block.results.no_seeker_spawns.hover")
-                );
-                warnings.add(
-                        () -> this.spawnPositions.stream().noneMatch(spawn -> spawn.dyeColour() == HideAndSeekGameMap.HIDER_COLOUR),
-                        InfoList.InfoType.ERROR,
-                        Text.translatable("map_block.results.no_hider_spawns").formatted(Formatting.DARK_RED),
-                        Text.translatable("map_block.results.no_hider_spawns.hover")
-                );
-                warnings.add(
-                        () -> this.spawnPositions.stream().anyMatch(spawn -> spawn.dyeColour() != HideAndSeekGameMap.SEEKER_COLOUR && spawn.dyeColour() != HideAndSeekGameMap.HIDER_COLOUR),
+                        this.lootChests::isEmpty,
                         InfoList.InfoType.WARNING,
-                        Text.translatable("map_block.results.ignored_spawns").formatted(Formatting.YELLOW),
-                        Text.translatable("map_block.results.ignored_spawns.hover", Text.translatable("game.seeker").formatted(formattingColourFromDye(HideAndSeekGameMap.SEEKER_COLOUR)), Text.translatable("game.hider").formatted(formattingColourFromDye(HideAndSeekGameMap.HIDER_COLOUR)))
+                        Text.translatable("map_block.results.no_loot_chests").formatted(Formatting.YELLOW)
                 );
+            }
+            case PROP_HUNT -> {
+                this.addGeneralHidingWarnings(warnings);
+            }
+            case HIDE_AND_SEEK -> {
+                this.addGeneralHidingWarnings(warnings);
             }
         }
 
@@ -108,6 +99,27 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
         );
 
         return warnings;
+    }
+
+    private void addGeneralHidingWarnings(InfoList warnings) {
+        warnings.add(
+                () -> this.spawnPositions.stream().noneMatch(spawn -> spawn.dyeColour() == HideAndSeekGameMap.SEEKER_COLOUR),
+                InfoList.InfoType.ERROR,
+                Text.translatable("map_block.results.no_seeker_spawns").formatted(Formatting.DARK_RED),
+                Text.translatable("map_block.results.no_seeker_spawns.hover")
+        );
+        warnings.add(
+                () -> this.spawnPositions.stream().noneMatch(spawn -> spawn.dyeColour() == HideAndSeekGameMap.HIDER_COLOUR),
+                InfoList.InfoType.ERROR,
+                Text.translatable("map_block.results.no_hider_spawns").formatted(Formatting.DARK_RED),
+                Text.translatable("map_block.results.no_hider_spawns.hover")
+        );
+        warnings.add(
+                () -> this.spawnPositions.stream().anyMatch(spawn -> spawn.dyeColour() != HideAndSeekGameMap.SEEKER_COLOUR && spawn.dyeColour() != HideAndSeekGameMap.HIDER_COLOUR),
+                InfoList.InfoType.WARNING,
+                Text.translatable("map_block.results.ignored_spawns").formatted(Formatting.YELLOW),
+                Text.translatable("map_block.results.ignored_spawns.hover", Text.translatable("game.seeker").formatted(formattingColourFromDye(HideAndSeekGameMap.SEEKER_COLOUR)), Text.translatable("game.hider").formatted(formattingColourFromDye(HideAndSeekGameMap.HIDER_COLOUR)))
+        );
     }
 
     public InfoList generateResults(GameType mapType) {
@@ -160,22 +172,16 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                     );
                 }
             }
-            case PROP_HUNT -> {}
+            case PROP_HUNT -> {
+                this.addGeneralHidingInfo(results);
+            }
             case HIDE_AND_SEEK -> {
-                final List<SpawnPosition> seekerSpawns = this.spawnPositions.stream().filter(spawn -> spawn.dyeColour() == HideAndSeekGameMap.SEEKER_COLOUR).toList();
-                final List<SpawnPosition> hiderSpawns = this.spawnPositions.stream().filter(spawn -> spawn.dyeColour() == HideAndSeekGameMap.HIDER_COLOUR).toList();
-
+                this.addGeneralHidingInfo(results);
                 results.add(
-                        () -> !seekerSpawns.isEmpty(),
+                        () -> !this.powerups.isEmpty(),
                         InfoList.InfoType.INFO,
-                        Text.translatable("map_block.results.seeker_spawns", seekerSpawns.size()).formatted(formattingColourFromDye(HideAndSeekGameMap.SEEKER_COLOUR)),
-                        seekerSpawns.stream().map(spawnPosition -> getBlockPosText(spawnPosition.pos())).toArray(Text[]::new)
-                );
-                results.add(
-                        () -> !hiderSpawns.isEmpty(),
-                        InfoList.InfoType.INFO,
-                        Text.translatable("map_block.results.hider_spawns", hiderSpawns.size()).formatted(formattingColourFromDye(HideAndSeekGameMap.HIDER_COLOUR)),
-                        hiderSpawns.stream().map(spawnPosition -> getBlockPosText(spawnPosition.pos())).toArray(Text[]::new)
+                        Text.translatable("map_block.results.powerups"),
+                        this.powerups.stream().map(MapCheckResults::getBlockPosText).toArray(Text[]::new)
                 );
             }
         }
@@ -183,9 +189,27 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
         return results;
     }
 
+    private void addGeneralHidingInfo(InfoList results) {
+        final List<SpawnPosition> seekerSpawns = this.spawnPositions.stream().filter(spawn -> spawn.dyeColour() == HideAndSeekGameMap.SEEKER_COLOUR).toList();
+        final List<SpawnPosition> hiderSpawns = this.spawnPositions.stream().filter(spawn -> spawn.dyeColour() == HideAndSeekGameMap.HIDER_COLOUR).toList();
+
+        results.add(
+                () -> !seekerSpawns.isEmpty(),
+                InfoList.InfoType.INFO,
+                Text.translatable("map_block.results.seeker_spawns", seekerSpawns.size()).formatted(formattingColourFromDye(HideAndSeekGameMap.SEEKER_COLOUR)),
+                seekerSpawns.stream().map(spawnPosition -> getBlockPosText(spawnPosition.pos())).toArray(Text[]::new)
+        );
+        results.add(
+                () -> !hiderSpawns.isEmpty(),
+                InfoList.InfoType.INFO,
+                Text.translatable("map_block.results.hider_spawns", hiderSpawns.size()).formatted(formattingColourFromDye(HideAndSeekGameMap.HIDER_COLOUR)),
+                hiderSpawns.stream().map(spawnPosition -> getBlockPosText(spawnPosition.pos())).toArray(Text[]::new)
+        );
+    }
+
     public InfoList generateInfo(GameType mapType) {
         final InfoList info = this.generateResults(mapType);
-        info.addEmpty(() -> !info.isEmpty());
+        info.addEmpty(!info.isEmpty());
 
         return info.concat(this.generateWarnings(mapType));
     }

@@ -2,12 +2,14 @@
   {
     "id": "socwars:nuclear_bomb",
     "tier_3_weight": 8,
-    "tier_4_weight": 14
+    "tier_4_weight": 14,
+    "pool": 3
   },
   {
     "id": "socwars:hydrogen_bomb",
     "tier_3_weight": 4,
-    "tier_4_weight": 10
+    "tier_4_weight": 10,
+    "pool": 3
   },
   {
     "id": "minecraft:mangrove_planks",
@@ -16,7 +18,7 @@
     "tier_3_weight": 20,
     "tier_4_weight": 15,
     "count": 16,
-    "pool": 1
+    "pool": 3
   },
   {
     "id": "minecraft:cherry_planks",
@@ -25,7 +27,7 @@
     "tier_3_weight": 20,
     "tier_4_weight": 15,
     "count": 16,
-    "pool": 1
+    "pool": 3
   },
   {
     "id": "minecraft:stone",
@@ -34,7 +36,7 @@
     "tier_3_weight": 6,
     "tier_4_weight": 2,
     "count": 12,
-    "pool": 1
+    "pool": 3
   },
   {
     "id": "minecraft:obsidian",
@@ -43,7 +45,7 @@
     "tier_3_weight": 7,
     "tier_4_weight": 9,
     "count": 8,
-    "pool": 1
+    "pool": 3
   },
   {
     "id": "minecraft:bedrock",
@@ -52,6 +54,6 @@
     "tier_3_weight": 4,
     "tier_4_weight": 3,
     "count": 6,
-    "pool": 1
+    "pool": 3
   }
 ]

@@ -15,8 +15,15 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.soc.lib.SocWarsLib.getBlockPosSet;
+import static com.soc.lib.SocWarsLib.putBlockPosCollection;
+
 public class HideAndSeekGameMap extends AbstractHidingGameMap {
     public static final String FILE_EXTENSION = "hsmap";
+
+    public static final String POWERUPS_KEY = "powerups";
+
+    private final Set<BlockPos> powerups;
 
     public HideAndSeekGameMap(
             StructureTemplate structure,
@@ -24,12 +31,14 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
             BlockPos centrePos,
             BlockPos absoluteCentrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            Set<BlockPos> powerups,
             int minBuildY,
             int maxBuildY,
             ServerWorld world,
             File file
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
+        this.powerups = powerups;
     }
 
     /// Constructor used only for saving the map to file
@@ -38,9 +47,11 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
             Set<SpawnPosition> spawnPositions,
             BlockPos centrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            Set<BlockPos> powerups,
             Map<String, Integer> fields
     ) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay, fields);
+        this.powerups = powerups;
     }
 
     public static Optional<HideAndSeekGameMap> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos, File file) {
@@ -62,10 +73,25 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
                 SparseVoxelOctree.fromNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound),
+                getBlockPosSet(compound, POWERUPS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load powerups"); return Set.of(); }),
                 compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
                 compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
                 world,
                 file
         ));
+    }
+
+    @Override
+    public NbtCompound toNbt(NbtCompound compound) {
+        super.toNbt(compound);
+
+        putBlockPosCollection(compound, POWERUPS_KEY, this.powerups);
+
+        return compound;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
     }
 }

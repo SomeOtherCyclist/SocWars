@@ -2,47 +2,56 @@
   {
     "id": "socwars:iron_apple",
     "tier_1_weight": 20,
-    "tier_2_weight": 20
+    "tier_2_weight": 20,
+    "pool": 5
   },
   {
     "id": "socwars:copper_apple",
     "tier_1_weight": 20,
-    "tier_2_weight": 20
+    "tier_2_weight": 20,
+    "pool": 5
   },
   {
     "id": "socwars:diamond_apple",
     "tier_2_weight": 10,
     "tier_3_weight": 10,
-    "tier_4_weight": 5
+    "tier_4_weight": 5,
+    "pool": 5
   },
   {
     "id": "socwars:emerald_apple",
     "tier_2_weight": 5,
     "tier_3_weight": 10,
-    "tier_4_weight": 10
+    "tier_4_weight": 10,
+    "pool": 5
   },
   {
     "id": "socwars:biggening_pills",
     "tier_1_weight": 15,
-    "tier_2_weight": 15
+    "tier_2_weight": 15,
+    "pool": 5
   },
   {
     "id": "socwars:shrinking_pills",
     "tier_2_weight": 10,
-    "tier_3_weight": 10
+    "tier_3_weight": 10,
+    "pool": 5
   },
   {
     "id": "socwars:netherite_apple",
-    "tier_4_weight": 5
+    "tier_4_weight": 5,
+    "pool": 5
   },
   {
     "id": "socwars:jelly_donut",
-    "tier_4_weight": 2
+    "tier_4_weight": 2,
+    "pool": 5
   },
   {
     "id": "socwars:chorus_fruit_salad",
     "tier_3_weight": 5,
-    "tier_4_weight": 20
+    "tier_4_weight": 20,
+    "pool": 5
   },
   {
     "id": "minecraft:golden_apple",
@@ -50,7 +59,7 @@
     "tier_2_weight": 12,
     "tier_3_weight": 15,
     "tier_4_weight": 9,
-    "pool": 1
+    "pool": 5
   },
   {
     "id": "minecraft:enchanted_golden_apple",
@@ -58,7 +67,7 @@
     "tier_2_weight": 5,
     "tier_3_weight": 5,
     "tier_4_weight": 4,
-    "pool": 1
+    "pool": 5
   },
   {
     "id": "minecraft:chorus_fruit",
@@ -67,6 +76,6 @@
     "tier_3_weight": 5,
     "tier_4_weight": 5,
     "count": 3,
-    "pool": 1
+    "pool": 5
   }
 ]

@@ -3,31 +3,37 @@
     "id": "socwars:invisibility_ring",
     "tier_1_weight": 5,
     "tier_2_weight": 10,
-    "tier_3_weight": 5
+    "tier_3_weight": 5,
+    "pool": 6
   },
   {
     "id": "socwars:lesser_speed_ring",
     "tier_1_weight": 10,
-    "tier_2_weight": 5
+    "tier_2_weight": 5,
+    "pool": 6
   },
   {
     "id": "socwars:greater_speed_ring",
     "tier_1_weight": 5,
-    "tier_2_weight": 10
+    "tier_2_weight": 10,
+    "pool": 6
   },
   {
     "id": "socwars:lesser_jump_ring",
     "tier_1_weight": 10,
-    "tier_2_weight": 5
+    "tier_2_weight": 5,
+    "pool": 6
   },
   {
     "id": "socwars:greater_jump_ring",
     "tier_1_weight": 5,
-    "tier_2_weight": 10
+    "tier_2_weight": 10,
+    "pool": 6
   },
   {
     "id": "socwars:inflatable_iron_ingot",
     "tier_2_weight": 8,
-    "tier_3_weight": 10
+    "tier_3_weight": 10,
+    "pool": 6
   }
 ]

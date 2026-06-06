@@ -1,80 +1,94 @@
 [
   {
     "id": "socwars:throwable_tnt",
-    "tier_2_weight": 25
+    "tier_2_weight": 25,
+    "pool": 8
   },
   {
     "id": "socwars:fireball",
     "tier_2_weight": 40,
     "tier_3_weight": 60,
-    "tier_4_weight": 100
+    "tier_4_weight": 100,
+    "pool": 8
   },
   {
     "id": "socwars:dragon_fireball",
     "tier_1_weight": 20,
     "tier_2_weight": 20,
     "tier_3_weight": 20,
-    "tier_4_weight": 15
+    "tier_4_weight": 15,
+    "pool": 8
   },
   {
     "id": "socwars:the_line",
     "tier_3_weight": 7,
-    "tier_4_weight": 10
+    "tier_4_weight": 10,
+    "pool": 8
   },
   {
     "id": "socwars:snail_fireball",
     "tier_3_weight": 5,
-    "tier_4_weight": 7
+    "tier_4_weight": 7,
+    "pool": 8
   },
   {
     "id": "socwars:ender_beam",
     "tier_2_weight": 5,
-    "tier_3_weight": 10
+    "tier_3_weight": 10,
+    "pool": 8
   },
   {
     "id": "socwars:waterball",
     "tier_1_weight": 20,
     "tier_2_weight": 15,
-    "tier_3_weight": 10
+    "tier_3_weight": 10,
+    "pool": 8
   },
   {
     "id": "socwars:lightning_orb",
     "tier_2_weight": 10,
     "tier_3_weight": 15,
-    "tier_4_weight": 10
+    "tier_4_weight": 10,
+    "pool": 8
   },
   {
     "id": "socwars:hand_grenade",
     "tier_2_weight": 12,
-    "tier_3_weight": 18
+    "tier_3_weight": 18,
+    "pool": 8
   },
   {
     "id": "socwars:pocket_sand",
     "tier_1_weight": 20,
-    "tier_2_weight": 20
+    "tier_2_weight": 20,
+    "pool": 8
   },
   {
     "id": "socwars:red_shell",
     "tier_3_weight": 10,
-    "tier_4_weight": 15
+    "tier_4_weight": 15,
+    "pool": 8
   },
   {
     "id": "socwars:holy_hand_grenade",
     "tier_3_weight": 8,
-    "tier_4_weight": 14
+    "tier_4_weight": 14,
+    "pool": 8
   },
   {
     "id": "socwars:molotov_cocktail",
     "tier_2_weight": 15,
     "tier_3_weight": 20,
-    "tier_4_weight": 15
+    "tier_4_weight": 15,
+    "pool": 8
   },
   {
     "id": "socwars:perplexity_2_splash_potion",
     "tier_1_weight": 5,
     "tier_2_weight": 5,
     "tier_3_weight": 10,
-    "tier_4_weight": 10
+    "tier_4_weight": 10,
+    "pool": 8
   },
   {
     "id": "minecraft:ender_pearl",
@@ -82,7 +96,7 @@
     "tier_2_weight": 4,
     "tier_3_weight": 4,
     "tier_4_weight": 4,
-    "pool": 1
+    "pool": 8
   },
   {
     "id": "minecraft:wind_charge",
@@ -90,6 +104,6 @@
     "tier_2_weight": 10,
     "tier_3_weight": 5,
     "tier_4_weight": 8,
-    "pool": 1
+    "pool": 8
   }
 ]

@@ -2,49 +2,56 @@
   {
     "id": "socwars:boom_bow",
     "tier_2_weight": 8,
-    "tier_3_weight": 10
+    "tier_3_weight": 10,
+    "pool": 4
   },
   {
     "id": "socwars:megaboom_bow",
     "tier_3_weight": 5,
-    "tier_4_weight": 9
+    "tier_4_weight": 9,
+    "pool": 4
   },
   {
     "id": "socwars:falcon_bow",
     "tier_3_weight": 3,
-    "tier_4_weight": 9
+    "tier_4_weight": 9,
+    "pool": 4
   },
   {
     "id": "socwars:catastrophe_bow",
     "tier_3_weight": 3,
-    "tier_4_weight": 8
+    "tier_4_weight": 8,
+    "pool": 4
   },
   {
     "id": "socwars:alpha_bow",
     "tier_3_weight": 5,
-    "tier_4_weight": 10
+    "tier_4_weight": 10,
+    "pool": 4
   },
   {
     "id": "socwars:heater_bow",
     "tier_2_weight": 8,
-    "tier_3_weight": 15
+    "tier_3_weight": 15,
+    "pool": 4
   },
   {
     "id": "socwars:chorus_bow",
     "tier_3_weight": 5,
-    "tier_4_weight": 10
+    "tier_4_weight": 10,
+    "pool": 4
   },
   {
     "id": "minecraft:bow",
     "tier_1_weight": 6,
     "tier_2_weight": 8,
     "tier_3_weight": 10,
-    "pool": 1
+    "pool": 4
   },
   {
     "id": "socwars:sniper_rifle",
     "tier_3_weight": 6,
     "tier_4_weight": 5,
-    "pool": 1
+    "pool": 4
   }
 ]
