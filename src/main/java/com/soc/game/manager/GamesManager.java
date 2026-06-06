@@ -186,6 +186,10 @@ public class GamesManager {
         return this.queue.isPlayerInQueue(player);
     }
 
+    public boolean isPlayerInQueue(ServerPlayerEntity player, GameType gameType) {
+        return this.queue.isPlayerInQueue(player, gameType);
+    }
+
     public Collection<GameType> getPlayerQueues(ServerPlayerEntity player) {
         return this.queue.getPlayerQueues(player);
     }
@@ -226,11 +230,16 @@ public class GamesManager {
         return this.queue.allowsMultiQueue();
     }
 
-    public void allowSinglePlayer(GameType gameType) {
-        this.queue.allowSinglePlayer(gameType);
+    public boolean allowSinglePlayer(GameType gameType, boolean allow) {
+        return allow ? this.allowSinglePlayer(gameType) : this.disallowSinglePlayer(gameType);
     }
 
-    public void disallowSinglePlayer(GameType gameType) {
+    public boolean allowSinglePlayer(GameType gameType) {
+        return this.queue.allowSinglePlayer(gameType);
+    }
+
+    public boolean disallowSinglePlayer(GameType gameType) {
         this.queue.disallowSinglePlayer(gameType);
+        return true;
     }
 }
