@@ -50,7 +50,7 @@ public class PowerupEntityRenderer extends EntityRenderer<PowerupEntity, Powerup
 		matrices.push();
 
 		matrices.translate(-0.5d, 0.0d, -0.5d);
-		BeaconBlockEntityRenderer.renderBeam(matrices, vertexConsumers, BEAM_TEXTURE, lastTickProgress, 1f, time, 1, (int)(state.y + 8d), 0xffffffff, 0.15f, 0.2f);
+		BeaconBlockEntityRenderer.renderBeam(matrices, vertexConsumers, BEAM_TEXTURE, lastTickProgress, 1f, time, 1, 8, 0xffffffff, 0.1f, 0.15f);
 
 		matrices.pop();
 
