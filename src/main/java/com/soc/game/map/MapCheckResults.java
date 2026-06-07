@@ -32,7 +32,7 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                 Text.translatable("map_block.results.duplicate_spawn_teams").formatted(Formatting.RED)
         );
         warnings.add(
-                () -> this.spawnPositions.isEmpty() && mapType != GameType.HIDE_AND_SEEK,
+                () -> this.spawnPositions.isEmpty() && mapType != GameType.HIDE_AND_SEEK && mapType != GameType.PROP_HUNT,
                 InfoList.InfoType.ERROR,
                 Text.translatable("map_block.results.no_spawns").formatted(Formatting.RED)
         );
@@ -135,7 +135,7 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                 () -> new Text[0]
         );
         results.add(
-                () -> mapType != GameType.BEDWARS && mapType != GameType.HIDE_AND_SEEK,
+                () -> mapType != GameType.BEDWARS && mapType != GameType.HIDE_AND_SEEK && mapType != GameType.PROP_HUNT,
                 InfoList.InfoType.INFO, Text.translatable("map_block.results.spawn_positions", this.spawnPositions.size()).formatted(Formatting.GREEN),
                 this.getSpawnPositionsHoverText()
         );
