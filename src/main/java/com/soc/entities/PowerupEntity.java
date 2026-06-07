@@ -78,7 +78,7 @@ public class PowerupEntity extends Entity {
 				velocities.add(randomCentredVec3d(this.random, 0.2d).add(0d, 0.1d, 0d));
 			}
 
-			ServerPlayNetworking.send((ServerPlayerEntity)player, new BatchParticlePayload(ParticleTypes.TRIAL_SPAWNER_DETECTION, this.getPos(), velocities));
+			if (player instanceof ServerPlayerEntity serverPlayer) ServerPlayNetworking.send(serverPlayer, new BatchParticlePayload(ParticleTypes.TRIAL_SPAWNER_DETECTION, this.getPos(), velocities));
 			this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_STEP, SoundCategory.PLAYERS,1f, 1f);
 		}
 	}

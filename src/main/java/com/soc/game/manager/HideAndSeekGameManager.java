@@ -16,6 +16,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -29,7 +30,7 @@ import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
 import static com.soc.lib.SocWarsLib.*;
 
 public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSeekGameMap, HideAndSeekTable, HideAndSeekGameManager> implements PowerupGame {
-    private final Multimap<ServerPlayerEntity, Powerup> powerupMap;
+    private final Multimap<ServerPlayerEntity, Identifier> powerupMap;
 
     protected HideAndSeekGameManager(
             ServerWorld world,
@@ -125,14 +126,14 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
     @Override
     public void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
         if (this.playerHasPowerup(hider, Powerup.EXTRA_LIFE)) {
-            this.powerupMap.remove(hider, Powerup.EXTRA_LIFE);
+            this.removePowerup(hider, Powerup.EXTRA_LIFE);
         } else {
             this.findPlayer(seeker, hider);
         }
     }
 
     @Override
-    public Multimap<ServerPlayerEntity, Powerup> getPowerupMap() {
+    public Multimap<ServerPlayerEntity, Identifier> getPowerupMap() {
         return this.powerupMap;
     }
 }
