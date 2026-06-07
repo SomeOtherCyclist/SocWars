@@ -1,5 +1,7 @@
 package com.soc.game.manager;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.soc.database.stats.HideAndSeekTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
@@ -7,9 +9,6 @@ import com.soc.game.map.SpreadRules;
 import com.soc.items.AttackFunctionWeapon;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,9 +26,11 @@ import java.util.function.Function;
 
 import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
-import static com.soc.lib.SocWarsLib.scaleEntity;
+import static com.soc.lib.SocWarsLib.*;
 
-public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSeekGameMap, HideAndSeekTable, HideAndSeekGameManager> {
+public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSeekGameMap, HideAndSeekTable, HideAndSeekGameManager> implements PowerupGame {
+    private final Multimap<ServerPlayerEntity, Powerup> powerupMap;
+
     protected HideAndSeekGameManager(
             ServerWorld world,
             Set<ServerPlayerEntity> players,
@@ -37,6 +38,7 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
             int gameId
     ) {
         super(GameType.HIDE_AND_SEEK, world, players, spreadRules, gameId);
+        this.powerupMap = HashMultimap.create();
     }
 
     @Override
@@ -71,8 +73,15 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
     }
 
     @Override
-    public void onPowerupPickedUp(PlayerEntity player) {
+    public boolean onPowerupPickedUp(ServerPlayerEntity player) {
+        final Powerup powerup;
+        if (this.getTeam(player) == SEEKER_COLOUR) {
+            powerup = getRandomElement(Powerup.SEEKER_POWERUPS, this.world.random);
+        } else {
+            powerup = getRandomElement(Powerup.HIDER_POWERUPS, this.world.random);
+        }
 
+        return powerup.apply(player);
     }
 
     @Override
@@ -93,10 +102,7 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
         final EventQueue<HideAndSeekGameManager> eventQueue = super.buildEventQueue();
 
         for (int i = 1; i < 5; i++) {
-            eventQueue.addEvent(i * 60 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(player -> {
-                this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));
-            }), Text.translatable("events.hide_and_seek.ping." + i));
+            eventQueue.addEvent(i * 60 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(this::taunt), Text.translatable("events.hide_and_seek.ping." + i));
         }
         eventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
 
@@ -104,7 +110,26 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
     }
 
     @Override
+    protected void taunt(ServerPlayerEntity player) {
+        if (this.playerHasPowerup(player, Powerup.ECCENTRIC)) {
+            final BlockPos pos = BlockPos.ofFloored(player.getPos().add(randomCentredVec3d(this.world.random, 10d)));
+            this.world.playSound(null, pos, SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
+        } else {
+            super.taunt(player);
+        }
+    }
+
+    @Override
     public void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
-        this.findPlayer(seeker, hider);
+        if (this.playerHasPowerup(hider, Powerup.EXTRA_LIFE)) {
+            this.powerupMap.remove(hider, Powerup.EXTRA_LIFE);
+        } else {
+            this.findPlayer(seeker, hider);
+        }
+    }
+
+    @Override
+    public Multimap<ServerPlayerEntity, Powerup> getPowerupMap() {
+        return this.powerupMap;
     }
 }

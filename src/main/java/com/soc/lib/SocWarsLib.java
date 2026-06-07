@@ -695,4 +695,8 @@ public final class SocWarsLib {
     public static Vec3d modulo(Vec3d vector, double modulus) {
         return new Vec3d(vector.x % modulus, vector.y % modulus, vector.z % modulus);
     }
+
+    public static <T> T getRandomElement(List<T> list, Random random) {
+        return list.get(random.nextBetween(0, list.size() - 1));
+    }
 }

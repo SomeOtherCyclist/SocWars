@@ -9,6 +9,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -62,13 +63,16 @@ public class PowerupEntity extends Entity {
 
 	@Override
 	public void onPlayerCollision(PlayerEntity player) {
-		GamesManager.getInstance().getGame(player).ifPresent(manager -> manager.onPowerupPickedUp(player));
-		this.discard();
+		final boolean wasPickedUp = GamesManager.getInstance().getGame(player).map(manager -> manager.onPowerupPickedUp((ServerPlayerEntity)player)).orElse(false);
 
-		for (int i = 0; i < 20; i++) {
-			final Vec3d random = randomCentredVec3d(this.random, 0.2d);
-			this.getWorld().addParticleClient(ParticleTypes.TRIAL_SPAWNER_DETECTION, this.getX(), this.getY(), this.getZ(), random.x, random.y + 0.1d, random.z);
+		if (wasPickedUp) {
+			this.discard();
+
+			for (int i = 0; i < 20; i++) {
+				final Vec3d random = randomCentredVec3d(this.random, 0.2d);
+				this.getWorld().addParticleClient(ParticleTypes.TRIAL_SPAWNER_DETECTION, this.getX(), this.getY(), this.getZ(), random.x, random.y + 0.1d, random.z);
+			}
+			this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_STEP, SoundCategory.PLAYERS,1f, 1f);
 		}
-		this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_STEP, SoundCategory.PLAYERS,1f, 1f);
 	}
 }

@@ -12,7 +12,6 @@ import com.soc.networking.s2c.EventQueuePayload;
 import com.soc.networking.s2c.JoinGamePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
-import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
 import com.soc.util.BlockTags;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -264,7 +263,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return false;
     }
 
-    public void onPowerupPickedUp(PlayerEntity player) {}
+    public boolean onPowerupPickedUp(ServerPlayerEntity player) {
+        return false;
+    }
 
     @MustBeInvokedByOverriders
     public void tick() {

@@ -131,6 +131,11 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 		return teams;
 	}
 
+	protected void taunt(ServerPlayerEntity player) {
+		this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
+		player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));
+	}
+
 	public abstract void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider);
 
 	protected void findPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
