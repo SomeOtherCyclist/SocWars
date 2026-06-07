@@ -24,6 +24,17 @@ public interface ModPacketCodecs {
             Vec3d.PACKET_CODEC, Box::getMaxPos,
             Box::new
     );
+//    PacketCodec<ByteBuf, BufferedImage> IMAGE = new PacketCodec<>() {
+//        @Override
+//        public void encode(ByteBuf buf, BufferedImage value) {
+//
+//        }
+//
+//        @Override
+//        public BufferedImage decode(ByteBuf buf) {
+//            return null;
+//        }
+//    };
 
 //    PacketCodec<ByteBuf, BlockState> BLOCK_STATE = PacketCodecs.NBT_COMPOUND.xmap(nbt -> {
 //        return NbtReadView.create(ErrorReporter.EMPTY, null, nbt).read("block_state", BlockState.CODEC).orElse(null);

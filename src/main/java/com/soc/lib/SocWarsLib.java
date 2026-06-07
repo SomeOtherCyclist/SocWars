@@ -56,6 +56,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,6 +78,11 @@ public final class SocWarsLib {
         }
 
         return builder.build();
+    }
+
+    public static <C extends Collection<BlockPos>> Optional<C> getBlockPosCollection(NbtCompound compound, String key, Collector<BlockPos, ?, C> collector) {
+        Optional<long[]> value = compound.getLongArray(key);
+        return value.map(longs -> Arrays.stream(longs).mapToObj(BlockPos::fromLong).collect(collector));
     }
 
     public static Optional<Set<BlockPos>> getBlockPosSet(NbtCompound compound, String key) {

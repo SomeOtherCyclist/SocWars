@@ -114,7 +114,13 @@ public interface ModEntities {
             .dimensions(0.7f, 0.7f)
             .maxTrackingRange(8)
             .eyeHeight(0.1f)
-    );;
+    );
+    EntityType<PowerupEntity> POWERUP = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "powerup"), EntityType.Builder.<PowerupEntity>create(PowerupEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.75f, 1f)
+            .maxTrackingRange(4)
+            .eyeHeight(0.5f)
+    );
 
     static <T extends Entity> EntityType<T> registerType(Identifier id, EntityType.Builder<T> type) {
         RegistryKey<EntityType<?>> key = RegistryKey.of(RegistryKeys.ENTITY_TYPE, id);

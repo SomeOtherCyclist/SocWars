@@ -25,5 +25,6 @@ public interface EntityRenderers {
         EntityRendererRegistry.register(ModEntities.ENDER_BEAM, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/ender_beam.png")));
         EntityRendererRegistry.register(ModEntities.POCKET_SAND, context -> new SimpleCubeEntityRenderer(context, Blocks.SAND.getDefaultState(), 0.3f));
         EntityRendererRegistry.register(ModEntities.JET_SHOPPING_TROLLEY, JetShoppingTrolleyEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.POWERUP, PowerupEntityRenderer::new);
     }
 }

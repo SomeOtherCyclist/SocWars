@@ -264,6 +264,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return false;
     }
 
+    public void onPowerupPickedUp(PlayerEntity player) {}
+
     @MustBeInvokedByOverriders
     public void tick() {
         this.time++;

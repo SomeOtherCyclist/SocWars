@@ -9,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -67,6 +68,11 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
     @Override
     protected void onHiderDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         this.map.getSpawnPosition(this.getTeam(player.getUuid())).ifPresent(pos -> player.requestTeleport(pos.getX(), pos.getY(), pos.getZ()));
+    }
+
+    @Override
+    public void onPowerupPickedUp(PlayerEntity player) {
+
     }
 
     @Override

@@ -7,23 +7,23 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.soc.lib.SocWarsLib.getBlockPosSet;
-import static com.soc.lib.SocWarsLib.putBlockPosCollection;
+import static com.soc.lib.SocWarsLib.*;
 
 public class HideAndSeekGameMap extends AbstractHidingGameMap {
     public static final String FILE_EXTENSION = "hsmap";
 
     public static final String POWERUPS_KEY = "powerups";
 
-    private final Set<BlockPos> powerups;
+    private final List<BlockPos> powerups;
+    private long nextPowerupTime;
 
     public HideAndSeekGameMap(
             StructureTemplate structure,
@@ -31,7 +31,7 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
             BlockPos centrePos,
             BlockPos absoluteCentrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
-            Set<BlockPos> powerups,
+            List<BlockPos> powerups,
             int minBuildY,
             int maxBuildY,
             ServerWorld world,
@@ -39,6 +39,7 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
         this.powerups = powerups;
+        this.nextPowerupTime = this.getNextPowerupTime(world);
     }
 
     /// Constructor used only for saving the map to file
@@ -51,7 +52,8 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
             Map<String, Integer> fields
     ) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay, fields);
-        this.powerups = powerups;
+        this.powerups = powerups.stream().toList();
+        //Not going to bother initialising nextPowerupTime
     }
 
     public static Optional<HideAndSeekGameMap> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos, File file) {
@@ -73,7 +75,7 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
                 SparseVoxelOctree.fromNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound),
-                getBlockPosSet(compound, POWERUPS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load powerups"); return Set.of(); }),
+                getBlockPosCollection(compound, POWERUPS_KEY, Collectors.toList()).orElseGet(() -> { SocWars.LOGGER.error("Failed to load powerups"); return List.of(); }),
                 compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
                 compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
                 world,
@@ -93,5 +95,18 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
     @Override
     public void tick() {
         super.tick();
+        if (this.world.getTime() > this.nextPowerupTime && !this.powerups.isEmpty()) {
+            this.nextPowerupTime = this.getNextPowerupTime(this.world);
+            final BlockPos powerupPos = this.getRandomPowerupPos();
+
+        }
+    }
+
+    private BlockPos getRandomPowerupPos() {
+        return this.pos(this.powerups.get(this.world.random.nextBetween(0, this.powerups.size() - 1)));
+    }
+
+    private long getNextPowerupTime(World world) {
+        return world.getTime() + world.random.nextBetween(25, 35);
     }
 }
