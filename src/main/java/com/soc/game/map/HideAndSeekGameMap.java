@@ -1,6 +1,7 @@
 package com.soc.game.map;
 
 import com.soc.SocWars;
+import com.soc.entities.PowerupEntity;
 import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SpawnPosition;
 import net.minecraft.nbt.NbtCompound;
@@ -97,13 +98,10 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
         super.tick();
         if (this.world.getTime() > this.nextPowerupTime && !this.powerups.isEmpty()) {
             this.nextPowerupTime = this.getNextPowerupTime(this.world);
-            final BlockPos powerupPos = this.getRandomPowerupPos();
 
+            final BlockPos powerupPos = this.pos(getRandomElement(this.powerups, this.world.random));
+            this.world.spawnEntity(new PowerupEntity(this.world, powerupPos));
         }
-    }
-
-    private BlockPos getRandomPowerupPos() {
-        return this.pos(this.powerups.get(this.world.random.nextBetween(0, this.powerups.size() - 1)));
     }
 
     private long getNextPowerupTime(World world) {
