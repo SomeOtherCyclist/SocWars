@@ -63,7 +63,7 @@ public class PowerupEntity extends Entity {
 
 	@Override
 	public void onPlayerCollision(PlayerEntity player) {
-		final boolean wasPickedUp = GamesManager.getInstance().getGame(player).map(manager -> manager.onPowerupPickedUp((ServerPlayerEntity)player)).orElse(false);
+		final boolean wasPickedUp = GamesManager.getInstance().getGame(player).map(manager -> player instanceof ServerPlayerEntity serverPlayer && manager.onPowerupPickedUp(serverPlayer)).orElse(false);
 
 		if (wasPickedUp) {
 			this.discard();

@@ -105,6 +105,6 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
     }
 
     private long getNextPowerupTime(World world) {
-        return world.getTime() + world.random.nextBetween(25, 35);
+        return world.getTime() + world.random.nextBetween(25, 35) * 20L;
     }
 }

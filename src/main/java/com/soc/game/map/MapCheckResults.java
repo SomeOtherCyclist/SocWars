@@ -180,7 +180,7 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                 results.add(
                         () -> !this.powerups.isEmpty(),
                         InfoList.InfoType.INFO,
-                        Text.translatable("map_block.results.powerups"),
+                        Text.translatable("map_block.results.powerups", this.powerups.size()).formatted(Formatting.GOLD),
                         this.powerups.stream().map(MapCheckResults::getBlockPosText).toArray(Text[]::new)
                 );
             }

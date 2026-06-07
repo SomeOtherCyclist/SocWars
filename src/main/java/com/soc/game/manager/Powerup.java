@@ -28,7 +28,7 @@ public interface Powerup {
 	boolean apply(ServerPlayerEntity player);
 
 	private static Powerup effect(StatusEffectInstance effect) {
-		return (player) -> player.addStatusEffect(effect);
+		return (player) -> player.addStatusEffect(new StatusEffectInstance(effect));
 	}
 
 	@SuppressWarnings("SameParameterValue")

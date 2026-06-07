@@ -100,6 +100,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return new EventQueue<>();
     }
 
+    /// Designed for adding events while the game is in progress
+    protected void addEvent(int time, Consumer<EVENT> event, Text name) {
+        this.eventQueue.addEvent(this.time + time, event, name);
+    }
+
     protected abstract Function<UUID, TABLE> dbTableBuilder();
     protected final TABLE getDbTable(UUID player) {
         return player == null ? null : this.dbTables.get(player);
