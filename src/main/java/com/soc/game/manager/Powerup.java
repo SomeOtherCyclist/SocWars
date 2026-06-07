@@ -16,24 +16,32 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
 
-public interface Powerup {
-	interface AttributeIntensityMapper {
+public class Powerup {
+	private interface AttributeIntensityMapper {
 		double map(double currentValue);
 	}
 
-	boolean apply(ServerPlayerEntity player);
+	private final Function<ServerPlayerEntity, Boolean> applicationFunction;
 
-	private static Powerup effect(StatusEffectInstance effect) {
-		return (player) -> player.addStatusEffect(new StatusEffectInstance(effect));
+	public Powerup(Function<ServerPlayerEntity, Boolean> applicationFunction) {
+		this.applicationFunction = applicationFunction;
 	}
 
-	@SuppressWarnings("SameParameterValue")
+	boolean apply(ServerPlayerEntity player) {
+		return this.applicationFunction.apply(player);
+	}
+
+	private static Powerup effect(StatusEffectInstance effect) {
+		return new Powerup(player -> player.addStatusEffect(new StatusEffectInstance(effect)));
+	}
+
 	private static Powerup attribute(RegistryEntry<EntityAttribute> attribute, AttributeIntensityMapper attributeIntensityMapper, EntityAttributeModifier.Operation operation, int duration) {
-		return (player) -> {
+		return new Powerup(player -> {
 			final Identifier modifierId = Identifier.of(SocWars.MOD_ID, "random" + player.getRandom().nextLong());
 			final EntityAttributeInstance attributeInstance = Objects.requireNonNull(player.getAttributeInstance(attribute));
 
@@ -42,11 +50,11 @@ public interface Powerup {
 			Events.getInstance().scheduleEvent(() -> attributeInstance.removeModifier(modifierId), duration);
 
 			return true;
-		};
+		});
 	}
 
 	private static Powerup createGameStored(int duration) {
-		return new Powerup() {
+		return new Powerup(null) {
 			@Override
 			public boolean apply(ServerPlayerEntity player) {
 				return GamesManager.getInstance().getGame(player).map(manager -> {
@@ -65,45 +73,45 @@ public interface Powerup {
 	}
 
 	private static Powerup createGameInstant(Consumer<AbstractHidingGameManager<?, ?, ?>> function) {
-		return (player) -> GamesManager.getInstance().getGame(player).map(manager -> {
+		return new Powerup(player -> GamesManager.getInstance().getGame(player).map(manager -> {
 			if (manager instanceof AbstractHidingGameManager<?, ?, ?> hidingManager) {
 				function.accept(hidingManager);
 				return true;
 			} else {
 				return false;
 			}
-		}).orElse(false);
+		}).orElse(false));
 	}
 
-	Powerup SHRINKING = attribute(EntityAttributes.SCALE, current -> current * -0.5d, EntityAttributeModifier.Operation.ADD_VALUE, 30 * 20);
+	public static final Powerup SHRINKING = attribute(EntityAttributes.SCALE, current -> current * -0.5d, EntityAttributeModifier.Operation.ADD_VALUE, 30 * 20);
 
-	Powerup ECCENTRIC = createGameStored(60 * 20);
+	public static final Powerup ECCENTRIC = createGameStored(60 * 20);
 
-	Powerup STRENGTH = effect(new StatusEffectInstance(StatusEffects.STRENGTH, 30 * 20, 2, false, true));
+	public static final Powerup STRENGTH = effect(new StatusEffectInstance(StatusEffects.STRENGTH, 30 * 20, 2, false, true));
 
-	Powerup FLIGHT = effect(new StatusEffectInstance(ModEffects.FLIGHT, 15 * 20, 0, false, true));
+	public static final Powerup FLIGHT = effect(new StatusEffectInstance(ModEffects.FLIGHT, 15 * 20, 0, false, true));
 
-	Powerup INVISIBILITY_10S = effect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 10 * 20, 0, false, true));
+	public static final Powerup INVISIBILITY_10S = effect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 10 * 20, 0, false, true));
 
-	Powerup INVISIBILITY_20S = effect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 20 * 20, 0, false, true));
+	public static final Powerup INVISIBILITY_20S = effect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 20 * 20, 0, false, true));
 
-	Powerup EXTRA_LIFE = createGameStored();
+	public static final Powerup EXTRA_LIFE = createGameStored();
 
-	Powerup EXTRA_RANGE = attribute(EntityAttributes.ENTITY_INTERACTION_RANGE, current -> 2d, EntityAttributeModifier.Operation.ADD_VALUE, 30 * 20);
+	public static final Powerup EXTRA_RANGE = attribute(EntityAttributes.ENTITY_INTERACTION_RANGE, current -> 2d, EntityAttributeModifier.Operation.ADD_VALUE, 30 * 20);
 
-	Powerup SEEKER_GLOWING = createGameInstant(manager -> {
+	public static final Powerup SEEKER_GLOWING = createGameInstant(manager -> {
 		for (ServerPlayerEntity seeker : manager.getPlayers(SEEKER_COLOUR)) {
 			seeker.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 15 * 20, 0, false, true));
 		}
 	});
 
-	Powerup HIDERS_GLOWING = createGameInstant(manager -> {
+	public static final Powerup HIDERS_GLOWING = createGameInstant(manager -> {
 		for (ServerPlayerEntity hider : manager.getPlayers(HIDER_COLOUR)) {
 			hider.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 5 * 20, 0, false, true));
 		}
 	});
 
-	List<Powerup> HIDER_POWERUPS = List.of(
+	public static final List<Powerup> HIDER_POWERUPS = List.of(
 			SHRINKING,
 			ECCENTRIC,
 			STRENGTH,
@@ -113,7 +121,7 @@ public interface Powerup {
 			EXTRA_LIFE
 	);
 
-	List<Powerup> SEEKER_POWERUPS = List.of(
+	public static final List<Powerup> SEEKER_POWERUPS = List.of(
 			EXTRA_RANGE,
 			HIDERS_GLOWING,
 			FLIGHT,

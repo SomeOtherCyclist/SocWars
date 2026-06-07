@@ -696,7 +696,7 @@ public final class SocWarsLib {
         return new Vec3d(vector.x % modulus, vector.y % modulus, vector.z % modulus);
     }
 
-    public static <T> Optional<T> getRandomElement(List<T> list, Random random) {
-        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(random.nextBetween(0, list.size() - 1)));
+    public static <T> T getRandomElement(List<T> list, Random random) {
+        return list.get(random.nextBetween(0, list.size() - 1));
     }
 }

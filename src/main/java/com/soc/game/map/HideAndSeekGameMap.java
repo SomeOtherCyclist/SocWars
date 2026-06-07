@@ -92,6 +92,10 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
     }
 
     public void spawnPowerup() {
-        getRandomElement(this.powerups, this.world.random).ifPresent(pos -> this.world.spawnEntity(new PowerupEntity(this.world, this.pos(pos))));
+        this.world.spawnEntity(new PowerupEntity(this.world, this.pos(getRandomElement(this.powerups, this.world.random))));
+    }
+
+    public boolean hasPowerups() {
+        return !this.powerups.isEmpty();
     }
 }

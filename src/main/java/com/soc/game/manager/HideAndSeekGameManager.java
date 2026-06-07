@@ -31,8 +31,6 @@ import static com.soc.lib.SocWarsLib.*;
 public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSeekGameMap, HideAndSeekTable, HideAndSeekGameManager> implements PowerupGame {
     private final Multimap<ServerPlayerEntity, Powerup> powerupMap;
 
-    private int gameEndTime = 5 * 60 * 20;
-
     protected HideAndSeekGameManager(
             ServerWorld world,
             Set<ServerPlayerEntity> players,
@@ -78,9 +76,9 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
     public boolean onPowerupPickedUp(ServerPlayerEntity player) {
         final Powerup powerup;
         if (this.getTeam(player) == SEEKER_COLOUR) {
-            powerup = getRandomElement(Powerup.SEEKER_POWERUPS, this.world.random).get();
+            powerup = getRandomElement(Powerup.SEEKER_POWERUPS, this.world.random);
         } else {
-            powerup = getRandomElement(Powerup.HIDER_POWERUPS, this.world.random).get();
+            powerup = getRandomElement(Powerup.HIDER_POWERUPS, this.world.random);
         }
 
         return powerup.apply(player);
@@ -106,10 +104,10 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
         for (int i = 1; i < 5; i++) {
             eventQueue.addEvent(i * 60 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(this::taunt), Text.translatable("events.hide_and_seek.ping." + i));
         }
-        for (int i = 0; i < this.gameEndTime; i += this.world.random.nextBetween(25, 35) * 20) {
-            this.addEvent(world.random.nextBetween(25, 35) * 20, manager -> manager.map.spawnPowerup(), Text.translatable("events.hide_and_seek.next_powerup"));
+        if (this.map.hasPowerups()) for (int i = 45; (i += this.world.random.nextBetween(25, 35) * 20) < this.map.getGameEndTime(); ) {
+            eventQueue.addEvent(i, manager -> manager.map.spawnPowerup(), Text.translatable("events.hide_and_seek.next_powerup"));
         }
-        eventQueue.addEvent(this.gameEndTime, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
+        eventQueue.addEvent(this.map.getGameEndTime(), manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
 
         return eventQueue;
     }

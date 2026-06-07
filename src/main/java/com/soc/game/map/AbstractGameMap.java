@@ -67,6 +67,8 @@ public abstract class AbstractGameMap {
 
     protected int minBuildY;
     protected int maxBuildY;
+    protected int gameEndTime = 5 * 60 * 20; //TODO: Properly work on this
+
     @Nullable protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
 
     protected int tick = 0;
@@ -368,5 +370,9 @@ public abstract class AbstractGameMap {
 
     public static void setMaxBuildY(AbstractGameMap map, int maxBuildY) {
         map.maxBuildY = maxBuildY;
+    }
+
+    public int getGameEndTime() {
+        return this.gameEndTime;
     }
 }
