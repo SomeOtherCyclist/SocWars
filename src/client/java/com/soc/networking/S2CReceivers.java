@@ -88,8 +88,13 @@ public class S2CReceivers {
         });
         ClientPlayNetworking.registerGlobalReceiver(BatchParticlePayload.ID, ((payload, context) -> {
             final World world = context.player().getWorld();
-            final Vec3d velocity = payload.velocity();
-            payload.positions().forEach(pos -> world.addParticleClient(payload.particleType(), pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z));
+
+            for (int i = 0; i < Math.min(payload.positions().size(), payload.velocities().size()); i++) {
+                final Vec3d position = payload.positions().get(i);
+                final Vec3d velocity = payload.velocities().get(i);
+                world.addParticleClient(payload.particleType(), position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
+            }
+
         }));
         ClientPlayNetworking.registerGlobalReceiver(KitBlockEntityAssignment.ID, ((payload, context) -> {
             if (

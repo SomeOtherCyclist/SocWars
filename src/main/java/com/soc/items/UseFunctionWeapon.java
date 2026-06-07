@@ -388,7 +388,7 @@ public class UseFunctionWeapon extends Item {
                     final Vec3d velocity = direction.multiply(-0.05d).add(0d, 0.025d, 0d);
                     final Vec3d mainParticePosition = eyePos.add(direction);
                     nearbyPlayers.forEach(player -> {
-                        ServerPlayNetworking.send(player, new BatchParticlePayload(ParticleTypes.LARGE_SMOKE, particlePositions, velocity));
+                        ServerPlayNetworking.send(player, new BatchParticlePayload(ParticleTypes.LARGE_SMOKE, particlePositions.stream().toList(), velocity));
                         player.networkHandler.sendPacket(new ParticleS2CPacket(ParticleTypes.FLAME, true, true, mainParticePosition.x, mainParticePosition.y, mainParticePosition.z, 0.07f, 0.07f, 0.07f, 0.1f, 16));
                     });
 

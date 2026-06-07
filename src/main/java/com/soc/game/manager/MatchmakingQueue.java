@@ -10,6 +10,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -98,10 +99,6 @@ public class MatchmakingQueue {
         }
     }
 
-    public Collection<ServerPlayerEntity> getPlayersInQueue(GameType gameType) {
-        return this.queue.get(gameType);
-    }
-
     public boolean isPlayerInQueue(ServerPlayerEntity player, GameType gameType) {
         return this.queue.containsEntry(gameType, player);
     }
@@ -121,10 +118,7 @@ public class MatchmakingQueue {
             ifNotNull(this.queueCountdowns.get(gameType), time -> {
                 if (this.world.getTime() > time) {
                     if (players.size() >= gameType.minPlayers() || this.allowedSinglePlayerQueues.contains(gameType)) {
-                        this.allowedSinglePlayerQueues.remove(gameType);
-                        this.queueCompletionFunction.accept(gameType, players);
-
-                        this.unqueuePlayers(players);
+                        this.finishQueue(gameType, players);
                     } else {
                         this.unqueuePlayers(players, gameType);
                     }
@@ -135,6 +129,23 @@ public class MatchmakingQueue {
         if (this.dirty) {
             this.sendQueueProgress();
             this.dirty = false;
+        }
+    }
+
+    private void finishQueue(GameType gameType, Set<ServerPlayerEntity> players) {
+        this.allowedSinglePlayerQueues.remove(gameType);
+        this.queueCompletionFunction.accept(gameType, players);
+
+        this.unqueuePlayers(players);
+    }
+
+    public boolean finishQueue(GameType gameType) {
+        final Set<ServerPlayerEntity> players = this.getLimitedPlayers(gameType);
+        if (players.isEmpty()) {
+            return false;
+        } else {
+            this.finishQueue(gameType, players);
+            return true;
         }
     }
 
@@ -151,11 +162,15 @@ public class MatchmakingQueue {
     }
 
     public void sendQueueProgress() {
-        final QueueProgressPayload payload = new QueueProgressPayload(this.queueCountdowns.keySet().stream().collect(Collectors.toMap(Function.identity(), gameType -> new QueueProgress(this.queue.get(gameType).size(), this.queueCountdowns.get(gameType), this.allowedSinglePlayerQueues.contains(gameType)))));
+        final QueueProgressPayload payload = this.getQueueProgressPayload();
 
         for (ServerPlayerEntity player : GamesManager.getInstance().getPlayersNotInGame()) {
             ServerPlayNetworking.send(player, payload);
         }
+    }
+
+    public QueueProgressPayload getQueueProgressPayload() {
+		return new QueueProgressPayload(this.queueCountdowns.keySet().stream().collect(Collectors.toMap(Function.identity(), gameType -> new QueueProgress(this.queue.get(gameType).size(), this.queueCountdowns.get(gameType), this.allowedSinglePlayerQueues.contains(gameType)))));
     }
 
     public boolean allowSinglePlayer(GameType gameType) {

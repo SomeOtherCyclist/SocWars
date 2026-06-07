@@ -75,9 +75,7 @@ public interface Queue {
         final GameType gameType = resolveGameType(context, player);
         if (gameType == null) return -1;
 
-        GamesManager.getInstance().allowSinglePlayer(gameType);
         final boolean success = GamesManager.getInstance().completeQueue(gameType);
-        GamesManager.getInstance().disallowSinglePlayer(gameType);
 
         if (success) {
             player.sendMessage(Text.translatable("message.queue.finished_queue", gameType.getVariantName()), false);

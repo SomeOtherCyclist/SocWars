@@ -2,6 +2,8 @@ package com.soc.entities;
 
 import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.GamesManager;
+import com.soc.networking.s2c.BatchParticlePayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MovementType;
@@ -18,6 +20,9 @@ import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.soc.lib.SocWarsLib.randomCentredVec3d;
 
@@ -68,10 +73,12 @@ public class PowerupEntity extends Entity {
 		if (wasPickedUp) {
 			this.discard();
 
+			final List<Vec3d> velocities = new ArrayList<>(20);
 			for (int i = 0; i < 20; i++) {
-				final Vec3d random = randomCentredVec3d(this.random, 0.2d);
-				this.getWorld().addParticleClient(ParticleTypes.TRIAL_SPAWNER_DETECTION, this.getX(), this.getY(), this.getZ(), random.x, random.y + 0.1d, random.z);
+				velocities.add(randomCentredVec3d(this.random, 0.2d).add(0d, 0.1d, 0d));
 			}
+
+			ServerPlayNetworking.send((ServerPlayerEntity)player, new BatchParticlePayload(ParticleTypes.TRIAL_SPAWNER_DETECTION, this.getPos(), velocities));
 			this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_STEP, SoundCategory.PLAYERS,1f, 1f);
 		}
 	}

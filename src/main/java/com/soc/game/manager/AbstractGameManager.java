@@ -103,6 +103,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     /// Designed for adding events while the game is in progress
     protected void addEvent(int time, Consumer<EVENT> event, Text name) {
         this.eventQueue.addEvent(this.time + time, event, name);
+        for (ServerPlayerEntity player : this.getPlayers()) {
+            ServerPlayNetworking.send(player, new EventQueuePayload(this.eventQueue, this.time));
+        }
     }
 
     protected abstract Function<UUID, TABLE> dbTableBuilder();
@@ -117,7 +120,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         ServerPlayNetworking.send(player, new JoinGamePayload());
 
         ifNotNull(this.map.getBlockProtectionPacket(), packet -> ServerPlayNetworking.send(player, packet));
-        if (!this.eventQueue.isEmpty()) ServerPlayNetworking.send(player, new EventQueuePayload(this.eventQueue));
+        if (!this.eventQueue.isEmpty()) ServerPlayNetworking.send(player, new EventQueuePayload(this.eventQueue, this.time));
     }
 
     protected void sendLeaveGamePayload(ServerPlayerEntity player) {

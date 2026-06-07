@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
@@ -48,10 +49,15 @@ public class GamesManager {
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.endAllGames());
 
+        ServerTickEvents.START_SERVER_TICK.register(this::tick);
+
         ServerPlayerEvents.LEAVE.register(player -> {
             if (!player.getWorld().getServer().isDedicated()) this.endAllGames();
         });
-        ServerTickEvents.START_SERVER_TICK.register(this::tick);
+        ServerPlayerEvents.JOIN.register(player -> {
+            this.getGame(player).ifPresent(game -> game.onPlayerJoin(player));
+            if (!this.isPlayerInGame(player)) ServerPlayNetworking.send(player, this.queue.getQueueProgressPayload());
+        });
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) ->
                 this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true)
@@ -70,9 +76,6 @@ public class GamesManager {
         );
         ModEvents.ON_BLOCK_PLACED.register((player, pos, context) ->
                 this.getGame(player).map(game -> game.onBlockPlaced(player, pos, context)).orElse(ActionResult.PASS)
-        );
-        ServerPlayerEvents.JOIN.register(player ->
-                this.getGame(player).ifPresent(game -> game.onPlayerJoin(player))
         );
         ModEvents.ON_CRAFTING_TABLE_OPENED.register((player, pos) ->
                 this.getGame(player).map(game -> game.onCraftingTableOpened(player, pos)).orElse(true)
@@ -218,8 +221,8 @@ public class GamesManager {
         return true;
     }
 
-    public boolean completeQueue(GameType queueType) { //Make this less gross maybe
-        return this.finishQueue(queueType, this.queue.getLimitedPlayers(queueType));
+    public boolean completeQueue(GameType queueType) {
+        return this.queue.finishQueue(queueType);
     }
 
     public boolean isPlayerInGame(ServerPlayerEntity player) {

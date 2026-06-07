@@ -24,7 +24,6 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
     public static final String POWERUPS_KEY = "powerups";
 
     private final List<BlockPos> powerups;
-    private long nextPowerupTime;
 
     public HideAndSeekGameMap(
             StructureTemplate structure,
@@ -40,7 +39,6 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
         this.powerups = powerups;
-        this.nextPowerupTime = this.getNextPowerupTime(world);
     }
 
     /// Constructor used only for saving the map to file
@@ -93,18 +91,7 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
         return compound;
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        if (this.world.getTime() > this.nextPowerupTime && !this.powerups.isEmpty()) {
-            this.nextPowerupTime = this.getNextPowerupTime(this.world);
-
-            final BlockPos powerupPos = this.pos(getRandomElement(this.powerups, this.world.random));
-            this.world.spawnEntity(new PowerupEntity(this.world, powerupPos));
-        }
-    }
-
-    private long getNextPowerupTime(World world) {
-        return world.getTime() + world.random.nextBetween(25, 35) * 20L;
+    public void spawnPowerup() {
+        getRandomElement(this.powerups, this.world.random).ifPresent(pos -> this.world.spawnEntity(new PowerupEntity(this.world, this.pos(pos))));
     }
 }

@@ -445,6 +445,7 @@
   "events.hide_and_seek.ping.3": "Hider Ping 3",
   "events.hide_and_seek.ping.4": "Hider Ping 4",
   "events.hide_and_seek.end": "Hiders Win",
+  "events.hide_and_seek.next_powerup": "Powerup Spawn",
   "game.bedwars.win": "Winner winner chicken dinner",
   "game.bedwars.lose": "GG EZ rekt lmao",
   "game.bedwars.bed_broken.title": "Bed Broken!",

@@ -98,6 +98,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 	protected void onSeekerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
 		ifNotNull(this.getDbTable(source.getSource()), SeekingTable::killSeeker);
+		player.changeGameMode(GameMode.SPECTATOR);
 
 		this.endGame(false, HIDER_COLOUR);
 	}
@@ -164,4 +165,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 	private Collection<UUID> getAlivePlayers() {
 		return this.teams.get(HIDER_COLOUR);
 	}
+
+	@Override
+	protected void tickKillzone() {}
 }

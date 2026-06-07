@@ -25,15 +25,15 @@ public class EventsHud implements VerticallyStackedHudComponent {
     }
 
     private final List<Event.ClientDisplayEvent> events;
-    private final long startTime;
+    private long originTime;
 
-    public EventsHud(List<Event.ClientDisplayEvent> events) {
+    public EventsHud(List<Event.ClientDisplayEvent> events, long gameTime) {
         this.events = events; //Pretty sure I used a mutable list in the codec but I guess I'll find out soon
-        this.startTime = MinecraftClient.getInstance().world.getTime();
+        this.originTime = MinecraftClient.getInstance().world.getTime() - gameTime;
     }
 
     public static void receivePayload(EventQueuePayload payload) {
-        INSTANCE.set(new EventsHud(payload.events()));
+        INSTANCE.set(new EventsHud(payload.events(), payload.gameTime()));
     }
 
     public static void clear() {
@@ -56,12 +56,12 @@ public class EventsHud implements VerticallyStackedHudComponent {
         drawContext.drawText(textRenderer, title, x + (SIDEBAR_WIDTH - textRenderer.getWidth(title) >> 1), y + 4, 0xffffffff, true);
 
         long time = MinecraftClient.getInstance().world.getTime();
-        if (!this.events.isEmpty() && this.events.getFirst().time() + this.startTime <= time) this.events.removeFirst();
+        if (!this.events.isEmpty() && this.events.getFirst().time() + this.originTime <= time) this.events.removeFirst();
 
         for (int i = 0; i < 2; i++) {
             if (i < this.events.size()) {
                 final Event.ClientDisplayEvent event = this.events.get(i);
-                final Text text = Text.translatable("hud.upcoming_event", event.name(), getTimeFromSeconds((event.time() + (this.startTime - time)) * 0.05f, false, SidebarHud.TIME_COLOURS));
+                final Text text = Text.translatable("hud.upcoming_event", event.name(), getTimeFromSeconds((event.time() + (this.originTime - time)) * 0.05f, false, SidebarHud.TIME_COLOURS));
                 drawContext.drawText(textRenderer, text, x + 8, y + 18 + i * 14, 0xffffffff, true);
             }
         }
