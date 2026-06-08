@@ -3,7 +3,9 @@ package com.soc.resourcedata.listeners;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.soc.SocWars;
+import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import com.soc.resourcedata.containers.SkywarsLootDataContainer;
+import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.item.Item;
@@ -36,7 +38,13 @@ public class SkywarsLootData implements SimpleSynchronousResourceReloadListener 
     public void reload(ResourceManager manager) {
         this.skywarsItemDataContainer.clear();
 
-        readResources(manager, "item_data", BASE_PATH_PREDICATE, (reader, id) -> {
+        readResources(manager, "skywars_item_data", BASE_PATH_PREDICATE, (reader, id) -> {
+            switch(id.toString()) {
+                case "socwars:skywars_item_data/population.json" -> this.skywarsItemDataContainer.readPoolPopulations(reader);
+            }
+        });
+
+        readResources(manager, "skywars_item_data/pools", BASE_PATH_PREDICATE, (reader, id) -> {
             for (JsonElement jsonElement : JsonHelper.deserializeArray(reader)) {
                 final JsonObject object = jsonElement.getAsJsonObject();
                 final Item item = Registries.ITEM.get(Identifier.of(object.get(ITEM_ID_KEY).getAsString()));

@@ -5,44 +5,44 @@
     "tier_2_weight": 10,
     "tier_3_weight": 10,
     "tier_4_weight": 15,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:shatterstar",
     "tier_1_weight": 10,
     "tier_2_weight": 10,
     "tier_3_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:leatherer",
     "tier_1_weight": 15,
     "tier_2_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:postura",
     "tier_1_weight": 10,
     "tier_2_weight": 15,
     "tier_3_weight": 15,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:shrink_ray",
     "tier_1_weight": 8,
     "tier_2_weight": 15,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:biggening_ray",
     "tier_3_weight": 3,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:gravity_orb",
     "tier_1_weight": 15,
     "tier_2_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:dice_of_fate",
@@ -50,78 +50,78 @@
     "tier_2_weight": 10,
     "tier_3_weight": 10,
     "tier_4_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:wind_staff",
     "tier_1_weight": 15,
     "tier_2_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:ender_staff",
     "tier_3_weight": 10,
     "tier_4_weight": 15,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:mobbing_staff",
     "tier_2_weight": 15,
     "tier_3_weight": 15,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:velocity_staff",
     "tier_3_weight": 12,
     "tier_4_weight": 15,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:vexing_staff",
     "tier_3_weight": 8,
     "tier_4_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:death_rain",
     "tier_3_weight": 9,
     "tier_4_weight": 14,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:god_complex",
     "tier_4_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:scroll_of_eau",
     "tier_2_weight": 9,
     "tier_3_weight": 15,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:scroll_of_hellfire",
     "tier_2_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:c_u_e_b",
     "tier_3_weight": 3,
     "tier_4_weight": 9,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:portable_stepping_stool",
     "tier_3_weight": 8,
     "tier_4_weight": 14,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "socwars:jet_shopping_trolley",
     "tier_1_weight": 8,
     "tier_2_weight": 5,
     "tier_3_weight": 7,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "minecraft:lava_bucket",
@@ -129,7 +129,7 @@
     "tier_2_weight": 5,
     "tier_3_weight": 5,
     "tier_4_weight": 5,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "minecraft:water_bucket",
@@ -137,7 +137,7 @@
     "tier_2_weight": 5,
     "tier_3_weight": 3,
     "tier_4_weight": 1,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "minecraft:fishing_rod",
@@ -145,7 +145,7 @@
     "tier_2_weight": 10,
     "tier_3_weight": 10,
     "tier_4_weight": 10,
-    "pool": 9
+    "pool": 7
   },
   {
     "id": "minecraft:spyglass",
@@ -153,6 +153,6 @@
     "tier_3_weight": 1,
     "tier_4_weight": 1,
     "tier_2_weight": 2,
-    "pool": 9
+    "pool": 7
   }
 ]

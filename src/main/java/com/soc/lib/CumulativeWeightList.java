@@ -47,6 +47,8 @@ public class CumulativeWeightList<V> {
     }
 
     public V getWeightedRandom(Random random) {
+        if (this.weightList.isEmpty()) return null;
+
         final float indexF = random.nextFloat() * this.getTotalWeight();
         final int index = Collections.binarySearch(this.weightList.stream().map(Pair::getLeft).toList(), indexF);
         final int fixedIndex = index >= 0 ? index : -index - 1;

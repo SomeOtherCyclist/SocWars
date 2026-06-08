@@ -632,7 +632,7 @@ public final class SocWarsLib {
     }
 
     public static <T> List<T> mapFromRange(int start, int end, IntFunction<T> mapper) {
-        final List<T> list = new ArrayList<>();
+        final List<T> list = new ArrayList<>(end - start);
         for (int i = start; i < end; i++) {
             list.add(mapper.apply(i));
         }
