@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractBlockMixin",
     "AccessDebugStickCycle",
+    "AfterPlayerLeaveEventTrigger",
     "AppendTooltipAtEnd",
     "BlockOffsetEvaluateNullPos",
     "BowInfinityFix",

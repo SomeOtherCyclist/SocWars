@@ -77,4 +77,10 @@ public interface ModEvents {
 
         return allowEvent;
     });
+
+    Event<AfterPlayerLeave> AFTER_PLAYER_LEAVE = EventFactory.createArrayBacked(AfterPlayerLeave.class, listeners -> player -> {
+        for (AfterPlayerLeave listener : listeners) {
+            listener.afterLeave(player);
+        }
+    });
 }
