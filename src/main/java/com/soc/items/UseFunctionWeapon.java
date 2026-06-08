@@ -363,7 +363,7 @@ public class UseFunctionWeapon extends Item {
                 final BiPredicate<BlockPos, BlockState> damage = getBlockDamagePredicate(world, true, user);
 
                 //actually technical stuff setup
-                final double maxDistance = 40d;
+                final double maxDistance = 30d;
                 final double width = 1.5f;
                 final double boxStep = 8d;
 
@@ -407,7 +407,7 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-            .maxDamage(30)
+            .maxDamage(10)
             .useCooldown(2f)
             .rarity(Rarity.EPIC)
     );

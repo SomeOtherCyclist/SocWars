@@ -42,7 +42,7 @@ public class PotionRing extends RingItem {
     public static final Item LESSER_JUMP_RING = ModItems.register("lesser_jump_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.JUMP_BOOST, 1)), new Settings().maxDamage(15 * 20).rarity(Rarity.UNCOMMON));
     public static final Item GREATER_JUMP_RING = ModItems.register("greater_jump_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.JUMP_BOOST, 3)), new Settings().maxDamage(5 * 20).rarity(Rarity.UNCOMMON));
     public static final Item INFLATABLE_IRON_INGOT = ModItems.register("inflatable_iron_ingot", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.LEVITATION, 1), new EffectRecord(StatusEffects.SLOW_FALLING, 0, 5)), new Settings().maxDamage(20 * 20).rarity(Rarity.EPIC));
-    public static final Item INVISIBILITY_RING = ModItems.register("invisibility_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.INVISIBILITY, 1)), new Settings().maxDamage(20 * 40).rarity(Rarity.EPIC));
+    public static final Item INVISIBILITY_RING = ModItems.register("invisibility_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.INVISIBILITY, 1)), new Settings().maxDamage(20 * 20).rarity(Rarity.EPIC));
 
     @Override
     protected void ringUse(LivingEntity user) {

@@ -24,6 +24,7 @@
     "EntityGetBoundingBox",
     "ExplosiveProjectileEntityToggleAddParticles",
     "FluidBlockBreakCancel",
+    "GetAbsorptionAmountDataTracker",
     "GetBlockEntityEvaluateNullPos",
     "GetItemSettingsComponent",
     "GetItemSettingsComponentsMap",

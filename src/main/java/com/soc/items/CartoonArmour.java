@@ -78,14 +78,14 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
             switch (random) {
                 case 1 -> { return false; }
                 case 2 -> {
-                    Vec3d centre = wearer.getPos();
-                    SphereExplosion.explode(world, centre, 4.5f, 1.5f, 0.8f, 0.75f, true, wearer, null);
+					wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 1, 4, false, true));
+                    SphereExplosion.explode(world, wearer.getPos(), 4.5f, 1.5f, 0.8f, 0.75f, true, wearer, null);
                 }
                 case 3 -> {
                     iterateInPlane(wearer.getBlockPos(), 1, pos -> world.setBlockState(pos, Blocks.AIR.getDefaultState()));
                     iterateInPlane(wearer.getBlockPos().down(), 1, pos -> world.setBlockState(pos, Blocks.SLIME_BLOCK.getDefaultState()));
                 }
-                case 4 -> wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2 * 20, 9, false, false));
+                case 4 -> wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2 * 20, 2, false, true));
             }
 
             return true;
@@ -95,10 +95,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
                 case 1 -> {
-                    for (Hand hand : Hand.values()) {
-                        wearer.dropItem(wearer.getStackInHand(hand), false, false);
-                        wearer.setStackInHand(hand, ItemStack.EMPTY);
-                    }
+                    wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 3 * 20, 2, false, true));
                 }
                 case 2 -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, wearer, Vec3d.ZERO, 3f, BWFireballEntity::fireballExplosion), (ServerWorld)world, wearer, 0.8f);
                 case 3 -> rainPositions(world, wearer.getPos(), 150, 22f, 10f, 250f, pos -> {
@@ -134,13 +131,10 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
                     });
                 }
                 case 4 -> {
-                    final PlayerEntity player = world.getClosestPlayer(wearer.getX(), wearer.getY(), wearer.getZ(), 100f, entity -> entity != wearer);
-                    if (player != null) {
-                        player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 10 * 20, 3, false, true));
-                        player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 10 * 20, 1, false, true));
-                        player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 10 * 20, 0, false, true));
-                        player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 10 * 20, 0, false, true));
-                    }
+                    wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 10 * 20, 3, false, true));
+                    wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 10 * 20, 1, false, true));
+                    wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 10 * 20, 0, false, true));
+                    wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 10 * 20, 0, false, true));
                 }
             }
 

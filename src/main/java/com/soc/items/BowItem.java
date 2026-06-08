@@ -156,7 +156,8 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                     super.onHit(target);
                     this.discard();
                     if (world instanceof ServerWorld serverWorld) {
-                        target.damage(serverWorld, damageSource(world, DamageTypes.CATASTROPHE_BOW, user), 69420f);
+                        target.setHealth(0f);
+                        //target.damage(serverWorld, damageSource(world, DamageTypes.CATASTROPHE_BOW, user), 69420f);
                     }
                 }
             }, stack -> 3f, stack -> 6f) {

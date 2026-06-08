@@ -1,72 +1,90 @@
 [
   {
     "id": "socwars:steadfast_helmet",
-    "tier_3_weight": 23,
-    "tier_4_weight": 16,
+    "tier_1_weight": 10,
+    "tier_2_weight": 20,
+    "tier_3_weight": 15,
     "pool": 2
   },
   {
     "id": "socwars:steadfast_chestplate",
-    "tier_3_weight": 6,
-    "tier_4_weight": 17,
+    "tier_1_weight": 10,
+    "tier_2_weight": 20,
+    "tier_3_weight": 15,
     "pool": 2
   },
   {
     "id": "socwars:steadfast_leggings",
-    "tier_3_weight": 6,
-    "tier_4_weight": 17,
+    "tier_1_weight": 10,
+    "tier_2_weight": 20,
+    "tier_3_weight": 15,
     "pool": 2
   },
   {
     "id": "socwars:steadfast_boots",
-    "tier_3_weight": 20,
-    "tier_4_weight": 15,
+    "tier_1_weight": 10,
+    "tier_2_weight": 20,
+    "tier_3_weight": 15,
     "pool": 2
   },
   {
     "id": "socwars:demolitionist_helmet",
-    "tier_3_weight": 23,
-    "tier_4_weight": 16,
+    "tier_1_weight": 5,
+    "tier_2_weight": 2,
+    "tier_3_weight": 15,
+    "tier_4_weight": 10,
     "pool": 2
   },
   {
     "id": "socwars:demolitionist_chestplate",
-    "tier_4_weight": 17,
+    "tier_1_weight": 5,
+    "tier_2_weight": 2,
+    "tier_3_weight": 15,
+    "tier_4_weight": 10,
     "pool": 2
   },
   {
     "id": "socwars:demolitionist_leggings",
-    "tier_4_weight": 17,
+    "tier_1_weight": 5,
+    "tier_2_weight": 2,
+    "tier_3_weight": 15,
+    "tier_4_weight": 10,
     "pool": 2
   },
   {
     "id": "socwars:demolitionist_boots",
-    "tier_3_weight": 20,
-    "tier_4_weight": 15,
+    "tier_1_weight": 5,
+    "tier_2_weight": 2,
+    "tier_3_weight": 15,
+    "tier_4_weight": 10,
     "pool": 2
   },
   {
     "id": "socwars:gambler_helmet",
-    "tier_3_weight": 18,
+    "tier_2_weight": 5,
+    "tier_3_weight": 10,
     "tier_4_weight": 13,
     "pool": 2
   },
   {
     "id": "socwars:gambler_chestplate",
-    "tier_3_weight": 5,
+    "tier_2_weight": 5,
+    "tier_3_weight": 10,
     "tier_4_weight": 13,
     "pool": 2
   },
   {
     "id": "socwars:gambler_leggings",
-    "tier_3_weight": 5,
+    "tier_2_weight": 5,
+    "tier_3_weight": 10,
     "tier_4_weight": 13,
     "pool": 2
   },
   {
     "id": "socwars:gambler_boots",
-    "tier_3_weight": 18,
-    "tier_4_weight": 12,
+    "tier_2_weight": 5,
+    "tier_3_weight": 10,
+    "tier_4_weight": 13,
     "pool": 2
   },
   {
@@ -78,21 +96,21 @@
   },
   {
     "id": "socwars:cartoon_chestplate",
-    "tier_3_weight": 4,
-    "tier_4_weight": 10,
+    "tier_2_weight": 2,
+    "tier_3_weight": 7,
+    "tier_4_weight": 5,
     "pool": 2
   },
   {
     "id": "socwars:cartoon_leggings",
-    "tier_3_weight": 6,
-    "tier_4_weight": 8,
+    "tier_3_weight": 10,
+    "tier_4_weight": 5,
     "pool": 2
   },
   {
     "id": "socwars:cartoon_boots",
-    "tier_2_weight": 2,
-    "tier_3_weight": 7,
-    "tier_4_weight": 10,
+    "tier_2_weight": 5,
+    "tier_3_weight": 5,
     "pool": 2
   },
   {
@@ -103,7 +121,7 @@
   },
   {
     "id": "socwars:summoners_garb",
-    "tier_4_weight": 12,
+    "tier_3_weight": 15,
     "pool": 2
   },
   {

@@ -90,7 +90,7 @@ public class SkywarsGameMap extends AbstractGameMap {
 //                inventory.setStack(i, stack);
 //            }
 //        }
-        final List<ItemStack> chestItems = SkywarsLootData.INSTANCE.getSkywarsItemData().getChestItems(tier, this.world.random, inventory.size());
+        final List<ItemStack> chestItems = SkywarsLootData.INSTANCE.getSkywarsItemData().getChestItems(tier, this.world, inventory.size());
         for (int i = 0; i < chestItems.size(); i++) {
             inventory.setStack(i, chestItems.get(i));
         }

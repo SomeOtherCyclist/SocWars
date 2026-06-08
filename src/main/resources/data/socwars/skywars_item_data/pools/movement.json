@@ -1,0 +1,63 @@
+[
+  {
+    "id": "socwars:chorus_fruit_salad",
+    "tier_3_weight": 10,
+    "tier_4_weight": 20,
+    "pool": 9
+  },
+  {
+    "id": "socwars:extendo_bridge",
+    "tier_1_weight": 10,
+    "tier_2_weight": 15,
+    "tier_3_weight": 15,
+    "tier_4_weight": 20,
+    "pool": 9
+  },
+
+  {
+    "id": "socwars:gravity_orb",
+    "tier_1_weight": 15,
+    "tier_2_weight": 15,
+    "pool": 9
+  },
+
+  {
+    "id": "socwars:portable_stepping_stool",
+    "tier_2_weight": 5,
+    "tier_3_weight": 10,
+    "tier_4_weight": 14,
+    "pool": 9
+  },
+
+  {
+    "id": "socwars:jet_shopping_trolley",
+    "tier_1_weight": 8,
+    "tier_2_weight": 5,
+    "tier_3_weight": 7,
+    "pool": 9
+  },
+  {
+    "id": "socwars:inflatable_iron_ingot",
+    "tier_2_weight": 8,
+    "tier_3_weight": 10,
+    "pool": 9
+  },
+  {
+    "id": "socwars:velocity_staff",
+    "tier_3_weight": 10,
+    "tier_4_weight": 15,
+    "pool": 9
+  },
+  {
+    "id": "socwars:ender_staff",
+    "tier_2_weight": 5,
+    "tier_3_weight": 10,
+    "tier_4_weight": 15,
+    "pool": 9
+  },
+  {
+    "id": "socwars:god_complex",
+    "tier_4_weight": 10,
+    "pool": 9
+  }
+]

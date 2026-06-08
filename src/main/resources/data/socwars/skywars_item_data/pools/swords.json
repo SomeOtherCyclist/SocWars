@@ -1,23 +1,20 @@
 [
   {
     "id": "socwars:dashrend",
-    "tier_1_weight": 10,
-    "tier_3_weight": 10,
-    "tier_4_weight": 10,
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
     "pool":1
   },
   {
     "id": "socwars:biohacker",
-    "tier_1_weight": 10,
-    "tier_3_weight": 10,
-    "tier_4_weight": 10,
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
     "pool": 1
   },
   {
     "id": "socwars:lifethief",
-    "tier_1_weight": 10,
-    "tier_3_weight": 10,
-    "tier_4_weight": 10,
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
     "pool": 1
   },
   {
@@ -41,28 +38,35 @@
     "pool": 1
   },
   {
+    "id": "socwars:netherwrong_sword",
+    "tier_1_weight": 1,
+    "tier_2_weight": 1,
+    "tier_3_weight": 1,
+    "tier_4_weight": 1,
+    "pool": 1
+  },
+  {
     "id": "socwars:firestorm",
-    "tier_1_weight": 5,
-    "tier_2_weight": 10,
-    "tier_3_weight": 15,
-    "tier_4_weight": 20,
+    "tier_1_weight": 10,
+    "tier_2_weight": 15,
     "pool": 1
   },
   {
     "id": "socwars:statue_blade",
-    "tier_1_weight": 10,
+    "tier_1_weight": 15,
     "tier_2_weight": 15,
     "pool": 1
   },
   {
     "id": "socwars:spring_sword",
     "tier_1_weight": 15,
+    "tier_2_weight": 5,
     "pool": 1
   },
   {
     "id": "socwars:sharpened_poking_stick",
-    "tier_1_weight": 15,
-    "tier_2_weight": 15,
+    "tier_1_weight": 10,
+    "tier_2_weight": 10,
     "pool": 1
   },
   {
@@ -85,13 +89,12 @@
   {
     "id": "socwars:full_metal_sword",
     "tier_1_weight": 20,
-    "tier_2_weight": 15,
-    "tier_3_weight": 15,
+    "tier_2_weight": 10,
     "pool": 1
   },
   {
     "id": "socwars:bat",
-    "tier_1_weight": 40,
+    "tier_1_weight": 30,
     "pool": 1
   },
   {
@@ -104,13 +107,12 @@
     "id": "socwars:nailed_bat",
     "tier_1_weight": 10,
     "tier_2_weight": 20,
-    "tier_3_weight": 20,
     "pool": 1
   },
   {
     "id": "socwars:razor_wire_bat",
     "tier_2_weight": 15,
-    "tier_3_weight": 20,
+    "tier_3_weight": 5,
     "pool": 1
   },
   {
@@ -146,8 +148,8 @@
   },
   {
     "id": "socwars:detonator",
-    "tier_2_weight": 10,
-    "tier_3_weight": 15,
+    "tier_3_weight": 10,
+    "tier_4_weight": 15,
     "pool": 1
   },
   {
@@ -195,22 +197,25 @@
   },
   {
     "id": "socwars:devastator_prime",
-    "tier_4_weight": 3,
+    "tier_4_weight": 5,
     "pool": 1
   },
   {
     "id": "socwars:expon",
+    "tier_3_weight": 5,
     "tier_4_weight": 5,
     "pool": 1
   },
   {
     "id": "socwars:alchemism",
-    "tier_4_weight": 10,
+    "tier_3_weight": 10,
+    "tier_4_weight": 15,
     "pool": 1
   },
   {
     "id": "socwars:gambler_sword",
-    "tier_4_weight": 8,
+    "tier_3_weight": 5,
+    "tier_4_weight": 12,
     "pool": 1
   },
   {
@@ -220,13 +225,13 @@
   },
   {
     "id": "socwars:pink_sword",
-    "tier_4_weight": 2,
+    "tier_4_weight": 3,
     "pool": 1
   },
   {
     "id": "socwars:transportas",
-    "tier_2_weight": 10,
-    "tier_3_weight": 5,
+    "tier_2_weight": 15,
+    "tier_3_weight": 10,
     "pool": 1
   },
   {

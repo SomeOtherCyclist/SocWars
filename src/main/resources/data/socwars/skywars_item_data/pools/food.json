@@ -48,12 +48,6 @@
     "pool": 5
   },
   {
-    "id": "socwars:chorus_fruit_salad",
-    "tier_3_weight": 5,
-    "tier_4_weight": 20,
-    "pool": 5
-  },
-  {
     "id": "minecraft:golden_apple",
     "tier_1_weight": 7,
     "tier_2_weight": 12,

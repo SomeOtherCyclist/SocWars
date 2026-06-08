@@ -4,6 +4,7 @@ import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.game.manager.GamesManager;
 import com.soc.game.manager.HideAndSeekGameManager;
+import com.soc.mixin.GetAbsorptionAmountDataTracker;
 import com.soc.util.BlockTags;
 import com.soc.util.DamageTypes;
 import com.soc.items.util.ModItems;
@@ -133,7 +134,8 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(800)
     );
     public static final Item PINK_SWORD = ModItems.register("pink_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                attacker.setAbsorptionAmount(attacker.getAbsorptionAmount() + 1);
+                float newAbsorption = attacker.getAbsorptionAmount() + 2;
+                attacker.getDataTracker().set(GetAbsorptionAmountDataTracker.getAbsorption_Amount(), newAbsorption);
             }), new Settings()
             .rarity(Rarity.EPIC)
             .sword(ToolMaterials.BASE, 10f, -2.2f)
