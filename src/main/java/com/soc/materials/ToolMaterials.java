@@ -30,7 +30,7 @@ public interface ToolMaterials {
     );
     ToolMaterial DEVASTATOR = new ToolMaterial(
             BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
-            5,
+            20,
             2.0f,
             10f,
             20,

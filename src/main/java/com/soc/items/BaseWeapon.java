@@ -14,6 +14,8 @@ import net.minecraft.util.Rarity;
 
 import java.util.function.Consumer;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+
 public class BaseWeapon extends Item {
 
     public BaseWeapon(Settings settings) {
@@ -21,13 +23,13 @@ public class BaseWeapon extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BAT, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BARBED_WIRE_BAT, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(NAILED_BAT, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(RAZOR_WIRE_BAT, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SAW_BLADE_BAT, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DEVASTATOR, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(NETHERIGHT_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(BAT, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(BARBED_WIRE_BAT, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(NAILED_BAT, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(RAZOR_WIRE_BAT, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(SAW_BLADE_BAT, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(DEVASTATOR, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(NETHERIGHT_SWORD, ItemGroups.COMBAT);
     }
 
     public static final Item BAT = ModItems.register("bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 4f, -1.9f));

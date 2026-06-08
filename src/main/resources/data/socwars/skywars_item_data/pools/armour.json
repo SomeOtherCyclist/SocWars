@@ -28,6 +28,30 @@
     "pool": 2
   },
   {
+    "id": "socwars:glass_helmet",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
+    "pool": 2
+  },
+  {
+    "id": "socwars:glass_chestplate",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
+    "pool": 2
+  },
+  {
+    "id": "socwars:glass_leggings",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
+    "pool": 2
+  },
+  {
+    "id": "socwars:glass_boots",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
+    "pool": 2
+  },
+  {
     "id": "socwars:demolitionist_helmet",
     "tier_1_weight": 5,
     "tier_2_weight": 2,

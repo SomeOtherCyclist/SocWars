@@ -76,27 +76,25 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 }
     }, stack -> 1.5f, stack -> 2.75f), new Settings()
             .rarity(Rarity.UNCOMMON)
-            .maxDamage(20)
+            .maxDamage(30)
     );
     public static final Item MEGABOOM_BOW = ModItems.register("megaboom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
                     this.discard();
-                    Vec3d centre = target.getPos();
-                    SphereExplosion.explode(world, centre, 7f, 1.5f, 0.7f, 0.7f, true, user, null);
+					SphereExplosion.explode(world, target.getPos(), 7f, 1.5f, 0.7f, 0.7f, true, user, null);
                 }
 
                 @Override
                 protected void onBlockHit(BlockHitResult blockHitResult) {
                     super.onBlockHit(blockHitResult);
                     this.discard();
-                    Vec3d centre = blockHitResult.getPos();
-                    SphereExplosion.explode(world, centre, 8f, 1.5f, 0.9f, 0.8f, true, user, null);
+					SphereExplosion.explode(world, blockHitResult.getPos(), 8f, 1.5f, 0.9f, 0.8f, true, user, null);
                 }
     }, stack -> 2f, stack -> 2.25f), new Settings()
             .rarity(Rarity.RARE)
-            .maxDamage(8)
+            .maxDamage(15)
     );
     public static final Item FALCON_BOW = ModItems.register("falcon_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
@@ -104,16 +102,15 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                     super.onHit(target);
                     this.discard();
 
-                    final Vec3d knockback = this.getVelocity().getHorizontal().multiply(2d).add(0d, 0.5d, 0d);
+                    final Vec3d knockback = this.getVelocity().getHorizontal().add(0d, 0.5d, 0d);
                     if (target instanceof ServerPlayerEntity serverPlayer) {
                         serverPlayer.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(serverPlayer.getId(), serverPlayer.getVelocity().add(knockback)));
-                    } else {
-                        target.addVelocity(knockback);
                     }
+                    target.addVelocity(knockback);
                 }
             }, stack -> 0.75f, stack -> 4f), new Settings()
             .rarity(Rarity.EPIC)
-            .maxDamage(20)
+            .maxDamage(15)
     );
     public static final Item HEATER_BOW = ModItems.register("heater_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
@@ -148,7 +145,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 }
             }, stack -> 0.9f, stack -> 3.5f), new Settings()
             .rarity(Rarity.RARE)
-            .maxDamage(350)
+            .maxDamage(75)
     );
     public static final Item CATASTROPHE_BOW = ModItems.register("catastrophe_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
@@ -164,8 +161,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 @Override
                 public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
                     if (super.rawDrawProgress(stack, remainingUseTicks) > 7.5f) {
-                        Vec3d centre = user.getPos();
-                        SphereExplosion.explode(world, centre, 7f, 1.5f, 12f, 3f, true, user, DamageTypes.CATASTROPHE_BOW_BACKFIRE);
+						SphereExplosion.explode(world, user.getPos(), 7f, 1.5f, 12f, 3f, true, user, DamageTypes.CATASTROPHE_BOW_BACKFIRE);
                     }
                 }
             }, new Settings()
