@@ -91,10 +91,10 @@ public class GamblerArmour extends Item implements OnEquipArmour {
         final Formatting formatting = switch(this.protectionValue) {
             case 0 -> Formatting.DARK_RED;
             case 1 -> Formatting.RED;
-            case 2,3 -> Formatting.GOLD;
-            case 4,5 -> Formatting.YELLOW;
-            case 6,7 -> Formatting.GREEN;
-            case 8,9 -> Formatting.DARK_GREEN;
+            case 2, 3 -> Formatting.GOLD;
+            case 4, 5 -> Formatting.YELLOW;
+            case 6, 7 -> Formatting.GREEN;
+            case 8, 9 -> Formatting.DARK_GREEN;
             default -> Formatting.BLACK;
         };
 
