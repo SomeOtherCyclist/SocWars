@@ -239,18 +239,18 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         final BedwarsGeneratorDataContainer bedwarsGeneratorDataContainer = BedwarsGeneratorDataContainer.INSTANCE;
         for (int i = 0; i < bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().size(); i++) {
             final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().get(i); //TODO: Redo these texts, they are kind of ugly at the moment
-            queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond_generator", i));
+            queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond_generator", romanNumeralsText(i).formatted(Formatting.AQUA)));
         }
         for (int i = 0; i < bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().size(); i++) {
             final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().get(i);
-            queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald_generator", i));
+            queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald_generator", romanNumeralsText(i).formatted(Formatting.DARK_GREEN)));
         }
         for (int i = 0; i < bedwarsGeneratorDataContainer.getIslandGeneratorUpgrades().size(); i++) {
             final IslandGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getIslandGeneratorUpgrades().get(i);
             int finalI = i;
             queue.addEvent(upgrade.autoUpgradeTime(), manager -> this.teamStatsMap.forEach((team, stats) -> {
                 if (stats.getNumPlayersAlive() == 0) manager.buyGeneratorUpgrade(team, finalI);
-            }), Text.translatable("events.bedwars.island_generator", i));
+            }), Text.translatable("events.bedwars.island_generator", romanNumeralsText(i).formatted(Formatting.GOLD)));
         }
         queue.addEvent(30 * 60 * 20, manager -> manager.endGame(false), Text.translatable("events.game.end"));
 
@@ -495,7 +495,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
             final Multimap<DyeColor, ServerPlayerEntity> enemiesInRange = this.getPlayers()
                     .stream()
-                    .filter(player -> true || this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE))
+                    .filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE))
                     .collect(Multimaps.toMultimap(this::getTeam, Function.identity(), HashMultimap::create));
 
             if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(pos, this, enemiesInRange);

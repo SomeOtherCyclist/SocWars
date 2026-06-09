@@ -1,6 +1,7 @@
 {
   "cost": {
-    "gold": 16
+    "gold": 16,
+    "emeralds": 1
   },
   "item": "socwars:diamond_apple"
 }

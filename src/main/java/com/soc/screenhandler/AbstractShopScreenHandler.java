@@ -12,6 +12,8 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import org.jetbrains.annotations.Nullable;
 
+import static com.soc.lib.SocWarsLib.ifNotNull;
+
 public abstract class AbstractShopScreenHandler extends ScreenHandler {
     protected final PlayerEntity player;
     protected final PlayerInventory playerInventory;
@@ -53,6 +55,6 @@ public abstract class AbstractShopScreenHandler extends ScreenHandler {
     public abstract void setShopContents(BedwarsShopContents shopContents);
 
     public void onBuyItem(Cost cost) {
-        this.manager.onBuyItem(cost, this.player);
+        ifNotNull(this.manager, manager -> manager.onBuyItem(cost, this.player));
     }
 }

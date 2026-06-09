@@ -472,7 +472,7 @@ public final class SocWarsLib {
     }
 
     public static MutableText romanNumeralsText(int i) {
-        return Text.literal("enchantment.level." + i);
+        return Text.translatable("enchantment.level." + i);
     }
 
     public static boolean inventoryCanAcceptStack(Inventory inventory, ItemStack insertStack) {

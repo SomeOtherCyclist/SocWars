@@ -1,7 +1,7 @@
 {
   "cost": {
-    "gold": 12,
-    "emeralds": 2
+    "gold": 16,
+    "emeralds": 4
   },
   "item": "socwars:netherite_apple"
 }

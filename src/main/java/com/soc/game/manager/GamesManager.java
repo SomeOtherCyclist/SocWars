@@ -208,16 +208,20 @@ public class GamesManager {
 
         final int gameId = this.getNewGameId();
 
-        final AbstractGameManager<?, ?, ?> game = switch (queueType) {
-            case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
-            case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
-            case PROP_HUNT -> new PropHuntGameManager(this.world, players, null, gameId);
-            case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.world, players, null, gameId);
-            case DUELS -> new DuelsGameManager(this.world, players, null, gameId);
-        };
+        try {
+            final AbstractGameManager<?, ?, ?> game = switch (queueType) {
+                case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
+                case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
+                case PROP_HUNT -> new PropHuntGameManager(this.world, players, null, gameId);
+                case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.world, players, null, gameId);
+                case DUELS -> new DuelsGameManager(this.world, players, null, gameId);
+            };
 
-        final boolean startedGame = this.startGame(game);
-        if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
+            final boolean startedGame = this.startGame(game);
+            if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
+        } catch (Exception ignored) {
+            SocWars.LOGGER.warn("Failed to start game {}", gameId);
+        }
 
         return true;
     }

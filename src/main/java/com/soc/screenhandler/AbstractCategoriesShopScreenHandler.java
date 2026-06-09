@@ -23,7 +23,7 @@ public abstract class AbstractCategoriesShopScreenHandler extends AbstractShopSc
     protected abstract Inventory createCategoriesInventory();
 
     public void setCurrentCategory(int slot) {
-        if (slot < 0 || slot >= this.shopContents.getNumCategories()) return;
+        if (this.shopContents == null || slot < 0 || slot >= this.shopContents.getNumCategories()) return;
         this.currentCategory = this.shopContents.getCategory(slot);
 
         this.refreshItems();
