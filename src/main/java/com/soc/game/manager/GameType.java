@@ -16,7 +16,8 @@ public enum GameType implements StringIdentifiable {
     SKYWARS(2, 8, "skywars", SkywarsGameMap.FILE_EXTENSION, Map.of()),
     BEDWARS(2, 16, "bedwars", BedwarsGameMap.FILE_EXTENSION, BedwarsGameMap.MAP_FIELDS),
     PROP_HUNT(2, 8, "prop_hunt", PropHuntGameMap.FILE_EXTENSION, PropHuntGameMap.MAP_FIELDS),
-    HIDE_AND_SEEK(2, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION, Map.of());
+    HIDE_AND_SEEK(2, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION, Map.of()),
+    DUELS(2, 2, "duels", DuelsGameMap.FILE_EXTENSION, Map.of());
 
     public static final PacketCodec<RegistryByteBuf, GameType> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, GameType::ordinal, GameType::fromOrdinal);
     public static final Codec<GameType> CODEC = StringIdentifiable.createCodec(GameType::values);
@@ -33,14 +34,6 @@ public enum GameType implements StringIdentifiable {
         this.name = name;
         this.fileExtension = fileExtension;
         this.mapFields = mapFields;
-    }
-
-    public GameType fromNatural(String string) {
-        return GameType.valueOf(string.replace(' ', '_').toUpperCase());
-    }
-
-    public String toNatural() {
-        return StringUtils.capitalize(this.toString());
     }
 
     public int minPlayers() {

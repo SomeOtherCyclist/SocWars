@@ -471,6 +471,10 @@ public final class SocWarsLib {
         };
     }
 
+    public static MutableText romanNumeralsText(int i) {
+        return Text.literal("enchantment.level." + i);
+    }
+
     public static boolean inventoryCanAcceptStack(Inventory inventory, ItemStack insertStack) {
         final Iterator<ItemStack> iter = inventory.iterator();
 

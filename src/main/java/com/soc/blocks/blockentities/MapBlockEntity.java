@@ -252,6 +252,13 @@ public class MapBlockEntity extends BlockEntity {
                     this.mapCheckResults.getRelative(this.mapCheckResults.powerups()),
                     this.fields
             );
+            case DUELS -> new DuelsGameMap(
+                    structure,
+                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
+                    centrePos,
+                    blockProtectionOverlay,
+                    this.fields
+            );
         };
 
         final NbtCompound mapNbt = map.toNbt(new NbtCompound());

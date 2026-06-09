@@ -147,7 +147,7 @@ public class MatchmakingQueue {
         return this.queue.asMap().entrySet().stream().filter(entry -> entry.getValue().contains(player.getUuid())).map(Map.Entry::getKey).toList();
     }
 
-    public void checkQueues() {
+    public void tick() {
         for (GameType gameType : GameType.values()) {
             final Set<ServerPlayerEntity> players = this.getLimitedPlayers(gameType);
 

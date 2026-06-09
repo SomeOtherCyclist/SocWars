@@ -164,7 +164,7 @@ public class GamesManager {
             if (game != null) game.tick();
         });
 
-        this.queue.checkQueues();
+        this.queue.tick();
     }
 
     public void queuePlayer(ServerPlayerEntity player, GameType queue) {
@@ -213,6 +213,7 @@ public class GamesManager {
             case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
             case PROP_HUNT -> new PropHuntGameManager(this.world, players, null, gameId);
             case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.world, players, null, gameId);
+            case DUELS -> new DuelsGameManager(this.world, players, null, gameId);
         };
 
         final boolean startedGame = this.startGame(game);

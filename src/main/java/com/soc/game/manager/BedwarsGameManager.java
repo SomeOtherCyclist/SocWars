@@ -239,18 +239,18 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         final BedwarsGeneratorDataContainer bedwarsGeneratorDataContainer = BedwarsGeneratorDataContainer.INSTANCE;
         for (int i = 0; i < bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().size(); i++) {
             final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().get(i); //TODO: Redo these texts, they are kind of ugly at the moment
-            queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond_generator.tier." + i));
+            queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond_generator", i));
         }
         for (int i = 0; i < bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().size(); i++) {
             final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().get(i);
-            queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald_generator.tier."+ i));
+            queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald_generator", i));
         }
         for (int i = 0; i < bedwarsGeneratorDataContainer.getIslandGeneratorUpgrades().size(); i++) {
             final IslandGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getIslandGeneratorUpgrades().get(i);
             int finalI = i;
             queue.addEvent(upgrade.autoUpgradeTime(), manager -> this.teamStatsMap.forEach((team, stats) -> {
                 if (stats.getNumPlayersAlive() == 0) manager.buyGeneratorUpgrade(team, finalI);
-            }), Text.translatable("events.bedwars.island_generator.tier." + i));
+            }), Text.translatable("events.bedwars.island_generator", i));
         }
         queue.addEvent(30 * 60 * 20, manager -> manager.endGame(false), Text.translatable("events.game.end"));
 

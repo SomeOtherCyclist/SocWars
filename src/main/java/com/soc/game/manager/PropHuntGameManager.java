@@ -111,9 +111,9 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 		final EventQueue<PropHuntGameManager> eventQueue = super.buildEventQueue();
 
 		for (int i = 1; i < 20; i++) {
-			eventQueue.addEvent(i * 15 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(this::taunt), Text.translatable("events.hide_and_seek.ping." + i));
+			eventQueue.addEvent(i * 15 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(this::taunt), Text.translatable("events.hiding.ping", i));
 		}
-		eventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
+		eventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.prop_hunt.end"));
 
 		return eventQueue;
 	}

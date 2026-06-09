@@ -57,12 +57,5 @@ public abstract class AbstractHidingGameMap extends AbstractGameMap {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound compound) {
-		super.toNbt(compound);
-
-		return compound;
-	}
-
-	@Override
 	public void tick() {}
 }

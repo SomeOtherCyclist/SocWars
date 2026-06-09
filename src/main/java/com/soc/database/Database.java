@@ -50,18 +50,20 @@ public final class Database {
         new BedwarsTable().createSqlTable(STATEMENT);
         new HideAndSeekTable().createSqlTable(STATEMENT);
         new PropHuntTable().createSqlTable(STATEMENT);
+        new DuelsTable().createSqlTable(STATEMENT);
 
         ServerPlayerEvents.JOIN.register(player -> {
-                if (player.getPermissionLevel() >= 2) {
-                    final Text status = isConnected() ? Text.translatable("database.status.connected").formatted(Formatting.DARK_GREEN) : Text.translatable("database.status.disconnected").formatted(Formatting.RED);
-                    player.sendMessage(Text.translatable("database.status.op_message", status).formatted(Formatting.GOLD), false);
-                }
+            if (player.getPermissionLevel() >= 2) {
+                final Text status = isConnected() ? Text.translatable("database.status.connected").formatted(Formatting.DARK_GREEN) : Text.translatable("database.status.disconnected").formatted(Formatting.RED);
+                player.sendMessage(Text.translatable("database.status.op_message", status).formatted(Formatting.GOLD), false);
+            }
 
-                new LobbyTable(player.getUuid()).blankInsert(STATEMENT);
-                new SkywarsTable(player.getUuid()).blankInsert(STATEMENT);
-                new BedwarsTable(player.getUuid()).blankInsert(STATEMENT);
-                new HideAndSeekTable(player.getUuid()).blankInsert(STATEMENT);
-                new PropHuntTable(player.getUuid()).blankInsert(STATEMENT);
+            new LobbyTable(player.getUuid()).blankInsert(STATEMENT);
+            new SkywarsTable(player.getUuid()).blankInsert(STATEMENT);
+            new BedwarsTable(player.getUuid()).blankInsert(STATEMENT);
+            new HideAndSeekTable(player.getUuid()).blankInsert(STATEMENT);
+            new PropHuntTable(player.getUuid()).blankInsert(STATEMENT);
+            new DuelsTable(player.getUuid()).blankInsert(STATEMENT);
         });
     }
 }
