@@ -71,6 +71,9 @@ public class GamesManager {
         ModEvents.ON_ITEM_PICKUP.register((player, stack) ->
                 this.getGame(player).ifPresent(game -> game.onItemPickup(player, stack))
         );
+        ModEvents.ON_ITEM_DROPPED.register((player, stack) ->
+                this.getGame(player).map(game -> game.onItemDropped(player, stack)).orElse(true)
+        );
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
                 state.isIn(BlockTags.BEDS) ? this.getGame(player).map(game -> game.onBedBroken((ServerPlayerEntity) player, pos)).orElse(true) : this.getGame(player).map(game -> game.onBlockBroken((ServerPlayerEntity) player, pos, state, blockEntity)).orElse(true)
         );

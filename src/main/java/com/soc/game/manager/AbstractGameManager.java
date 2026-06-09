@@ -230,6 +230,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {}
 
+    public boolean onItemDropped(ServerPlayerEntity player, ItemStack stack) {
+        return true;
+    }
+
     public boolean onBedBroken(ServerPlayerEntity player, BlockPos pos) {
         return true;
     }

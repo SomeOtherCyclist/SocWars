@@ -7,6 +7,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.equipment.trim.*;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -51,6 +52,7 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem>, TooltipProvider
     public SimpleShopItem(Cost cost, ItemStack stack) {
         this.cost = cost;
         this.stack = stack;
+        if (this.stack.getMaxDamage() > 0) this.stack.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
     }
 
     public SimpleShopItem(JsonObject object) {
@@ -70,6 +72,9 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem>, TooltipProvider
     public boolean buy(PlayerEntity player, AbstractShopScreenHandler context) {
         final boolean gaveStack = this.giveStack(this.stack, player, OptionalInt.empty());
         if (gaveStack) this.takeItems(player, context);
+
+        //Gross hardcode for bedwars but screw it
+        if (this.stack.isIn(ItemTags.SWORDS)) player.getInventory().remove(stack -> stack.isOf(Items.WOODEN_SWORD), 40, player.playerScreenHandler.getCraftingInput());
 
         return gaveStack;
     }
@@ -108,7 +113,6 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem>, TooltipProvider
             final Registry<ArmorTrimMaterial> materialRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.TRIM_MATERIAL);
             final Registry<ArmorTrimPattern> patternRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.TRIM_PATTERN);
             this.stack.set(DataComponentTypes.TRIM, new ArmorTrim(materialRegistry.getOrThrow(armourTrimFromColour(team)), patternRegistry.getOrThrow(ArmorTrimPatterns.FLOW)));
-            this.stack.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
         }
     }
 

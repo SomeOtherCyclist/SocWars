@@ -2,14 +2,12 @@ package com.soc.resourcedata.containers;
 
 import com.soc.SocWars;
 import com.soc.game.manager.bedwars.*;
-import com.soc.game.manager.bedwars.shopitems.ShopItem;
-import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
-import com.soc.game.manager.bedwars.shopitems.TeamItem;
-import com.soc.game.manager.bedwars.shopitems.TeamShopItem;
+import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.resourcedata.deserialisation.BedwarsShopSlot;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
@@ -20,6 +18,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
@@ -119,7 +118,9 @@ public class BedwarsShopDataContainer implements CachedData {
                 final Registry<Enchantment> enchantmentRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
                 simpleShopItem.getIcon().addEnchantment(enchantmentRegistry.getOrThrow(Enchantments.INFINITY), 1);
             }
+            simpleShopItem.getIcon().set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
         }
+
         return lazilyClonedItem;
     }
 

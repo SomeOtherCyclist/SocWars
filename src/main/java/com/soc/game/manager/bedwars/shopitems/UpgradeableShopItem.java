@@ -18,6 +18,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.util.Unit;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
@@ -73,7 +74,11 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
 
     private static List<CostAndStack> deserialiseItems(JsonArray array) {
         final List<CostAndStack> items = new ArrayList<>();
-        array.forEach(element -> items.add(new CostAndStack(element.getAsJsonObject())));
+        array.forEach(element -> {
+            final CostAndStack item = new CostAndStack(element.getAsJsonObject());
+            if (item.stack().getMaxDamage() > 0) item.stack().set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
+            items.add(item);
+        });
 
         return items;
     }

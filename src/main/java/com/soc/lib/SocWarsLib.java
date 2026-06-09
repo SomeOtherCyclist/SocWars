@@ -202,17 +202,12 @@ public final class SocWarsLib {
     }
 
     public static double polarSquareRadius(double angle) {
-        final double pi2 = (Math.PI / 2d);
-        final double pi4 = (Math.PI / 4d);
+        final double piOn2 = (Math.PI * 0.5d);
+        final double piOn4 = (Math.PI * 0.25d);
 
-        final double angleMinusPi4 = angle - pi4;
-        final double angleModPi2 = Math.abs(angleMinusPi4 % pi2);
-        final double finalAngle = angleModPi2 - pi4;
+		final double finalAngle = Math.abs((angle - piOn4) % piOn2) - piOn4;
 
-        final double cosAngle = Math.cos(finalAngle);
-        final double result = 1d / cosAngle;
-
-        return result;
+		return 1d / Math.cos(finalAngle);
     }
 
     public static void iterateInSphere(Vec3i centre, float radius, float randomRadiusFactor, BiConsumer<BlockPos, Double> function) {

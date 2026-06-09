@@ -25,6 +25,7 @@ import com.soc.player.PlayerDataManager;
 import com.soc.resourcedata.ResourceManager;
 import com.soc.screenhandler.ScreenHandlers;
 import com.soc.util.BlockTags;
+import com.soc.util.ItemTags;
 import com.soc.util.Sounds;
 import net.fabricmc.api.ModInitializer;
 
@@ -66,6 +67,7 @@ public class SocWars implements ModInitializer {
 		ScreenHandlers.initialise();
 		EntityAttributes.initialise();
 
+		ItemTags.initialise();
 		BlockTags.initialise();
 
 		SimpleShopItem.initialise();

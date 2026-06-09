@@ -83,4 +83,14 @@ public interface ModEvents {
             listener.afterLeave(player);
         }
     });
+
+    Event<OnItemDropped> ON_ITEM_DROPPED = EventFactory.createArrayBacked(OnItemDropped.class, listeners -> (player, stack) -> {
+        boolean allowEvent = true;
+
+        for (OnItemDropped listener : listeners) {
+            allowEvent &= listener.onDropItem(player, stack);
+        }
+
+        return allowEvent;
+    });
 }

@@ -23,6 +23,7 @@ import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
@@ -38,6 +39,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -396,6 +398,17 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             if (stack.get(component) != null) function.accept(stack, player, this);
         });
     }
+
+    @Override
+    public boolean onItemDropped(ServerPlayerEntity player, ItemStack stack) {
+        if (stack.isIn(ItemTags.SWORDS) && !player.getInventory().containsAny(stack2 -> stack2.isIn(ItemTags.SWORDS) && !stack2.isOf(Items.WOODEN_SWORD))) {
+            final ItemStack woodenSword = new ItemStack(WOODEN_SWORD);
+            woodenSword.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
+            player.giveItemStack(woodenSword);
+        }
+
+		return !stack.isIn(ConventionalItemTags.TOOLS);
+	}
 
     @Override
     public boolean onBedBroken(ServerPlayerEntity player, BlockPos pos) {
