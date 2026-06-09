@@ -6,9 +6,11 @@ import com.soc.lib.CumulativeWeightList;
 import com.soc.resourcedata.deserialisation.PoolPopulation;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.util.DyeColor;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -17,6 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.enchantment;
+import static com.soc.lib.SocWarsLib.woolItemFromColour;
 import static net.minecraft.util.JsonHelper.deserialize;
 
 public class SkywarsLootDataContainer extends ItemDataContainer<SkywarsItemData> {
@@ -56,19 +59,34 @@ public class SkywarsLootDataContainer extends ItemDataContainer<SkywarsItemData>
         }
     }
 
-    public List<ItemStack> getChestItems(int tier, World world, int slots) {
-        final List<ItemStack> items = new ArrayList<>(slots);
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	public void populateInventory(Inventory inventory, int tier, World world, int fillOrdinal, Optional<DyeColor> team) {
+        if (fillOrdinal == 0) inventory.clear();
+
+        final List<ItemStack> items = new ArrayList<>(inventory.size());
+        for (ItemStack stack : inventory) {
+            if (!stack.isEmpty()) items.add(stack);
+        }
+
         this.poolPopulations.forEach((pool, population) -> {
             final Integer count = population.getTier(tier).getRandom(world.random);
             if (count != null) for (int i = 0; i < count; i++) {
-                items.add(this.getRandomItem(pool, tier, world));
+                if (fillOrdinal == 0 || world.random.nextDouble() < Math.pow(0.5d, fillOrdinal)) items.add(this.getRandomItem(pool, tier, world));
             }
         });
 
-        while (items.size() < slots) items.add(ItemStack.EMPTY);
+        while (items.size() < inventory.size()) items.add(ItemStack.EMPTY);
+
         Collections.shuffle(items);
 
-        return items;
+        for (int i = 0; i < items.size() && i < inventory.size(); i++) {
+            inventory.setStack(i, items.get(i));
+        }
+
+        team.ifPresent(woolColour -> {
+            int slot = world.random.nextBetween(0, 26);
+            inventory.setStack(slot, new ItemStack(woolItemFromColour(woolColour), 32));
+        });
     }
 
     public void readPoolPopulations(Reader reader) {

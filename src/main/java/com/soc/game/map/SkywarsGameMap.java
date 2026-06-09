@@ -8,27 +8,20 @@ import com.soc.resourcedata.listeners.SkywarsLootData;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.soc.lib.SocWarsLib.woolItemFromColour;
 
 public class SkywarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "swmap";
@@ -67,47 +60,28 @@ public class SkywarsGameMap extends AbstractGameMap {
         this.lootChests.forEach((pos, chest) -> {
             this.world.setBlockState(pos, Blocks.CHEST.getDefaultState().with(HorizontalFacingBlock.FACING, chest.getFacing()));
 
-            final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(pos), this.world, pos, true);
-            if (inventory != null) {
-                this.populateInventory(inventory, chest.getTier(), pos);
-            } else {
-                SocWars.LOGGER.warn("Failed to populate chest at {}", pos);
-            }
+            //final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(pos), this.world, pos, true);
+            //if (inventory != null) {
+            //    this.populateInventory(inventory, chest.getTier(), pos);
+            //} else {
+            //    SocWars.LOGGER.warn("Failed to populate chest at {}", pos);
+            //}
         });
     }
 
-    private void populateInventory(Inventory inventory, int tier, BlockPos pos) {
-        inventory.clear();
-//        for (int i = 0; i < inventory.size(); i++) {
-//            final float random = this.world.random.nextFloat(); //TODO: Redo all of this code because it's awful; probably take from data
-//            if (random > 0.8f + tier * 0.02f) {
-//                final float random2 = this.world.random.nextFloat();
-//                final int pool = random2 < 0.55f + tier * 0.04f ? 0 : 1;
-//
-//                final ItemStack stack = SkywarsLootData.INSTANCE.getSkywarsItemData().getRandomItem(pool, tier, this.world.random);
-//
-//                if (stack.isIn(ItemTags.BOW_ENCHANTABLE)) stack.addEnchantment(this.world.getRegistryManager().getEntryOrThrow(Enchantments.INFINITY), 1);
-//                inventory.setStack(i, stack);
-//            }
-//        }
-        final List<ItemStack> chestItems = SkywarsLootData.INSTANCE.getSkywarsItemData().getChestItems(tier, this.world, inventory.size());
-        for (int i = 0; i < chestItems.size(); i++) {
-            inventory.setStack(i, chestItems.get(i));
-        }
+    public void populateInventory(int tier, BlockPos pos, int fillOrdinal) {
+        final Inventory inventory = ChestBlock.getInventory((ChestBlock)Blocks.CHEST, this.world.getBlockState(pos), this.world, pos, true);
 
-        if (tier == 0) {
-            final Optional<DyeColor> colour = this.spawnPositions.entries().stream().min(Map.Entry.comparingByValue((a, b) -> {
-                final double distA = super.pos(a).getSquaredDistance(pos);
-                final double distB = super.pos(b).getSquaredDistance(pos);
-                if (distA == distB) return 0;
-                return distA < distB ? -1 : 1;
-            })).map(Map.Entry::getKey);
+        SkywarsLootData.INSTANCE.getSkywarsItemData().populateInventory(inventory, tier, this.world, fillOrdinal, this.starterWoolColour(tier, pos, fillOrdinal));
+    }
 
-            colour.ifPresent(woolColour -> {
-                int slot = this.world.random.nextBetween(0, 26);
-                inventory.setStack(slot, new ItemStack(woolItemFromColour(woolColour), 32));
-            });
-        }
+    private Optional<DyeColor> starterWoolColour(int tier, BlockPos pos, int loadOrdinal) {
+        return tier == 0 && loadOrdinal == 0 ? this.spawnPositions.entries().stream().min(Map.Entry.comparingByValue((a, b) -> {
+            final double distA = super.pos(a).getSquaredDistance(pos);
+            final double distB = super.pos(b).getSquaredDistance(pos);
+            if (distA == distB) return 0;
+            return distA < distB ? -1 : 1;
+        })).map(Map.Entry::getKey) : Optional.empty();
     }
 
     public Optional<IngameSkywarsChest> getLootChest(BlockPos pos) {

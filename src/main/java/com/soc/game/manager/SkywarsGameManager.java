@@ -255,8 +255,10 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
     @Override
     public boolean onChestOpened(ServerPlayerEntity player, BlockPos pos) {
+        if (player.isSpectator()) return true;
         this.map.getLootChest(pos).ifPresent(chest -> {
-            if (chest.open()) {
+            if (chest.open(player)) {
+                this.map.populateInventory(chest.getTier(), pos, chest.getFillOrdinal());
                 this.getDbTable(player).openChest(chest.getTier());
             }
         });

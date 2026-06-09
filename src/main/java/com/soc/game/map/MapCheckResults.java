@@ -163,7 +163,7 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                 );
             }
             case SKYWARS -> {
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 4; i++) {
                     int finalI = i;
                     results.add(
                             () -> this.lootChests.stream().anyMatch(chest -> chest.tier() == finalI),

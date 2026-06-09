@@ -1,21 +1,26 @@
 package com.soc.game.map;
 
 import com.soc.nbt.SkywarsChest;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class IngameSkywarsChest {
     private final int tier;
     private final Direction facing;
-    private boolean opened = false;
+    private final Set<UUID> playersWhoHaveOpened;
 
     public IngameSkywarsChest(int tier, Direction facing) {
         this.tier = tier;
         this.facing = facing;
+        this.playersWhoHaveOpened = new HashSet<>(4, 0.8f);
     }
 
     public IngameSkywarsChest(SkywarsChest chest) {
-        this.tier = chest.tier();
-        this.facing = chest.facing();
+        this(chest.tier(), chest.facing());
     }
 
     public int getTier() {
@@ -26,10 +31,11 @@ public class IngameSkywarsChest {
         return this.facing;
     }
 
-    public boolean open() {
-        if (this.opened) return false;
+    public boolean open(ServerPlayerEntity player) {
+        return this.playersWhoHaveOpened.add(player.getUuid());
+    }
 
-        this.opened = true;
-        return true;
+    public int getFillOrdinal() {
+        return this.playersWhoHaveOpened.size() - 1;
     }
 }
