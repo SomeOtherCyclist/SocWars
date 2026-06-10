@@ -5,7 +5,7 @@ import com.soc.effects.util.ModEffects;
 import com.soc.game.manager.GamesManager;
 import com.soc.game.manager.HideAndSeekGameManager;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
-import com.soc.util.BlockTags;
+import com.soc.util.ModBlockTags;
 import com.soc.util.DamageTypes;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.AttackFunction;
@@ -229,7 +229,7 @@ public class AttackFunctionWeapon extends Item {
     public static final Item CORRUPTED_SWORD = ModItems.register("corrupted_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
                 iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
-                    if (world.random.nextFloat() < 0.2f && !isBlockHidden(world, pos) && !world.getBlockState(pos).isIn(BlockTags.IMMUNE)) {
+                    if (world.random.nextFloat() < 0.2f && !isBlockHidden(world, pos) && !world.getBlockState(pos).isIn(ModBlockTags.IMMUNE)) {
                         world.setBlockState(pos, Blocks.AIR.getDefaultState());
                     }
                 });

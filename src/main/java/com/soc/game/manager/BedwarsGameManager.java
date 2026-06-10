@@ -21,9 +21,9 @@ import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
+import com.soc.util.ModItemTags;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
@@ -397,17 +397,20 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         ITEM_PICKUP_COMPONENT_FUNCTION_MAP.forEach((component, function) -> {
             if (stack.get(component) != null) function.accept(stack, player, this);
         });
+        if (stack.isIn(ItemTags.SWORDS) && !stack.isOf(Items.WOODEN_SWORD)) player.getInventory().remove(stack2 -> stack2.isOf(Items.WOODEN_SWORD), 40, player.playerScreenHandler.getCraftingInput());
     }
 
     @Override
     public boolean onItemDropped(ServerPlayerEntity player, ItemStack stack) {
+        if (stack.isOf(WOODEN_SWORD)) return false;
+
         if (stack.isIn(ItemTags.SWORDS) && !player.getInventory().containsAny(stack2 -> stack2.isIn(ItemTags.SWORDS) && !stack2.isOf(Items.WOODEN_SWORD))) {
             final ItemStack woodenSword = new ItemStack(WOODEN_SWORD);
             woodenSword.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
             player.giveItemStack(woodenSword);
         }
 
-		return !stack.isIn(ConventionalItemTags.TOOLS);
+		return !stack.isIn(ModItemTags.TOOLS);
 	}
 
     @Override

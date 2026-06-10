@@ -5,7 +5,7 @@ import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
-import com.soc.util.BlockTags;
+import com.soc.util.ModBlockTags;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -26,7 +26,6 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -126,7 +125,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
                 case 3 -> {
                     final BlockPos centre = wearer.getBlockPos();
                     iterateInSphere(centre, 6f, 0f, pos -> {
-                        if (centre.isWithinDistance(pos, 5f) || world.getBlockState(pos).isIn(BlockTags.IMMUNE)) return;
+                        if (centre.isWithinDistance(pos, 5f) || world.getBlockState(pos).isIn(ModBlockTags.IMMUNE)) return;
                         world.setBlockState(pos, Blocks.RESIN_BLOCK.getDefaultState());
                     });
                 }

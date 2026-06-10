@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractBlockMixin",
     "AccessDebugStickCycle",
+    "AfterItemDroppedOnDropTrigger",
     "AfterPlayerLeaveEventTrigger",
     "AppendTooltipAtEnd",
     "BlockOffsetEvaluateNullPos",
@@ -20,7 +21,7 @@
     "DisableEntityDismount",
     "DisableSleepingInBeds",
     "DoubleJump",
-    "DropItemEvent",
+    "DropSelectedItemOnDropTrigger",
     "EnderChestDepositableProperty",
     "EntityGetBoundingBox",
     "ExplosiveProjectileEntityToggleAddParticles",

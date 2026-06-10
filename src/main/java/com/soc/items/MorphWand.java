@@ -9,7 +9,7 @@ import com.soc.mixin.AccessDebugStickCycle;
 import com.soc.player.Morph;
 import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
-import com.soc.util.BlockTags;
+import com.soc.util.ModBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -82,7 +82,7 @@ public class MorphWand extends Item implements CancelsBlockInteraction, OnAttack
 	}
 
 	private static ActionResult attemptMorph(World world, ServerPlayerEntity player, BlockState blockState) {
-		if (blockState.isIn(BlockTags.DISALLOW_MORPH)) {
+		if (blockState.isIn(ModBlockTags.DISALLOW_MORPH)) {
 			player.sendMessage(Text.literal("Nice try ;)"));
 			return ActionResult.FAIL;
 		}

@@ -12,7 +12,7 @@ import com.soc.lib.InfoList;
 import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
-import com.soc.util.BlockTags;
+import com.soc.util.ModBlockTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BedPart;
@@ -110,7 +110,7 @@ public class MapBlockEntity extends BlockEntity {
 
         iterateInCube(minPos, maxPos, pos -> {
             final BlockState blockState = this.world.getBlockState(pos);
-            if (!blockState.isIn(BlockTags.MAP_PLACEHOLDER)) return;
+            if (!blockState.isIn(ModBlockTags.MAP_PLACEHOLDER)) return;
 
             final Block block = blockState.getBlock();
             if (block == SPAWN_PLACEHOLDER) spawnPositions.add(new SpawnPosition(pos, blockState.get(ModifiableColourStateBlock.COLOUR).ordinal()));

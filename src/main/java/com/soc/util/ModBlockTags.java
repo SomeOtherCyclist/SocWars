@@ -6,7 +6,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-public interface BlockTags {
+public interface ModBlockTags {
     TagKey<Block> IMMUNE = fromString("immune");
     TagKey<Block> EXPLOSION_IMMUNE = fromString("explosion_immune");
     TagKey<Block> NO_BREAK_FROM_WATER = fromString("no_break_from_water");

@@ -1,6 +1,6 @@
 package com.soc.mixin;
 
-import com.soc.util.BlockTags;
+import com.soc.util.ModBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FlowableFluid;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class FluidBlockBreakCancel {
     @Inject(at = @At(value = "RETURN"), method = "canFill(Lnet/minecraft/block/BlockState;)Z", cancellable = true)
     private static void socwars_dropItemEvent(BlockState state, CallbackInfoReturnable<Boolean> cir) {
-        if (state.isIn(BlockTags.NO_BREAK_FROM_WATER)) {
+        if (state.isIn(ModBlockTags.NO_BREAK_FROM_WATER)) {
             cir.setReturnValue(false);
         };
     }

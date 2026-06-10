@@ -6,8 +6,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-public interface ItemTags {
-
+public interface ModItemTags {
+	TagKey<Item> TOOLS = fromString("tools");
 	
 	private static TagKey<Item> fromString(String id) {
 		return TagKey.of(RegistryKeys.ITEM, Identifier.of(SocWars.MOD_ID, id));

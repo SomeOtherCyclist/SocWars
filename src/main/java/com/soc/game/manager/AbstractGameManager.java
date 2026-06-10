@@ -13,7 +13,7 @@ import com.soc.networking.s2c.JoinGamePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
 import com.soc.player.PlayerDataManager;
-import com.soc.util.BlockTags;
+import com.soc.util.ModBlockTags;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -594,10 +594,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
             damage = (pos, state) -> Float.MAX_VALUE;
         } else if (managerOptional.isPresent()) {
             final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
-            damage = (pos, state) -> manager.isBlockProtected(pos, state) || state.isIn(BlockTags.EXPLOSION_IMMUNE) ? Float.MAX_VALUE : state.getBlock().getBlastResistance();
+            damage = (pos, state) -> manager.isBlockProtected(pos, state) || state.isIn(ModBlockTags.EXPLOSION_IMMUNE) ? Float.MAX_VALUE : state.getBlock().getBlastResistance();
         } else {
             final boolean def = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES);
-            damage = (pos, state) -> !def  || state.isIn(BlockTags.EXPLOSION_IMMUNE) ? Float.MAX_VALUE : state.getBlock().getBlastResistance();
+            damage = (pos, state) -> !def  || state.isIn(ModBlockTags.EXPLOSION_IMMUNE) ? Float.MAX_VALUE : state.getBlock().getBlastResistance();
         }
         return damage;
     }
