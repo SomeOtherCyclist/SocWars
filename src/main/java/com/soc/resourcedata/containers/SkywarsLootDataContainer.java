@@ -5,12 +5,15 @@ import com.soc.SocWars;
 import com.soc.lib.CumulativeWeightList;
 import com.soc.resourcedata.deserialisation.PoolPopulation;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -59,8 +62,10 @@ public class SkywarsLootDataContainer extends ItemDataContainer<SkywarsItemData>
         }
     }
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	public void populateInventory(Inventory inventory, int tier, World world, int fillOrdinal, Optional<DyeColor> team) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") //TODO: Clean this up
+	public void populateInventory(int tier, World world, BlockPos pos, int fillOrdinal, Optional<DyeColor> team) {
+        final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, world.getBlockState(pos), world, pos, true);
+
         if (fillOrdinal == 0) inventory.clear();
 
         final List<ItemStack> items = new ArrayList<>(inventory.size());

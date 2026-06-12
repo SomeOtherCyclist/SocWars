@@ -257,6 +257,7 @@ public class MapBlockEntity extends BlockEntity {
                     this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
                     centrePos,
                     blockProtectionOverlay,
+                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.lootChests()),
                     this.fields
             );
         };

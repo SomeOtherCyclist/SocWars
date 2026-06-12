@@ -3,7 +3,7 @@ package com.soc.game.manager;
 import com.google.common.collect.*;
 import com.soc.SocWars;
 import com.soc.database.Database;
-import com.soc.database.stats.BaseTable;
+import com.soc.database.stats.BaseGameTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
@@ -58,7 +58,7 @@ import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
 
-public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE extends BaseTable, EVENT extends AbstractGameManager<?, ?, ?>> {
+public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE extends BaseGameTable, EVENT extends AbstractGameManager<?, ?, ?>> {
     public static final int KILLZONE_Y_OFFSET = -35;
 
     private final GameType gameType;
@@ -181,6 +181,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         }
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
+            ifNotNull(this.world.getPlayerByUuid(table.getPlayer()), player -> {
+                PlayerDataManager.collectDoubloons(player, table.getDoubloons());
+                player.sendMessage(Text.translatable("game.doubloons_reward", table.getDoubloons()), false);
+            });
+
             SocWars.LOGGER.info("Saving db table for {}, in game {}", table.getPlayer(), this.gameId);
             table.updateSql(statement);
         }));
@@ -211,7 +216,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {}
 
     public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
-        final BaseTable targetTable = this.getDbTable(player);
+        final BaseGameTable targetTable = this.getDbTable(player);
         if (!(targetTable instanceof CombatTable)) return true;
 
         final int cappedDamage = (int)Math.min(player.getHealth(), amount);
@@ -475,7 +480,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected final void sendPlayerToLobby(ServerPlayerEntity player) {
-        final Vec3d pos = this.world.getSpawnPos().toCenterPos();
+        final Vec3d pos = mapIfNotNull(player.getRespawn(), ServerPlayerEntity.Respawn::pos, this.world.getSpawnPos()).toCenterPos();
         player.requestTeleport(pos.x + this.world.random.nextFloat() * 3f, pos.y, pos.z + this.world.random.nextFloat() * 3f);
 
         player.changeGameMode(GameMode.ADVENTURE);

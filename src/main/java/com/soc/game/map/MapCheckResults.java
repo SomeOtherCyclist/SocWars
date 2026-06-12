@@ -184,6 +184,16 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                         this.powerups.stream().map(MapCheckResults::getBlockPosText).toArray(Text[]::new)
                 );
             }
+            case DUELS -> {
+                for (int i = 0; i < 4; i++) {
+                    int finalI = i;
+                    results.add(
+                            () -> this.lootChests.stream().anyMatch(chest -> chest.tier() == finalI),
+                            InfoList.InfoType.INFO,
+                            Text.translatable("map_block.results.tier_" + (finalI + 1) + "_chests", this.lootChests.stream().filter(chest -> chest.tier() == finalI).count()).formatted(Formatting.GREEN)
+                    );
+                }
+            }
         }
 
         return results;

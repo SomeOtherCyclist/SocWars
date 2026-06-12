@@ -72,5 +72,11 @@ public class CollectibleBlockEntity extends BlockEntity {
         return BlockEntityUpdateS2CPacket.create(this);
     }
 
+    @Override
+    public void markDirty() {
+        super.markDirty();
+        if (this.getWorld() instanceof ServerWorld serverWorld) serverWorld.getChunkManager().markForUpdate(this.getPos());
+    }
+
     public static void clientTick(World world, BlockPos pos, BlockState blockState, CollectibleBlockEntity blockEntity) {} //Yeah yeah another mixin target method gleesh
 }

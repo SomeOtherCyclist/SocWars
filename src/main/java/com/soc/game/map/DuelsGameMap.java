@@ -2,6 +2,7 @@ package com.soc.game.map;
 
 import com.soc.SocWars;
 import com.soc.lib.SparseVoxelOctree;
+import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class DuelsGameMap extends AbstractGameMap {
 	public static final String FILE_EXTENSION = "dm";
+	private final Map<BlockPos, IngameSkywarsChest> lootChests;
 
 	public DuelsGameMap(
 			StructureTemplate structure,
@@ -29,8 +31,10 @@ public class DuelsGameMap extends AbstractGameMap {
 			int minBuildY,
 			int maxBuildY,
 			ServerWorld world,
+			Set<SkywarsChest> lootChests,
 			File file) {
 		super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
+		this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
 	}
 
 	public DuelsGameMap(
@@ -38,9 +42,11 @@ public class DuelsGameMap extends AbstractGameMap {
 			@NotNull Set<SpawnPosition> spawnPositions,
 			@NotNull BlockPos centrePos,
 			SparseVoxelOctree<Boolean> blockProtectionOverlay,
+			Set<SkywarsChest> lootChests,
 			Map<String, Integer> fields
 	) {
 		super(structure, spawnPositions, centrePos, blockProtectionOverlay);
+		this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
 	}
 
 	@Override
@@ -60,6 +66,7 @@ public class DuelsGameMap extends AbstractGameMap {
 		}
 
 		final Set<SpawnPosition> spawns = compound.getListOrEmpty(SpawnPosition.LIST_KEY).stream().map(element -> new SpawnPosition(element.asCompound().orElseThrow())).collect(Collectors.toSet());
+		final Set<SkywarsChest> chests = compound.getListOrEmpty(SkywarsChest.LIST_KEY).stream().map(element -> new SkywarsChest(element.asCompound().orElseThrow())).collect(Collectors.toSet());
 
 		return Optional.of(new DuelsGameMap(
 				template,
@@ -70,7 +77,12 @@ public class DuelsGameMap extends AbstractGameMap {
 				compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
 				compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
 				world,
+				chests,
 				file
 		));
+	}
+
+	public Optional<IngameSkywarsChest> getLootChest(BlockPos pos) {
+		return Optional.ofNullable(this.lootChests.get(pos));
 	}
 }

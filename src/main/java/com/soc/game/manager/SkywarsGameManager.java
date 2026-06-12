@@ -14,6 +14,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -191,6 +193,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     protected void respawnPlayer(ServerPlayerEntity player) {
         super.respawnPlayer(player);
         player.giveItemStack(new ItemStack(woolItemFromColour(this.getTeam(player.getUuid())), 32));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 3 * 20, 4, false, false));
     }
 
     @Override

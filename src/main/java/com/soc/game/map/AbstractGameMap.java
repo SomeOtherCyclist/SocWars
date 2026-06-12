@@ -10,6 +10,7 @@ import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SpawnPosition;
 import com.soc.networking.s2c.BlockProtectionPayload;
 import com.soc.networking.s2c.SetAnglesPayload;
+import com.soc.resourcedata.listeners.SkywarsLootData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
@@ -374,5 +375,9 @@ public abstract class AbstractGameMap {
 
     public int getGameEndTime() {
         return this.gameEndTime;
+    }
+
+    public void populateInventory(int tier, BlockPos pos, int fillOrdinal) { //TODO: exclude pools
+        SkywarsLootData.INSTANCE.getSkywarsItemData().populateInventory(tier, this.world, pos, fillOrdinal, Optional.empty());
     }
 }

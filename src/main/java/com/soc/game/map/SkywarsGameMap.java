@@ -59,20 +59,11 @@ public class SkywarsGameMap extends AbstractGameMap {
     public void placeLootChests() {
         this.lootChests.forEach((pos, chest) -> {
             this.world.setBlockState(pos, Blocks.CHEST.getDefaultState().with(HorizontalFacingBlock.FACING, chest.getFacing()));
-
-            //final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(pos), this.world, pos, true);
-            //if (inventory != null) {
-            //    this.populateInventory(inventory, chest.getTier(), pos);
-            //} else {
-            //    SocWars.LOGGER.warn("Failed to populate chest at {}", pos);
-            //}
         });
     }
 
     public void populateInventory(int tier, BlockPos pos, int fillOrdinal) {
-        final Inventory inventory = ChestBlock.getInventory((ChestBlock)Blocks.CHEST, this.world.getBlockState(pos), this.world, pos, true);
-
-        SkywarsLootData.INSTANCE.getSkywarsItemData().populateInventory(inventory, tier, this.world, fillOrdinal, this.starterWoolColour(tier, pos, fillOrdinal));
+        SkywarsLootData.INSTANCE.getSkywarsItemData().populateInventory(tier, this.world, pos, fillOrdinal, this.starterWoolColour(tier, pos, fillOrdinal));
     }
 
     private Optional<DyeColor> starterWoolColour(int tier, BlockPos pos, int loadOrdinal) {
@@ -111,7 +102,9 @@ public class SkywarsGameMap extends AbstractGameMap {
                 compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
                 compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
                 world,
-                chests, file));
+                chests,
+                file
+        ));
     }
 
     @Override

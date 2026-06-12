@@ -6,7 +6,7 @@ public class SkywarsTable extends CombatTable {
     @Override
     public void win() {
         this.wins++;
-        this.addXp(1500);
+        this.addXp(1000);
     }
     @Override
     public void lose() {
@@ -17,7 +17,7 @@ public class SkywarsTable extends CombatTable {
     @Override
     public void grantKill() {
         this.kills++;
-        this.addXp(50);
+        this.addXp(75);
     }
     @Override
     public void grantDeath() {
@@ -80,7 +80,7 @@ public class SkywarsTable extends CombatTable {
     protected int eliminations = 0;
     public void grantElimination() {
         this.eliminations++;
-        this.addXp(150);
+        this.addXp(200);
     }
 
     protected int voidDeaths = 0;

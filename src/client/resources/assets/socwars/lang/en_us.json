@@ -466,6 +466,7 @@
   "game.warning.near_out_of_bounds": "You are almost out of bounds!",
   "game.bedwars.eliminate": "You have been eliminated!",
   "game.bedwars.eliminate.team": "%s team has been eliminated!",
+  "game.doubloons_reward": "You gained %s Doubloons!",
   "hud.bedwars.has_bed": "  //  Bed: ",
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",

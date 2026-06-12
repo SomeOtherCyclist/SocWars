@@ -10,7 +10,15 @@ public abstract class BaseGameTable extends BaseTable {
     protected long xp = 0;
     public void addXp(long xp) { this.xp += xp; }
 
-    protected BaseGameTable(UUID player) {
+	public long getXp() {
+		return this.xp;
+	}
+
+	public int getDoubloons() {
+		return (int)(this.xp / 25L);
+	}
+
+	protected BaseGameTable(UUID player) {
         super(player);
     }
 }
