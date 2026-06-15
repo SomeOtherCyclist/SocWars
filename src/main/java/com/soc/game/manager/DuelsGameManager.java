@@ -3,12 +3,12 @@ package com.soc.game.manager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.DuelsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.DuelsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -22,10 +22,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 public class DuelsGameManager extends AbstractGameManager<DuelsGameMap, DuelsTable, DuelsGameManager> {
@@ -43,9 +40,15 @@ public class DuelsGameManager extends AbstractGameManager<DuelsGameMap, DuelsTab
 	}
 
 	@Override
+	public void startGame() {
+		super.startGame();
+		this.map.placeLootChests();
+	}
+
+	@Override
 	public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
 		this.endGame(false, player);
-		return false;
+		return true;
 	}
 
 	public void endGame(boolean immediate, ServerPlayerEntity dyingPlayer) {
@@ -86,7 +89,7 @@ public class DuelsGameManager extends AbstractGameManager<DuelsGameMap, DuelsTab
 
 	@Override
 	public @Nullable Entity getWinningPlayer(@Nullable Entity except) {
-		return null;
+		return this.getPlayers().stream().filter(player -> player != except).max(Comparator.comparingDouble(ServerPlayerEntity::getHealth)).orElse(null);
 	}
 
 	@Override

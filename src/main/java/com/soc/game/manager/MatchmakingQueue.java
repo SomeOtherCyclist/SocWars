@@ -156,6 +156,9 @@ public class MatchmakingQueue {
                     if (players.size() >= gameType.minPlayers() || this.allowedSinglePlayerQueues.contains(gameType)) {
                         this.finishQueue(gameType, players);
                     } else {
+                        for (ServerPlayerEntity player : players) {
+                            player.sendMessage(Text.translatable("message.queue.queue_failed", gameType.getVariantName()), false);
+                        }
                         this.unqueuePlayers(players, gameType);
                     }
                 }

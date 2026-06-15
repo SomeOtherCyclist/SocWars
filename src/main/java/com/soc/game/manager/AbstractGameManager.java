@@ -569,12 +569,12 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.sendLeaveGamePayload(player);
     }
 
-    public final boolean isBlockProtected(BlockPos pos, BlockState state) { //Yeah this whole section is kind of a mess
+    public boolean isBlockProtected(BlockPos pos, BlockState state) { //Yeah this whole section is kind of a mess
         if (!state.isAir() && state.isReplaceable()) return false;
         return this.map.isBlockProtected(pos);
     }
 
-    public final boolean isBlockProtected(ServerPlayerEntity player, BlockPos pos, BlockState state) {
+    public boolean isBlockProtected(ServerPlayerEntity player, BlockPos pos, BlockState state) {
         return this.isBlockProtected(pos, state) && player.getGameMode() == GameMode.SURVIVAL;
     }
 

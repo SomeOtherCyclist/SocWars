@@ -5,6 +5,7 @@ import com.soc.game.Kit;
 import com.soc.game.manager.GameType;
 import com.soc.screenhandler.KitBlockCreationScreenHandler;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.world.ServerWorld;
@@ -21,6 +23,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.LinkedHashMap;
@@ -32,11 +35,15 @@ import static com.soc.blocks.blockentities.ModBlockEntities.KIT_BLOCK_ENTITY;
 public class KitBlockEntity extends LockableContainerBlockEntity {
     private Kit kit;
     private Map<GameType, Boolean> allowedGameTypes;
+    private String scoreboardVariableName;
+    private int cost;
 
     public KitBlockEntity(BlockPos pos, BlockState state) {
         super(KIT_BLOCK_ENTITY, pos, state);
         this.kit = new Kit();
         this.allowedGameTypes = new LinkedHashMap<>();
+        this.scoreboardVariableName = "";
+        this.cost = 0;
 
         for (GameType gameType : GameType.values()) {
             this.allowedGameTypes.put(gameType, true);
@@ -47,12 +54,16 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
     protected void writeData(WriteView view) {
         view.put("kit", Kit.CODEC, this.kit);
         view.put("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL), this.allowedGameTypes);
+        view.put("scoreboard_variable_name", Codecs.ESCAPED_STRING, this.scoreboardVariableName);
+        view.put("cost", Codecs.POSITIVE_INT, this.cost);
     }
 
     @Override
     protected void readData(ReadView view) {
         this.kit = view.read("kit", Kit.CODEC).orElse(new Kit());
         this.allowedGameTypes = new LinkedHashMap<>(view.read("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL)).orElse(Map.of()));
+        this.scoreboardVariableName = view.read("scoreboard_variable_name", Codecs.ESCAPED_STRING).orElse("");
+        this.cost = view.read("cost", Codecs.POSITIVE_INT).orElse(0);
     }
 
     @Override
@@ -80,9 +91,15 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
         return this.createNbt(registryLookup);
     }
 
+    private NbtCompound toPacketNbt(BlockEntity blockEntity, DynamicRegistryManager dynamicRegistryManager) {
+        final NbtCompound nbt = this.createNbt(dynamicRegistryManager);
+        nbt.putBoolean("valid_variable", this.world.getScoreboard().getObjectiveNames().contains(this.scoreboardVariableName));
+        return nbt;
+    }
+
     @Override
     public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+        return BlockEntityUpdateS2CPacket.create(this, this::toPacketNbt);
     }
 
     @Override

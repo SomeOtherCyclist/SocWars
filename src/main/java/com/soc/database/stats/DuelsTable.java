@@ -16,9 +16,8 @@ public class DuelsTable extends CombatTable {
 	}
 
 	public void openChest(int tier) {
-
+		if (tier == 2) this.addXp(20); //check this
 	}
-
 
 	public DuelsTable(UUID player) {
 		super(player);

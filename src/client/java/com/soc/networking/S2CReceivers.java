@@ -96,7 +96,7 @@ public class S2CReceivers {
             }
 
         }));
-        ClientPlayNetworking.registerGlobalReceiver(KitBlockEntityAssignment.ID, ((payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(KitBlockSendToScreen.ID, ((payload, context) -> {
             if (
                     MinecraftClient.getInstance().currentScreen instanceof KitBlockCreationScreen kitBlockCreationScreen &&
                     MinecraftClient.getInstance().world.getBlockEntity(payload.block().pos()) instanceof KitBlockEntity kitBlockEntity

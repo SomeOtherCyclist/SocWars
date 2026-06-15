@@ -48,7 +48,7 @@ public class SqlHelper {
     }
 
     public static String varbitFromBooleanArr(boolean[] bits) {
-        StringBuilder builder = new StringBuilder("B'");
+        final StringBuilder builder = new StringBuilder("B'");
 
         for (boolean bool : bits) builder.append(bool ? 1 : 0);
 

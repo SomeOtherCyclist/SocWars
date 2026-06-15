@@ -2,7 +2,7 @@ package com.soc.blocks;
 
 import com.mojang.serialization.MapCodec;
 import com.soc.blocks.blockentities.KitBlockEntity;
-import com.soc.networking.s2c.KitBlockEntityAssignment;
+import com.soc.networking.s2c.KitBlockSendToScreen;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -34,7 +34,7 @@ public class KitBlock extends BlockWithEntity {
 
         if (player.isCreative()) {
             player.openHandledScreen(blockEntity);
-            if (player instanceof ServerPlayerEntity serverPlayer) ServerPlayNetworking.send(serverPlayer, new KitBlockEntityAssignment(blockEntity));
+            if (player instanceof ServerPlayerEntity serverPlayer) ServerPlayNetworking.send(serverPlayer, new KitBlockSendToScreen(blockEntity));
         } else {
             if (blockEntity.getAllowedGameTypesList().isEmpty() && world.isClient) { //Yeah I know this is gross but the openKitSelectionScreen function only does something on the server
                 player.sendMessage(Text.translatable("message.no_kits"), false);

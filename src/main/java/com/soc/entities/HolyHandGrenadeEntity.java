@@ -5,9 +5,7 @@ import com.soc.util.SphereExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public class HolyHandGrenadeEntity extends HandGrenadeEntity {
     public HolyHandGrenadeEntity(EntityType<? extends ThrownEntity> type, World world, float detonationTime) {
@@ -20,6 +18,6 @@ public class HolyHandGrenadeEntity extends HandGrenadeEntity {
 
     @Override
     protected void detonate() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), 6f, 1.5f, 11f, 1f, false, this.getOwner(), DamageTypes.HOLY_HAND_GRENADE);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), 8f, 1.5f, 15f, 1f, false, this.getOwner(), DamageTypes.HOLY_HAND_GRENADE);
     }
 }

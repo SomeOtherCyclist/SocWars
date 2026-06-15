@@ -4,7 +4,10 @@ import com.soc.SocWars;
 import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
@@ -19,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DuelsGameMap extends AbstractGameMap {
-	public static final String FILE_EXTENSION = "dm";
+	public static final String FILE_EXTENSION = "dmap";
 	private final Map<BlockPos, IngameSkywarsChest> lootChests;
 
 	public DuelsGameMap(
@@ -82,7 +85,28 @@ public class DuelsGameMap extends AbstractGameMap {
 		));
 	}
 
+	@Override
+	public NbtCompound toNbt(NbtCompound compound) {
+		super.toNbt(compound);
+
+		compound.put(SkywarsChest.LIST_KEY, this.getChestsAsNbt());
+
+		return compound;
+	}
+
+	private NbtList getChestsAsNbt() {
+		final NbtList chests = new NbtList();
+		this.lootChests.forEach((pos, chest) -> chests.add(new SkywarsChest(pos, chest).toNbt()));
+		return chests;
+	}
+
 	public Optional<IngameSkywarsChest> getLootChest(BlockPos pos) {
 		return Optional.ofNullable(this.lootChests.get(pos));
+	}
+
+	public void placeLootChests() {
+		this.lootChests.forEach((pos, chest) -> {
+			this.world.setBlockState(pos, Blocks.CHEST.getDefaultState().with(HorizontalFacingBlock.FACING, chest.getFacing()));
+		});
 	}
 }

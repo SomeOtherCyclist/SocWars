@@ -30,6 +30,10 @@ public class QueueScreen extends Screen {
 			GameType.HIDE_AND_SEEK, Identifier.of(SocWars.MOD_ID, "widget/game_icons/hide_and_seek")
 	);
 
+	public static final int TILE_WIDTH = 144;
+	public static final int TILE_HEIGHT = 256;
+	public static final int TILE_DISTANCE = TILE_WIDTH + 16;
+
 	private boolean initialised = false;
 
 	private final Map<GameType, Boolean> selectedGameTypes;
@@ -67,8 +71,8 @@ public class QueueScreen extends Screen {
 		}
 
 		enumerate(this.queueButtons, (i, widget) -> {
-			widget.setPosition(this.width / 2 + 192 * (i - 2) + 8, this.height / 2 - 140);
-			widget.setDimensions(176, 300);
+			widget.setPosition(this.getTileX(i), this.height / 2 - 140);
+			widget.setDimensions(TILE_WIDTH, TILE_HEIGHT);
 			this.addDrawableChild(widget);
 		});
 	}
@@ -85,31 +89,35 @@ public class QueueScreen extends Screen {
 
 	private void drawBackgroundImages(DrawContext context) {
 		enumerate(GameType.values(), (i, gameType) -> {
-			final int xStart = this.width / 2 + 192 * (i - 2) + 8;
+			final int xStart = this.getTileX(i);
 			final int yStart = this.height / 2 - 140;
 
-			ifNotNull(BACKGROUND_TEXTURES.get(gameType), texture -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, xStart, yStart, 176, 300));
+			ifNotNull(BACKGROUND_TEXTURES.get(gameType), texture -> context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, xStart, yStart, TILE_WIDTH, TILE_HEIGHT));
 		});
 	}
 
 	private void drawLabels(DrawContext context, Matrix3x2fStack matrices) {
 		enumerate(GameType.values(), (i, gameType) -> {
 			//Draw dark band first
-			final int xStart = this.width / 2 + 192 * (i - 2) + 8;
+			final int xStart = this.getTileX(i);
 			final int yStart = this.height / 2 + 70;
-			context.fill(xStart, yStart, xStart + 176, yStart + 36, 0x80000000);
+			context.fill(xStart, yStart, xStart + TILE_WIDTH, yStart + 36, 0x80000000);
 
 			//Then actually draw the text afterwards idiot
 			final MutableText variantName = gameType.getVariantName();
 			final boolean enabled = this.selectedGameTypes.getOrDefault(gameType, false);
 
 			matrices.pushMatrix();
-			matrices.scaleAround(2.2f, (float)this.width / 2 + 192 * (i - 2) + 20, (float)this.height / 2 + 80);
+			matrices.scaleAround(1.8f, (float)(xStart + 12), (float)(yStart + 10));
 
-			context.drawText(this.textRenderer, variantName, this.width / 2 + 192 * (i - 2) + 20, this.height / 2 + 80, enabled ? 0xff11ee22 : 0xffee1122, true);
+			context.drawText(this.textRenderer, variantName, xStart + 12, yStart + 10, enabled ? 0xff11ee22 : 0xffee1122, true);
 
 			matrices.popMatrix();
 		});
+	}
+
+	private int getTileX(int i) {
+		return this.width / 2 + (int)(TILE_DISTANCE * ((float)i - (GameType.values().length / 2f))) + 8;
 	}
 
 	public void setQueueProgress(Map<GameType, QueueProgress> queueProgress) {

@@ -16,6 +16,7 @@ import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 import java.util.*;
@@ -224,6 +225,9 @@ public class GamesManager {
             if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
         } catch (Exception ignored) {
             SocWars.LOGGER.warn("Failed to start game {}", gameId);
+            for (ServerPlayerEntity player : players) {
+                player.sendMessage(Text.translatable("game.failed_to_start"));
+            }
         }
 
         return true;
