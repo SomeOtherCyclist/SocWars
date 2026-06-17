@@ -353,6 +353,7 @@
   "button.map_block.open_folder": "Open Folder",
   "button.map_block.close": "Close",
   "button.kit_block.instant_select": "Select kit for only \n%s\nand close the screen",
+  "button.kit_block.rename": "Rename",
   "map_block.results.no_centre": "⚠ No centre position found",
   "map_block.results.multiple_centres": "⚠ Multiple centre positions found",
   "map_block.results.duplicate_spawn_teams": "⚠ Multiple spawns with same team",

@@ -621,6 +621,10 @@ public final class SocWarsLib {
         return def;
     }
 
+    public static <T, U> U propogateNull(@Nullable T o, Function<T, U> mapper) {
+        return mapIfNotNull(o, mapper, null);
+    }
+
     public static int max(int... ints) {
         int max = Integer.MIN_VALUE;
         for (int i : ints) {

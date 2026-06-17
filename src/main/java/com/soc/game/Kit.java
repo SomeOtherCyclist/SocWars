@@ -33,7 +33,7 @@ public class Kit implements Inventory {
     public static final Codec<Kit> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(ItemStack.OPTIONAL_CODEC).fieldOf("items").orElse(DefaultedList.ofSize(0, ItemStack.EMPTY)).forGetter(kit -> kit.items),
             Codec.list(StatusEffectInstance.CODEC).fieldOf("effects").orElse(new ArrayList<>()).forGetter(kit -> kit.effects),
-            Codecs.NON_EMPTY_STRING.fieldOf("name").orElse(DEFAULT_NAME).forGetter(kit -> kit.name)
+            Codecs.ESCAPED_STRING.fieldOf("name").orElse(DEFAULT_NAME).forGetter(kit -> kit.name)
     ).apply(instance, Kit::new));
 
     private DefaultedList<ItemStack> items;

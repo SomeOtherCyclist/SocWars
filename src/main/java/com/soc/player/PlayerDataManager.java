@@ -20,6 +20,7 @@ import net.minecraft.world.PersistentStateType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static com.soc.lib.SocWarsLib.ifNotNull;
 
@@ -61,6 +62,10 @@ public class PlayerDataManager extends PersistentState {
 
     public Map<UUID, PlayerData> getPlayerDataMap() { return this.playerDataMap; }
 
+    private void forEach(Consumer<PlayerData> function) {
+        this.playerDataMap.values().forEach(function);
+    }
+
     public static PlayerData getPlayerData(ServerPlayerEntity player) {
         return player == null ? null : getPersistentState(player.getWorld()).playerDataMap.computeIfAbsent(player.getUuid(), uuid2 -> new PlayerData());
     }
@@ -81,5 +86,10 @@ public class PlayerDataManager extends PersistentState {
 
         player.getScoreboard().getOrCreateScore(ScoreHolder.fromProfile(player.getGameProfile()), objective).incrementScore(doubloons);
         return true;
+    }
+
+    public static void renameKit(ServerWorld serverWorld, String oldName, String newName) {
+        final PlayerDataManager state = serverWorld.getServer().getOverworld().getPersistentStateManager().getOrCreate(STATE_TYPE);
+        state.forEach(playerData -> playerData.renameKit(oldName, newName));
     }
 }

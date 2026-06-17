@@ -3,6 +3,8 @@ package com.soc.blocks.blockentities;
 import com.mojang.serialization.Codec;
 import com.soc.game.Kit;
 import com.soc.game.manager.GameType;
+import com.soc.networking.c2s.KitBlockUpdatePayload;
+import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.KitBlockCreationScreenHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -26,9 +28,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.KIT_BLOCK_ENTITY;
 
@@ -61,7 +61,7 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
     @Override
     protected void readData(ReadView view) {
         this.kit = view.read("kit", Kit.CODEC).orElse(new Kit());
-        this.allowedGameTypes = new LinkedHashMap<>(view.read("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL)).orElse(Map.of()));
+        this.allowedGameTypes = view.read("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL)).map(LinkedHashMap::new).orElse(new LinkedHashMap<>());
         this.scoreboardVariableName = view.read("scoreboard_variable_name", Codecs.ESCAPED_STRING).orElse("");
         this.cost = view.read("cost", Codecs.POSITIVE_INT).orElse(0);
     }
@@ -114,8 +114,15 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
     @Override
     public void onBlockReplaced(BlockPos pos, BlockState oldState) {}
 
-    public void setAllowedGameTypes(Map<GameType, Boolean> allowedGameTypes) {
-        this.allowedGameTypes = allowedGameTypes;
+    public void update(KitBlockUpdatePayload update) {
+        this.allowedGameTypes = new LinkedHashMap<>(update.allowedGameTypes());
+
+        if (this.getWorld() instanceof ServerWorld serverWorld && !this.kit.getName().equals(update.kit().getName()) && !update.kit().getName().equals(Kit.DEFAULT_NAME)) {
+            PlayerDataManager.renameKit(serverWorld, this.kit.getName(), update.kit().getName());
+        }
+
+        this.kit = update.kit();
+
         this.markDirty();
     }
 
@@ -130,7 +137,7 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
     }
 
     public List<GameType> getAllowedGameTypesList() {
-        return this.allowedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList();
+        return this.allowedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).sorted(Comparator.comparingInt(GameType::ordinal)).toList();
     }
 
     public Map<GameType, Boolean> getAllowedGameTypes() {

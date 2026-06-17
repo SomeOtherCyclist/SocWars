@@ -11,10 +11,6 @@ public class NumberTextFieldWidget extends TextFieldWidget {
     private final int minValue;
     private final int maxValue;
 
-    public NumberTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, int maxValue, Consumer<Integer> charTypedCallback) {
-        this(textRenderer, x, y, width, height, text, 0, maxValue, charTypedCallback);
-    }
-
     public NumberTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, int minValue, int maxValue, Consumer<Integer> charTypedCallback) {
         super(textRenderer, x, y, width, height, text);
         this.charTypedCallback = charTypedCallback;
@@ -23,6 +19,18 @@ public class NumberTextFieldWidget extends TextFieldWidget {
 
         this.setMaxLength(4);
         this.setChangedListener(string -> this.charTypedCallback.accept(this.parseInt(string)));
+    }
+
+    public NumberTextFieldWidget(TextRenderer textRenderer, int width, int height, Text text, int minValue, int maxValue, Consumer<Integer> charTypedCallback) {
+        this(textRenderer, 0, 0, width, height, text, 0, maxValue, charTypedCallback);
+    }
+
+    public NumberTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, int maxValue, Consumer<Integer> charTypedCallback) {
+        this(textRenderer, x, y, width, height, text, 0, maxValue, charTypedCallback);
+    }
+
+    public NumberTextFieldWidget(TextRenderer textRenderer, int width, int height, Text text, int maxValue, Consumer<Integer> charTypedCallback) {
+        this(textRenderer, 0, 0, width, height, text, maxValue, charTypedCallback);
     }
 
     public int parseInt(String text) {

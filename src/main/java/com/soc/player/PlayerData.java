@@ -41,12 +41,14 @@ public class PlayerData {
 
     private List<Boolean> collectibles;
     private Map<GameType, Kit> equippedKits;
+    private Set<String> ownedKits;
     private Morph morph;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, Optional<Morph> morph) {
         this.collectibles = new ArrayList<>(collectibles);
         this.equippedKits = new HashMap<>(equippedKits);
+        this.ownedKits = new HashSet<>();
         this.morph = morph.orElse(null);
     }
 
@@ -119,4 +121,10 @@ public class PlayerData {
 		if (!other.equippedKits.isEmpty()) this.equippedKits = other.equippedKits;
 		this.morph = other.morph;
 	}
+
+    public void renameKit(String oldName, String newName) {
+        if (this.ownedKits.remove(oldName)) {
+            this.ownedKits.add(newName);
+        }
+    }
 }

@@ -40,7 +40,7 @@ public class C2SReceivers {
         });
         ServerPlayNetworking.registerGlobalReceiver(KitBlockUpdatePayload.ID, ((payload, context) -> {
             if (payload.getBlockEntity(context) instanceof KitBlockEntity kitBlockEntity) {
-                kitBlockEntity.setAllowedGameTypes(payload.allowedGameTypes());
+                kitBlockEntity.update(payload);
             }
         }));
         ServerPlayNetworking.registerGlobalReceiver(KitSelectionPayload.ID, ((payload, context) -> {

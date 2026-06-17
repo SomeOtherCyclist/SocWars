@@ -26,7 +26,7 @@ public class KitBlockCreationScreenHandler extends ScreenHandler {
 
         for (int y = 0; y < ITEM_SLOTS_HEIGHT; y++) {
             for (int x = 0; x < ITEM_SLOTS_WIDTH; x++) {
-                this.addSlot(new Slot(this.kit, x + ITEM_SLOTS_WIDTH * y, x * 18 + 80, y * 18 + 18) {
+                this.addSlot(new Slot(this.kit, x + ITEM_SLOTS_WIDTH * y, x * 18 + 112, y * 18 + 152) {
                     @Override
                     public void markDirty() {
                         super.markDirty();
@@ -35,7 +35,7 @@ public class KitBlockCreationScreenHandler extends ScreenHandler {
                 });
             }
         }
-        this.addPlayerSlots(playerInventory, 8, 136);
+        this.addPlayerSlots(playerInventory, 40, 202);
     }
 
     public KitBlockCreationScreenHandler(int syncId, PlayerInventory playerInventory) {
