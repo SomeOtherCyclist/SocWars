@@ -82,17 +82,17 @@ public class MapBlockScreen extends Screen {
         this.addSelectableChild(this.mapNameTextField);
         //endregion
         //region Region Size Fields
-        this.sizeXField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 152, 80, 60, 20, Text.translatable("text.map_block.x_size_field"), 2000, this.regionSize::setX);
+        this.sizeXField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 152, 80, 60, 20, Text.translatable("text.map_block.x_size_field"), 1, 2000, this.regionSize::setX);
         this.sizeXField.setText(String.valueOf(this.blockEntity.getRegionSize().getX()));
         this.sizeXField.setEditableColor(MapBlockEntity.X_COLOUR);
         this.addSelectableChild(this.sizeXField);
 
-        this.sizeYField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 92, 80, 60, 20, Text.translatable("text.map_block.y_size_field"), this.blockEntity.getWorld().getTopYInclusive() - this.blockEntity.getPos().getY(), this.regionSize::setY);
+        this.sizeYField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 92, 80, 60, 20, Text.translatable("text.map_block.y_size_field"), 1, this.blockEntity.getWorld().getTopYInclusive() - this.blockEntity.getPos().getY(), this.regionSize::setY);
         this.sizeYField.setText(String.valueOf(this.blockEntity.getRegionSize().getY()));
         this.sizeYField.setEditableColor(MapBlockEntity.Y_COLOUR);
         this.addSelectableChild(this.sizeYField);
 
-        this.sizeZField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 32, 80, 60, 20, Text.translatable("text.map_block.z_size_field"), 2000, this.regionSize::setZ);
+        this.sizeZField = new NumberTextFieldWidget(this.textRenderer, this.width / 2 - 32, 80, 60, 20, Text.translatable("text.map_block.z_size_field"), 1, 2000, this.regionSize::setZ);
         this.sizeZField.setText(String.valueOf(this.blockEntity.getRegionSize().getZ()));
         this.sizeZField.setEditableColor(MapBlockEntity.Z_COLOUR);
         this.addSelectableChild(this.sizeZField);

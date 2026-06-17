@@ -22,7 +22,7 @@ public class NumberTextFieldWidget extends TextFieldWidget {
     }
 
     public NumberTextFieldWidget(TextRenderer textRenderer, int width, int height, Text text, int minValue, int maxValue, Consumer<Integer> charTypedCallback) {
-        this(textRenderer, 0, 0, width, height, text, 0, maxValue, charTypedCallback);
+        this(textRenderer, 0, 0, width, height, text, minValue, maxValue, charTypedCallback);
     }
 
     public NumberTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, int maxValue, Consumer<Integer> charTypedCallback) {

@@ -27,6 +27,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -43,7 +44,7 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
         this.kit = new Kit();
         this.allowedGameTypes = new LinkedHashMap<>();
         this.scoreboardVariableName = "";
-        this.cost = 0;
+        this.cost = 1;
 
         for (GameType gameType : GameType.values()) {
             this.allowedGameTypes.put(gameType, true);
@@ -63,7 +64,7 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
         this.kit = view.read("kit", Kit.CODEC).orElse(new Kit());
         this.allowedGameTypes = view.read("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL)).map(LinkedHashMap::new).orElse(new LinkedHashMap<>());
         this.scoreboardVariableName = view.read("scoreboard_variable_name", Codecs.ESCAPED_STRING).orElse("");
-        this.cost = view.read("cost", Codecs.POSITIVE_INT).orElse(0);
+        this.cost = view.read("cost", Codecs.POSITIVE_INT).orElse(1);
     }
 
     @Override
@@ -91,15 +92,9 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
         return this.createNbt(registryLookup);
     }
 
-    private NbtCompound toPacketNbt(BlockEntity blockEntity, DynamicRegistryManager dynamicRegistryManager) {
-        final NbtCompound nbt = this.createNbt(dynamicRegistryManager);
-        nbt.putBoolean("valid_variable", this.world.getScoreboard().getObjectiveNames().contains(this.scoreboardVariableName));
-        return nbt;
-    }
-
     @Override
     public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this, this::toPacketNbt);
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override
@@ -122,6 +117,8 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
         }
 
         this.kit = update.kit();
+        this.cost = update.cost();
+        this.scoreboardVariableName = update.scoreboardVariableName();
 
         this.markDirty();
     }
@@ -158,5 +155,34 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
             }
             return message;
         }
+    }
+
+    public void setCost(int i) {
+        this.cost = i;
+    }
+
+    public int getCost() {
+        return this.cost;
+    }
+
+    public void setScoreboardVariableName(String scoreboardVariableName) {
+        this.scoreboardVariableName = scoreboardVariableName;
+    }
+
+    public String getScoreboardVariableName() {
+        return this.scoreboardVariableName;
+    }
+
+    public boolean isScoreboardVariableValid() {
+        return Objects.requireNonNull(this.getWorld()).getScoreboard().getObjectiveNames().contains(this.getScoreboardVariableName());
+    }
+
+    public boolean hasValidKit() {
+        return this.isScoreboardVariableValid() && !this.kit.getName().equals(Kit.DEFAULT_NAME) && this.cost > 0;
+    }
+
+    public void setKit(Kit kit) {
+        this.kit = kit;
+        this.markDirty();
     }
 }

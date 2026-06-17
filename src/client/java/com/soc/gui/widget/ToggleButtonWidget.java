@@ -18,6 +18,11 @@ public class ToggleButtonWidget extends net.minecraft.client.gui.widget.ToggleBu
         this.setTextures(textures);
     }
 
+    public ToggleButtonWidget(int x, int y, int width, int height, boolean toggled, Consumer<Boolean> toggleFunction, ButtonTextures textures, boolean enabled) {
+        this(x, y, width, height, toggled, toggleFunction, textures);
+        this.active = enabled;
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.setToggled(!this.toggled);
@@ -28,5 +33,10 @@ public class ToggleButtonWidget extends net.minecraft.client.gui.widget.ToggleBu
     public void setToggled(boolean toggled) {
         super.setToggled(toggled);
         this.toggleFunction.accept(this.toggled);
+    }
+
+    @Override
+    public boolean isSelected() {
+        return this.active && super.isSelected();
     }
 }

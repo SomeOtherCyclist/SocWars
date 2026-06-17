@@ -3,12 +3,15 @@ package com.soc.player;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.events.ModEvents;
+import com.soc.game.Kit;
+import com.soc.networking.c2s.BuyKitPayload;
 import com.soc.networking.s2c.AllSyncPlayerDataPayload;
 import com.soc.networking.s2c.SinglePlayerDataPayload;
 import com.soc.util.ModCodecs;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.scoreboard.ReadableScoreboardScore;
 import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.server.MinecraftServer;
@@ -80,6 +83,20 @@ public class PlayerDataManager extends PersistentState {
         return state;
     }
 
+    public static void renameKit(ServerWorld serverWorld, String oldName, String newName) {
+        final PlayerDataManager state = serverWorld.getServer().getOverworld().getPersistentStateManager().getOrCreate(STATE_TYPE);
+        state.playerDataMap.forEach((uuid, playerData) -> playerData.renameKit(serverWorld.getPlayerByUuid(uuid), oldName, newName));
+    }
+
+    public static void buyKit(ServerPlayerEntity player, BuyKitPayload payload) {
+        final boolean canAfford = scoreboardVariableIsGreater(player, payload.scoreboardVariable(), payload.cost());
+        if (canAfford) {
+            getPlayerData(player).buyKit(player, payload.kit().getName());
+            collectDoubloons(player, -payload.cost());
+        }
+    }
+
+    //Maybe move these to their own class
     public static boolean collectDoubloons(PlayerEntity player, int doubloons) {
         final ScoreboardObjective objective = player.getScoreboard().getNullableObjective("Doubloons");
         if (objective == null) return false;
@@ -88,8 +105,13 @@ public class PlayerDataManager extends PersistentState {
         return true;
     }
 
-    public static void renameKit(ServerWorld serverWorld, String oldName, String newName) {
-        final PlayerDataManager state = serverWorld.getServer().getOverworld().getPersistentStateManager().getOrCreate(STATE_TYPE);
-        state.forEach(playerData -> playerData.renameKit(oldName, newName));
+    public static boolean scoreboardVariableIsGreater(PlayerEntity player, String objectiveName, int minValue) {
+        final ScoreboardObjective objective = player.getScoreboard().getNullableObjective(objectiveName);
+        if (objective == null) return false;
+
+        ReadableScoreboardScore score = player.getScoreboard().getScore(ScoreHolder.fromProfile(player.getGameProfile()), objective);
+        if (score == null) return false;
+
+        return score.getScore() >= minValue;
     }
 }

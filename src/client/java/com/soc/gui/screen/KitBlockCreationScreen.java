@@ -106,19 +106,26 @@ public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreen
             this.updateNameFieldColour();
         });
         this.renameButton = ButtonWidget.builder(Text.translatable("button.kit_block.rename"), widget -> {
-            ifNotNull(this.getKit(), kit -> kit.setName(KitBlockCreationScreen.this.name));
+            ifNotNull(KitBlockCreationScreen.this.getKit(), kit -> kit.setName(KitBlockCreationScreen.this.name));
             this.sync();
             this.updateNameFieldColour();
         }).size(60, 20).build();
 
-        this.costScoreboardField = new TextFieldWidget(this.textRenderer, 130, 20, Text.of("ccc"));
-        this.costField = new NumberTextFieldWidget(this.textRenderer, 60, 20, Text.of("ddd"), 9999, i -> {});
+        this.costScoreboardField = new TextFieldWidget(this.textRenderer, 130, 20, Text.empty());
+        this.costScoreboardField.setChangedListener(variableName -> {
+            ifNotNull(KitBlockCreationScreen.this.getBlockEntity(), blockEntity -> blockEntity.setScoreboardVariableName(variableName));
+            this.sync();
+            this.updateVariableFieldColour();
+        });
+        this.costField = new NumberTextFieldWidget(this.textRenderer, 60, 20, Text.empty(), 1, 99999, i -> ifNotNull(this.getBlockEntity(), blockEntity -> blockEntity.setCost(i)));
     }
 
     private void updateNameFieldColour() {
-        final int colour = this.name.equals(mapIfNotNull(this.getKit(), Kit::getName, null)) ? 0xffffffff : 0xffd0e040;
-        this.nameField.setEditableColor(colour);
-        this.nameField.setUneditableColor(colour);
+		this.nameField.setEditableColor(this.name.equals(mapIfNotNull(this.getKit(), Kit::getName, null)) ? 0xffffffff : 0xffd0e040);
+    }
+
+    private void updateVariableFieldColour() {
+		this.costScoreboardField.setEditableColor(this.getBlockEntity() == null || this.getBlockEntity().isScoreboardVariableValid() ? 0xffffffff : 0xffd04040);
     }
 
     private void sync() {
@@ -126,7 +133,9 @@ public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreen
 
         ClientPlayNetworking.send(new KitBlockUpdatePayload(
                 new BlockLocation(this.handler.getBlockEntity()), this.handler.getAllowedGameTypes(),
-                this.getKit()
+                this.getKit(),
+                this.getBlockEntity().getCost(),
+                this.getBlockEntity().getScoreboardVariableName()
         ));
     }
 
@@ -138,6 +147,8 @@ public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreen
         }
 
         this.nameField.setText(blockEntity.getKit().getName());
+        this.costField.setText(String.valueOf(blockEntity.getCost()));
+        this.costScoreboardField.setText(blockEntity.getScoreboardVariableName());
     }
 
     @Nullable

@@ -10,6 +10,7 @@ import com.soc.networking.s2c.OpenQueueScreenPayload;
 import com.soc.networking.s2c.QueuePayload;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 public class C2SReceivers {
@@ -38,21 +39,25 @@ public class C2SReceivers {
                 mapBlockEntity.saveMap(context.player());
             }
         });
-        ServerPlayNetworking.registerGlobalReceiver(KitBlockUpdatePayload.ID, ((payload, context) -> {
+        ServerPlayNetworking.registerGlobalReceiver(KitBlockUpdatePayload.ID, (payload, context) -> {
             if (payload.getBlockEntity(context) instanceof KitBlockEntity kitBlockEntity) {
                 kitBlockEntity.update(payload);
             }
-        }));
-        ServerPlayNetworking.registerGlobalReceiver(KitSelectionPayload.ID, ((payload, context) -> {
+        });
+        ServerPlayNetworking.registerGlobalReceiver(KitSelectionPayload.ID, (payload, context) -> {
             if (payload.getBlockEntity(context) instanceof KitBlockEntity kitBlockEntity) {
-                PlayerDataManager.getPlayerData(context.player()).setKits(kitBlockEntity.getKit(), payload.selectedGameTypes());
+                final boolean playerOwnsKit = PlayerDataManager.getPlayerData(context.player()).setKits(kitBlockEntity.getKit(), payload.selectedGameTypes());
 
-                context.player().sendMessage(KitBlockEntity.getKitSelectionMessage(payload.selectedGameTypes(), kitBlockEntity.getKit()));
+                final Text kitSelectionMessage = playerOwnsKit ? KitBlockEntity.getKitSelectionMessage(payload.selectedGameTypes(), kitBlockEntity.getKit()) : Text.translatable("message.kit_selection.not_owned");
+                context.player().sendMessage(kitSelectionMessage);
             }
-        }));
-        ServerPlayNetworking.registerGlobalReceiver(OnAttackButtonPressedPayload.ID, ((payload, context) -> {
+        });
+        ServerPlayNetworking.registerGlobalReceiver(OnAttackButtonPressedPayload.ID, (payload, context) -> {
             ((OnAttackButtonPressed)payload.stack().getItem()).onAttackButtonPressed(context.player());
-        }));
+        });
+        ServerPlayNetworking.registerGlobalReceiver(BuyKitPayload.ID, (payload, context) -> {
+            PlayerDataManager.buyKit(context.player(), payload);
+        });
     }
 
     private static void queues() {

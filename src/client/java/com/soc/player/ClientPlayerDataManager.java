@@ -1,5 +1,6 @@
 package com.soc.player;
 
+import com.soc.game.Kit;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +30,10 @@ public class ClientPlayerDataManager {
 
     public static boolean hasCollectibleClient(int id) { //Hopefully this is mildly more optimised
         return instance != null && instance.ownClientData != null && instance.ownClientData.hasCollectible(id);
+    }
+
+    public static boolean hasKitClient(Kit kit) {
+        return instance != null && instance.ownClientData != null && instance.ownClientData.ownsKit(kit.getName());
     }
 
     public static PlayerData getPlayerData(UUID player) {

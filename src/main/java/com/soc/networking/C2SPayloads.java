@@ -14,5 +14,6 @@ public class C2SPayloads {
         PayloadTypeRegistry.playC2S().register(KitBlockUpdatePayload.ID, KitBlockUpdatePayload.CODEC);
         PayloadTypeRegistry.playC2S().register(KitSelectionPayload.ID, KitSelectionPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(OnAttackButtonPressedPayload.ID, OnAttackButtonPressedPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(BuyKitPayload.ID, BuyKitPayload.CODEC);
     }
 }

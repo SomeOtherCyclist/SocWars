@@ -12,6 +12,8 @@ import net.minecraft.screen.slot.Slot;
 import java.util.List;
 import java.util.Map;
 
+import static com.soc.lib.SocWarsLib.ifNotNull;
+
 public class KitBlockCreationScreenHandler extends ScreenHandler {
     public static final int ITEM_SLOTS_WIDTH = 5;
     public static final int ITEM_SLOTS_HEIGHT = 2;
@@ -30,7 +32,8 @@ public class KitBlockCreationScreenHandler extends ScreenHandler {
                     @Override
                     public void markDirty() {
                         super.markDirty();
-                        if (KitBlockCreationScreenHandler.this.blockEntity != null) KitBlockCreationScreenHandler.this.blockEntity.markDirty();
+                        //KitBlockCreationScreenHandler.this.markDirty(); //TODO: Do this
+                        ifNotNull(KitBlockCreationScreenHandler.this.blockEntity, blockEntity -> blockEntity.setKit(KitBlockCreationScreenHandler.this.kit));
                     }
                 });
             }
