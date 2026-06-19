@@ -3,6 +3,7 @@ package com.soc.blocks;
 import com.mojang.serialization.MapCodec;
 import com.soc.blocks.blockentities.CollectibleBlockEntity;
 import com.soc.blocks.blockentities.ModBlockEntities;
+import com.soc.lib.ScoreboardHelper;
 import com.soc.player.PlayerDataManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -64,7 +65,7 @@ public class CollectibleBlock extends BlockWithEntity {
             player.getWorld().markDirty(pos); //God I love sync stuff
             PlayerDataManager.sendData(player);
 
-            PlayerDataManager.collectDoubloons(player, 10);
+            ScoreboardHelper.collectDoubloons(player, 10);
         }
     }
 

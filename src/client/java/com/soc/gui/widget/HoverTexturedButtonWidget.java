@@ -26,7 +26,7 @@ public class HoverTexturedButtonWidget extends TexturedButtonWidget {
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         super.renderWidget(context, mouseX, mouseY, deltaTicks);
         if (this.hovered && this.active) {
-            context.drawTooltip(this.textRenderer.wrapLines(this.hoverText, 120), mouseX, mouseY);
+            context.drawTooltip(this.textRenderer.wrapLines(this.hoverText, 150), mouseX, mouseY);
         }
     }
 

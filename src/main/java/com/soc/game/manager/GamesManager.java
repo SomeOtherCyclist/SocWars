@@ -18,6 +18,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -212,6 +213,8 @@ public class GamesManager {
 
         final int gameId = this.getNewGameId();
 
+        //final ServerWorld world = /*this.world.random.nextBetween(1, 15) == 1 ?*/ this.world.getServer().getWorld(World.END)/* : this.world*/;
+
         try {
             final AbstractGameManager<?, ?, ?> game = switch (queueType) {
                 case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
@@ -223,8 +226,8 @@ public class GamesManager {
 
             final boolean startedGame = this.startGame(game);
             if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
-        } catch (Exception ignored) {
-            SocWars.LOGGER.warn("Failed to start game {}", gameId);
+        } catch (Exception e) {
+            SocWars.LOGGER.warn("Failed to start game {}: {}", gameId, e);
             for (ServerPlayerEntity player : players) {
                 player.sendMessage(Text.translatable("game.failed_to_start"));
             }

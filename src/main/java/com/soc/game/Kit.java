@@ -2,6 +2,8 @@ package com.soc.game;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.soc.game.manager.GameType;
+import com.soc.networking.c2s.KitSelectionPayload;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -13,6 +15,9 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.dynamic.Codecs;
 
@@ -59,6 +64,52 @@ public class Kit implements Inventory {
 
     public Kit() {
         this(DefaultedList.ofSize(ITEM_SLOTS, ItemStack.EMPTY), new ArrayList<>(), DEFAULT_NAME);
+    }
+
+	public void generateSelectionMessage(KitSelectionPayload payload, boolean playerOwnsKit, ServerPlayerEntity player) {
+		final MutableText kitSelectionMessage;
+
+        main:
+        {
+            if (payload.selectedGameTypes().isEmpty() && payload.removedGameTypes().isEmpty()) {
+                kitSelectionMessage = Text.translatable("message.kit_selection.empty");
+                break main;
+            } else {
+                kitSelectionMessage = this.getRemovalMessage(payload);
+            }
+
+            if (playerOwnsKit) {
+                kitSelectionMessage.append(this.getSelectionMessage(payload));
+            } else if (!payload.selectedGameTypes().isEmpty()) {
+                kitSelectionMessage.append(Text.translatable("message.kit_selection.not_owned"));
+            }
+        }
+
+		player.sendMessage(kitSelectionMessage);
+	}
+
+    private MutableText getRemovalMessage(KitSelectionPayload payload) {
+        if (payload.removedGameTypes().isEmpty()) {
+            return Text.empty();
+        } else {
+            final MutableText message = Text.translatable("message.kit_removal", this.getTextName());
+            for (GameType gameType : payload.removedGameTypes()) {
+                message.append("\n  ").append(gameType.getVariantName().formatted(Formatting.GOLD));
+            }
+            return message;
+        }
+    }
+
+    private MutableText getSelectionMessage(KitSelectionPayload payload) {
+        if (payload.selectedGameTypes().isEmpty()) {
+            return Text.empty();
+        } else {
+            final MutableText message = Text.translatable("message.kit_selection", this.getTextName());
+            for (GameType gameType : payload.selectedGameTypes()) {
+                message.append("\n  ").append(gameType.getVariantName().formatted(Formatting.GOLD));
+            }
+            return message;
+        }
     }
 
     public void apply(ServerPlayerEntity player) {
@@ -131,6 +182,10 @@ public class Kit implements Inventory {
 
     public String getName() {
         return this.name;
+    }
+
+    private MutableText getTextName() {
+        return Text.literal(this.getName()).formatted(Formatting.BOLD);
     }
 
     public void setName(String name) {

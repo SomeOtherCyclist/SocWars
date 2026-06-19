@@ -10,7 +10,6 @@ import com.soc.networking.s2c.OpenQueueScreenPayload;
 import com.soc.networking.s2c.QueuePayload;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 public class C2SReceivers {
@@ -46,11 +45,10 @@ public class C2SReceivers {
         });
         ServerPlayNetworking.registerGlobalReceiver(KitSelectionPayload.ID, (payload, context) -> {
             if (payload.getBlockEntity(context) instanceof KitBlockEntity kitBlockEntity) {
-                final boolean playerOwnsKit = PlayerDataManager.getPlayerData(context.player()).setKits(kitBlockEntity.getKit(), payload.selectedGameTypes());
+                final boolean playerOwnsKit = PlayerDataManager.getPlayerData(context.player()).setKits(kitBlockEntity.getKit(), payload);
 
-                final Text kitSelectionMessage = playerOwnsKit ? KitBlockEntity.getKitSelectionMessage(payload.selectedGameTypes(), kitBlockEntity.getKit()) : Text.translatable("message.kit_selection.not_owned");
-                context.player().sendMessage(kitSelectionMessage);
-            }
+				kitBlockEntity.getKit().generateSelectionMessage(payload, playerOwnsKit, context.player());
+			}
         });
         ServerPlayNetworking.registerGlobalReceiver(OnAttackButtonPressedPayload.ID, (payload, context) -> {
             ((OnAttackButtonPressed)payload.stack().getItem()).onAttackButtonPressed(context.player());
@@ -60,7 +58,7 @@ public class C2SReceivers {
         });
     }
 
-    private static void queues() {
+	private static void queues() {
         ServerPlayNetworking.registerGlobalReceiver(QueuePayload.ID, (payload, context) -> {
             GamesManager.getInstance().setPlayerQueues(context.player(), payload.queues());
         });

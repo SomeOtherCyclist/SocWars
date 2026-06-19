@@ -3,7 +3,7 @@ package com.soc.player;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.events.ModEvents;
-import com.soc.game.Kit;
+import com.soc.lib.ScoreboardHelper;
 import com.soc.networking.c2s.BuyKitPayload;
 import com.soc.networking.s2c.AllSyncPlayerDataPayload;
 import com.soc.networking.s2c.SinglePlayerDataPayload;
@@ -11,9 +11,6 @@ import com.soc.util.ModCodecs;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.scoreboard.ReadableScoreboardScore;
-import net.minecraft.scoreboard.ScoreHolder;
-import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -89,29 +86,11 @@ public class PlayerDataManager extends PersistentState {
     }
 
     public static void buyKit(ServerPlayerEntity player, BuyKitPayload payload) {
-        final boolean canAfford = scoreboardVariableIsGreater(player, payload.scoreboardVariable(), payload.cost());
+        final boolean canAfford = ScoreboardHelper.scoreboardVariableIsGreater(player, payload.scoreboardVariable(), payload.cost());
         if (canAfford) {
             getPlayerData(player).buyKit(player, payload.kit().getName());
-            collectDoubloons(player, -payload.cost());
+            ScoreboardHelper.incrementVariable(player, payload.scoreboardVariable(), -payload.cost());
         }
     }
 
-    //Maybe move these to their own class
-    public static boolean collectDoubloons(PlayerEntity player, int doubloons) {
-        final ScoreboardObjective objective = player.getScoreboard().getNullableObjective("Doubloons");
-        if (objective == null) return false;
-
-        player.getScoreboard().getOrCreateScore(ScoreHolder.fromProfile(player.getGameProfile()), objective).incrementScore(doubloons);
-        return true;
-    }
-
-    public static boolean scoreboardVariableIsGreater(PlayerEntity player, String objectiveName, int minValue) {
-        final ScoreboardObjective objective = player.getScoreboard().getNullableObjective(objectiveName);
-        if (objective == null) return false;
-
-        ReadableScoreboardScore score = player.getScoreboard().getScore(ScoreHolder.fromProfile(player.getGameProfile()), objective);
-        if (score == null) return false;
-
-        return score.getScore() >= minValue;
-    }
 }

@@ -20,6 +20,7 @@
     "DisableAdvancementNotifications",
     "DisableEntityDismount",
     "DisableSleepingInBeds",
+    "DisableTrampling",
     "DoubleJump",
     "DropSelectedItemOnDropTrigger",
     "EnderChestDepositableProperty",

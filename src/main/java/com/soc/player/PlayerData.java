@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.game.Kit;
 import com.soc.game.manager.GameType;
+import com.soc.networking.c2s.KitSelectionPayload;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -103,10 +104,15 @@ public class PlayerData {
         ifNotNull(this.equippedKits.get(gameType), kit -> kit.apply(player));
     }
 
-    public boolean setKits(Kit kit, List<GameType> gameTypes) {
+    /// Returns {@code true} and applies the {@link Kit} if the player owns the kit. Will remove specified kits regardless of owning the kit.
+    public boolean setKits(Kit kit, KitSelectionPayload payload) {
+        for (GameType gameType : payload.removedGameTypes()) {
+            this.equippedKits.remove(gameType);
+        }
+
         if (!this.ownedKits.contains(kit.getName())) return false;
 
-        for (GameType gameType : gameTypes) {
+        for (GameType gameType : payload.selectedGameTypes()) {
             this.equippedKits.put(gameType, kit);
         }
 

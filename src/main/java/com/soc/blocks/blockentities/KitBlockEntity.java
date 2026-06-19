@@ -7,7 +7,6 @@ import com.soc.networking.c2s.KitBlockUpdatePayload;
 import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.KitBlockCreationScreenHandler;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -15,19 +14,15 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -143,18 +138,6 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
 
     public void setGameTypeAllowed(GameType gameType, Boolean isAllowed) {
         this.allowedGameTypes.put(gameType, isAllowed);
-    }
-
-    public static Text getKitSelectionMessage(List<GameType> gameTypes, Kit kit) {
-        if (gameTypes.isEmpty()) {
-            return Text.translatable("message.kit_selection.empty");
-        } else {
-            final MutableText message = Text.translatable("message.kit_selection", Text.literal(kit.getName()).formatted(Formatting.BOLD));
-            for (GameType gameType : gameTypes) {
-                message.append("\n  ").append(gameType.getVariantName().formatted(Formatting.GOLD));
-            }
-            return message;
-        }
     }
 
     public void setCost(int i) {

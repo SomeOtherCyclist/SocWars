@@ -8,6 +8,7 @@ import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
+import com.soc.lib.ScoreboardHelper;
 import com.soc.networking.s2c.EventQueuePayload;
 import com.soc.networking.s2c.JoinGamePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
@@ -182,7 +183,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
             ifNotNull(this.world.getPlayerByUuid(table.getPlayer()), player -> {
-                PlayerDataManager.collectDoubloons(player, table.getDoubloons());
+                ScoreboardHelper.collectDoubloons(player, table.getDoubloons());
                 player.sendMessage(Text.translatable("game.doubloons_reward", table.getDoubloons()), false);
             });
 
