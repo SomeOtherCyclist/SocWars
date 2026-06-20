@@ -32,12 +32,12 @@ public class KitBlockEntityRenderer implements BlockEntityRenderer<KitBlockEntit
     @Override
     public void render(KitBlockEntity entity, float tickProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Vec3d cameraPos) {
         if (entity.hasValidKit()) {
-            this.renderLabel(entity, matrices, vertexConsumers, light);
-            this.renderItems(entity, matrices, vertexConsumers);
+            this.renderLabel(entity, matrices, vertexConsumers);
+            this.renderItems(entity, matrices, vertexConsumers, light);
         }
     }
 
-    private void renderLabel(KitBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+    private void renderLabel(KitBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
         matrices.push();
 
         matrices.translate(0.5d, 1.5d, 0.5d);
@@ -55,7 +55,7 @@ public class KitBlockEntityRenderer implements BlockEntityRenderer<KitBlockEntit
         matrices.pop();
     }
 
-    private void renderItems(KitBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+    private void renderItems(KitBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         matrices.push();
 
         matrices.translate(0.5d, 0.175d, 0.5d);
@@ -83,7 +83,7 @@ public class KitBlockEntityRenderer implements BlockEntityRenderer<KitBlockEntit
             matrices.multiply(rotation);
             rotation.rotateY(index * 0.07f);
 
-            this.itemRenderer.renderItem(heldStacks.get(i), ItemDisplayContext.GROUND, 255, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), i);
+            this.itemRenderer.renderItem(heldStacks.get(i), ItemDisplayContext.GROUND, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), i);
 
             matrices.pop();
         }

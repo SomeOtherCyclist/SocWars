@@ -7,12 +7,14 @@ import com.soc.game.manager.GameType;
 import com.soc.networking.c2s.KitSelectionPayload;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.world.World;
 
@@ -31,6 +33,7 @@ public class PlayerData {
 
     public static final PacketCodec<ByteBuf, PlayerData> ALL_SYNC_PACKET_CODEC = PacketCodec.tuple(
 			PacketCodecs.optional(Morph.PACKET_CODEC), playerData -> Optional.ofNullable(playerData.morph),
+            PacketCodecs.map(HashMap::newHashMap, EquipmentSlot.PACKET_CODEC, PacketCodecs.LONG), playerData -> playerData.illusions,
             PlayerData::new
     );
 
@@ -45,37 +48,46 @@ public class PlayerData {
     private Map<GameType, Kit> equippedKits;
     private final Set<String> ownedKits;
     private Morph morph;
+    private final Map<EquipmentSlot, Long> illusions;
 
     //Canonical constructor
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, Set<String> ownedKits, Optional<Morph> morph) {
+    public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, Set<String> ownedKits, Optional<Morph> morph, Map<EquipmentSlot, Long> illusions) {
         this.collectibles = new ArrayList<>(collectibles);
         this.equippedKits = new HashMap<>(equippedKits);
         this.ownedKits = ownedKits;
         this.morph = morph.orElse(null);
+        this.illusions = illusions;
     }
 
     //Codec
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, List<String> ownedKits, Optional<Morph> morph) {
-        this(collectibles, equippedKits, new HashSet<>(ownedKits), morph);
+        this(collectibles, equippedKits, new HashSet<>(ownedKits), morph, new HashMap<>());
     }
 
     //Packet codec
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public PlayerData(List<Boolean> collectibles, Set<String> ownedKits, Optional<Morph> morph) {
-        this(collectibles, new HashMap<>(), ownedKits, morph);
+        this(collectibles, new HashMap<>(), ownedKits, morph, new HashMap<>());
     }
 
     //All sync packet codec
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	public PlayerData(Optional<Morph> morph) {
-		this(new ArrayList<>(), new HashMap<>(), new HashSet<>(), morph);
+	public PlayerData(Optional<Morph> morph, Map<EquipmentSlot, Long> illusions) {
+		this(new ArrayList<>(), new HashMap<>(), new HashSet<>(), morph, illusions);
 	}
 
     //Empty
     public PlayerData() {
-        this(new ArrayList<>(), new HashMap<>(), new HashSet<>(), Optional.empty());
+        this(new ArrayList<>(), new HashMap<>(), new HashSet<>(), Optional.empty(), new HashMap<>());
+    }
+
+    public void merge(PlayerData other) {
+        if (!other.collectibles.isEmpty()) this.collectibles = other.collectibles;
+        if (!other.equippedKits.isEmpty()) this.equippedKits = other.equippedKits;
+        this.ownedKits.addAll(other.ownedKits);
+        this.morph = other.morph;
     }
 
     public boolean collectCollectible(int id) {
@@ -119,27 +131,6 @@ public class PlayerData {
         return true;
     }
 
-    public void setMorph(World world, BlockState morph, PlayerEntity player) {
-        this.morph = morph == null ? null : Morph.of(morph, world);
-        if (this.morph == null) {
-            Objects.requireNonNull(player.getAttributeInstance(EntityAttributes.MAX_HEALTH)).removeModifier(Morph.HEALTH_MODIFIER_ID);
-        } else {
-            Objects.requireNonNull(player.getAttributeInstance(EntityAttributes.MAX_HEALTH)).overwritePersistentModifier(new EntityAttributeModifier(Morph.HEALTH_MODIFIER_ID, this.morph.health() - 20f, EntityAttributeModifier.Operation.ADD_VALUE));
-        }
-		ifNotNull(world.getServer(), PlayerDataManager::sendDataToAll);
-    }
-
-    public Morph getMorph() {
-        return this.morph;
-    }
-
-	public void merge(PlayerData other) {
-		if (!other.collectibles.isEmpty()) this.collectibles = other.collectibles;
-		if (!other.equippedKits.isEmpty()) this.equippedKits = other.equippedKits;
-        this.ownedKits.addAll(other.ownedKits);
-		this.morph = other.morph;
-	}
-
     public boolean buyKit(ServerPlayerEntity player, String name) {
         if (name.equals(Kit.DEFAULT_NAME)) return false;
 
@@ -159,5 +150,38 @@ public class PlayerData {
 
     public boolean ownsKit(String name) {
         return this.ownedKits.contains(name);
+    }
+
+    public void setMorph(World world, BlockState morph, PlayerEntity player) {
+        this.morph = morph == null ? null : Morph.of(morph, world);
+        if (this.morph == null) {
+            Objects.requireNonNull(player.getAttributeInstance(EntityAttributes.MAX_HEALTH)).removeModifier(Morph.HEALTH_MODIFIER_ID);
+        } else {
+            Objects.requireNonNull(player.getAttributeInstance(EntityAttributes.MAX_HEALTH)).overwritePersistentModifier(new EntityAttributeModifier(Morph.HEALTH_MODIFIER_ID, this.morph.health() - 20f, EntityAttributeModifier.Operation.ADD_VALUE));
+        }
+        ifNotNull(world.getServer(), PlayerDataManager::sendDataToAll);
+    }
+
+    public Morph getMorph() {
+        return this.morph;
+    }
+
+    public void addIllusion(World world, EquipmentSlot slot) {
+        this.illusions.put(slot, world.getTime() + 3 * 20);
+
+        ifNotNull(world.getServer(), PlayerDataManager::sendDataToAll);
+    }
+
+    public EquipmentSlot[] checkIllusions(long worldTime) {
+        return this.illusions.entrySet().stream().map(entry -> {
+            if (entry.getValue() <= worldTime) {
+                this.illusions.remove(entry.getKey());
+                return null;
+            } else {
+                return entry.getKey();
+            }
+        }).filter(Objects::nonNull).toArray(EquipmentSlot[]::new);
+
+        //Shouldn't need to bother syncing this because it gets checked on all clients
     }
 }

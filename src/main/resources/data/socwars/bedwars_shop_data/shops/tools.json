@@ -57,7 +57,8 @@
       "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/ender_pearl",
-        "socwars:bedwars_shop_data/simple_items/ender_staff"
+        "socwars:bedwars_shop_data/simple_items/ender_staff",
+        "socwars:bedwars_shop_data/simple_items/ender_beam"
       ]
     },
     {

@@ -66,6 +66,7 @@ public class PlayerDataManager extends PersistentState {
         this.playerDataMap.values().forEach(function);
     }
 
+    //region General helpers
     public static PlayerData getPlayerData(ServerPlayerEntity player) {
         return player == null ? null : getPersistentState(player.getWorld()).playerDataMap.computeIfAbsent(player.getUuid(), uuid2 -> new PlayerData());
     }
@@ -79,6 +80,7 @@ public class PlayerDataManager extends PersistentState {
         state.markDirty();
         return state;
     }
+    //endregion
 
     public static void renameKit(ServerWorld serverWorld, String oldName, String newName) {
         final PlayerDataManager state = serverWorld.getServer().getOverworld().getPersistentStateManager().getOrCreate(STATE_TYPE);

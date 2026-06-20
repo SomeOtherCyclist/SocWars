@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "socwars:block/collectible_block_empty"
+    "model": "socwars:item/collectible_block_empty"
   }
 }

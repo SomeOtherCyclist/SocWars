@@ -41,6 +41,7 @@ public interface ModItems {
         CartoonArmour.initialise();
         GlassArmour.initialise();
         DemolitionistArmour.initialise();
+        IllusionerArmour.initialise();
         TrainingWeights.initialise();
         SummonersGarb.initialise();
         Expon.initialise();

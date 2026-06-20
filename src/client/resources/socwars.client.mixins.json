@@ -15,6 +15,7 @@
     "GetOptionsVolumes",
     "InfoTooltip",
     "KeyboardInputModifier",
+    "LivingEntityRendererMixin",
     "MouseInputModifier",
     "OnAttackButtonPressedMixin",
     "OnMountDismountAlert",
