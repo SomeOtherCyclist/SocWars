@@ -1,7 +1,5 @@
 package com.soc.items;
 
-import com.soc.entities.RedShellEntity;
-import com.soc.entities.util.ModEntities;
 import com.soc.items.util.FinishUsingFunction;
 import com.soc.items.util.ModItems;
 import net.minecraft.component.type.FoodComponent;
@@ -30,6 +28,7 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
         super(settings.food(foodComponent));
         this.finishUsingFunction = finishUsingFunction;
     }
+
     public EatFunctionFood(final Item.Settings settings, final FinishUsingFunction finishUsingFunction) {
         this(settings, finishUsingFunction, new FoodComponent(0, 1, true));
     }

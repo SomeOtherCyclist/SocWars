@@ -1,20 +1,14 @@
-package com.soc.renderer;
+package com.soc.renderer.blockentity;
 
 import com.soc.blocks.blockentities.CollectibleBlockEntity;
 import com.soc.blocks.util.ModBlocks;
 import com.soc.player.ClientPlayerDataManager;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.joml.Quaternionf;
 
 import static com.soc.lib.SocWarsLib.randomCentredVec3d;

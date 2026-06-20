@@ -52,6 +52,11 @@ public interface ModComponents {
             Identifier.of(SocWars.MOD_ID, "generator_reference"),
             ComponentType.<Integer>builder().codec(Codec.INT).build()
     );
+    ComponentType<CommandFunctionComponent> COMMAND_FUNCTION = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(SocWars.MOD_ID, "command_function"),
+            ComponentType.<CommandFunctionComponent>builder().codec(CommandFunctionComponent.CODEC).build()
+    );
 
     static void initialise() {}
 }

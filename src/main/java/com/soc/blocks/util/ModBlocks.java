@@ -74,7 +74,7 @@ public interface ModBlocks {
     Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ItemGroups.BLOCKS_KEY);
     Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().luminance(state -> 2), true, ItemGroups.BLOCKS_KEY); //No collision?
     Block DISPLAY_BLOCK = ModBlocks.register("display_block", DisplayBlock::new, AbstractBlock.Settings.create().nonOpaque().noCollision(), true, ItemGroups.BLOCKS_KEY);
-    Block KIT_BLOCK = ModBlocks.register("kit_block", KitBlock::new, AbstractBlock.Settings.create(), true, ItemGroups.BLOCKS_KEY);
+    Block KIT_BLOCK = ModBlocks.register("kit_block", KitBlock::new, AbstractBlock.Settings.create().nonOpaque(), true, ItemGroups.BLOCKS_KEY);
     Block ITSEVOCAT_SKULL = ModBlocks.register("itsevocat_skull", ItsevocatSkull::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.BAMBOO).nonOpaque(), true, ItemGroups.BLOCKS_KEY); //No collision?
     Block MAP_BLOCK = ModBlocks.register("map_block", MapBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true, ItemGroups.BLOCKS_KEY);
     Block JOIN_QUEUE_BLOCK = ModBlocks.register("join_queue_block", JoinQueueBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).hardness(1000000f).resistance(1000000f).nonOpaque().pistonBehavior(PistonBehavior.BLOCK), true, ItemGroups.BLOCKS_KEY);

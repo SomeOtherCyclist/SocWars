@@ -1,4 +1,4 @@
-package com.soc.renderer;
+package com.soc.renderer.entity;
 
 import com.soc.SocWars;
 import com.soc.entities.HolyHandGrenadeEntity;

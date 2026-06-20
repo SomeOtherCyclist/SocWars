@@ -1,4 +1,4 @@
-package com.soc.renderer;
+package com.soc.renderer.entity;
 
 import com.soc.entities.PowerupEntity;
 import com.soc.model.EntityModelLayers;
@@ -15,12 +15,12 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-import static com.soc.renderer.HolyHandGrenadeEntityRenderer.BEAM_TEXTURE;
+import static com.soc.renderer.entity.HolyHandGrenadeEntityRenderer.BEAM_TEXTURE;
 
 public class PowerupEntityRenderer extends EntityRenderer<PowerupEntity, PowerupRenderState> {
 	private final PowerupModel model;
 
-	protected PowerupEntityRenderer(EntityRendererFactory.Context context) {
+	public PowerupEntityRenderer(EntityRendererFactory.Context context) {
 		super(context);
 		this.model = new PowerupModel(context.getPart(EntityModelLayers.POWERUP));
 	}

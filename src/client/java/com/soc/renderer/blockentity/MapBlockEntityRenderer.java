@@ -1,4 +1,4 @@
-package com.soc.renderer;
+package com.soc.renderer.blockentity;
 
 import com.soc.blocks.blockentities.MapBlockEntity;
 import net.minecraft.client.render.RenderLayer;

@@ -51,7 +51,7 @@ public class C2SReceivers {
 			}
         });
         ServerPlayNetworking.registerGlobalReceiver(OnAttackButtonPressedPayload.ID, (payload, context) -> {
-            ((OnAttackButtonPressed)payload.stack().getItem()).onAttackButtonPressed(context.player());
+            ((OnAttackButtonPressed)payload.stack().getItem()).onAttackButtonPressed(context.player(), payload.stack());
         });
         ServerPlayNetworking.registerGlobalReceiver(BuyKitPayload.ID, (payload, context) -> {
             PlayerDataManager.buyKit(context.player(), payload);

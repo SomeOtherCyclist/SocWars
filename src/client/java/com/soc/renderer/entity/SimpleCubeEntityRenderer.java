@@ -1,33 +1,32 @@
-package com.soc.renderer;
+package com.soc.renderer.entity;
 
-import com.soc.lib.RenderHelper;
-import net.minecraft.client.render.Frustum;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Identifier;
 
-public class SimpleBillboardEntityRenderer extends EntityRenderer<Entity, EntityRenderState> {
-    private final RenderLayer layer;
+public class SimpleCubeEntityRenderer extends EntityRenderer<Entity, EntityRenderState> {
+    private final BlockState block;
+    private final float scale;
 
-    public SimpleBillboardEntityRenderer(EntityRendererFactory.Context context, Identifier texture) {
+    public SimpleCubeEntityRenderer(EntityRendererFactory.Context context, BlockState block, float scale) {
         super(context);
+        this.block = block;
+        this.scale = scale;
         this.shadowRadius = 0.5F;
-        this.layer = RenderLayer.getEntityCutoutNoCull(texture);
     }
 
     public void render(EntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int light) {
         matrices.push();
 
-        final VertexConsumer consumer = vertexConsumerProvider.getBuffer(this.layer);
+        matrices.translate(-this.scale * 0.5f, 0f, -this.scale * 0.5f);
+        matrices.scale(this.scale, this.scale, this.scale);
 
-        RenderHelper.renderTexturedQuad(matrices, consumer, super.dispatcher.getRotation(), light);
-        super.render(state, matrices, vertexConsumerProvider, light);
+        MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(this.block, matrices, vertexConsumerProvider, light, OverlayTexture.DEFAULT_UV);
 
         matrices.pop();
     }

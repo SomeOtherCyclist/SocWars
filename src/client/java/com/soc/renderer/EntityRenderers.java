@@ -3,6 +3,7 @@ package com.soc.renderer;
 import com.soc.SocWars;
 import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.bedwars.ShopType;
+import com.soc.renderer.entity.*;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;

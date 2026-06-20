@@ -51,6 +51,7 @@ public interface ModItems {
         BaseItem.initialise();
         JetShoppingTrolley.initialise();
         MorphWand.initialise();
+        CommandFunctionItem.initialise();
     }
 
     static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

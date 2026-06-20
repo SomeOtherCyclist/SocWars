@@ -184,7 +184,7 @@ public class Kit implements Inventory {
         return this.name;
     }
 
-    private MutableText getTextName() {
+    public MutableText getTextName() {
         return Text.literal(this.getName()).formatted(Formatting.BOLD);
     }
 

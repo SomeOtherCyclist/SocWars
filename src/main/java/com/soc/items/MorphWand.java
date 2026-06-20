@@ -13,6 +13,7 @@ import com.soc.util.ModBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.Properties;
@@ -66,7 +67,7 @@ public class MorphWand extends Item implements CancelsBlockInteraction, OnAttack
 	}
 
 	@Override
-	public void onAttackButtonPressed(PlayerEntity player) {
+	public void onAttackButtonPressed(PlayerEntity player, ItemStack stack) {
 		rotateMorph(player.getWorld(), player, player.isSneaking());
 	}
 

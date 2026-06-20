@@ -1,4 +1,4 @@
-package com.soc.renderer;
+package com.soc.renderer.entity;
 
 import com.soc.entities.BigTntEntity;
 import com.soc.renderstate.BigTntRenderState;

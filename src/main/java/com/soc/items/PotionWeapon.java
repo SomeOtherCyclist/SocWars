@@ -88,7 +88,7 @@ public class PotionWeapon extends Item {
             .sword(ToolMaterials.POTIONWEAPON, 1f, -2.1f)
             .maxDamage(400)
     );
-    public static final Item PURPLE_SWORD = ModItems.register("purple_sword", settings -> new PotionWeapon(settings, EffectRecipients.TARGET, new EffectRecord(StatusEffects.INVISIBILITY, 0, 1 * 20, 1)), new Settings()
+    public static final Item PURPLE_SWORD = ModItems.register("purple_sword", settings -> new PotionWeapon(settings, EffectRecipients.ATTACKER, new EffectRecord(StatusEffects.INVISIBILITY, 0, 1 * 20, 1)), new Settings()
             .sword(ToolMaterials.POTIONWEAPON, 1f, -2.2f)
             .rarity(Rarity.RARE)
             .maxDamage(900)

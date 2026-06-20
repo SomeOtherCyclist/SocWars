@@ -1,4 +1,4 @@
-package com.soc.renderer;
+package com.soc.renderer.entity;
 
 import com.soc.SocWars;
 import com.soc.entities.JetShoppingTrolleyEntity;
@@ -18,7 +18,7 @@ public class JetShoppingTrolleyEntityRenderer extends EntityRenderer<JetShopping
 
     private final JetShoppingTrolleyModel model;
 
-    protected JetShoppingTrolleyEntityRenderer(EntityRendererFactory.Context context) {
+    public JetShoppingTrolleyEntityRenderer(EntityRendererFactory.Context context) {
         super(context);
         this.model = new JetShoppingTrolleyModel(context.getPart(EntityModelLayers.JET_SHOPPING_TROLLEY));
     }

@@ -1,8 +1,7 @@
-package com.soc.renderer;
+package com.soc.renderer.blockentity;
 
 import com.soc.blocks.blockentities.DisplayBlockEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.item.ItemRenderer;
