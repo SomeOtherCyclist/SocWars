@@ -13,6 +13,7 @@
     "GamePlayerList",
     "GetLoadedModelGroups",
     "GetOptionsVolumes",
+    "InfoTooltip",
     "KeyboardInputModifier",
     "MouseInputModifier",
     "OnAttackButtonPressedMixin",
