@@ -4,7 +4,6 @@ import com.soc.player.ClientPlayerDataManager;
 import com.soc.player.Morph;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -13,6 +12,7 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +35,7 @@ abstract class PlayerRenderingMixin {
 		if (state instanceof PlayerEntityRenderState playerState) {
 			final PlayerEntityRenderer thisRenderer = (PlayerEntityRenderer)renderer;
 
-			final ClientPlayerEntity thisEntity = (ClientPlayerEntity)Objects.requireNonNull(MinecraftClient.getInstance().world).getEntityById(playerState.id);
+			final PlayerEntity thisEntity = (PlayerEntity)Objects.requireNonNull(MinecraftClient.getInstance().world).getEntityById(playerState.id);
 
 			this.tryRenderMorph(x, y, z, matrices, vertices, light, ci, playerState, thisEntity);
 			this.renderIllusions(x, y, z, matrices, vertices, light, playerState, thisRenderer, thisEntity);
@@ -43,10 +43,10 @@ abstract class PlayerRenderingMixin {
 	}
 
 	@Unique
-	private void tryRenderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, CallbackInfo ci, PlayerEntityRenderState playerState, ClientPlayerEntity thisEntity) {
+	private void tryRenderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, CallbackInfo ci, PlayerEntityRenderState playerState, PlayerEntity thisEntity) {
 		final Morph morph = thisEntity == null ? null : ClientPlayerDataManager.getMorph(thisEntity.getUuid());
 
-		final ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		final PlayerEntity player = MinecraftClient.getInstance().player;
 		if (morph != null && !thisEntity.isSpectator()) {
 			this.renderMorph(x, y, z, matrices, vertices, light, playerState, morph.blockState());
 
@@ -75,7 +75,7 @@ abstract class PlayerRenderingMixin {
 	}
 
 	@Unique
-	private void renderIllusions(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, PlayerEntityRenderer renderer, ClientPlayerEntity thisEntity) {
+	private void renderIllusions(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, PlayerEntityRenderer renderer, PlayerEntity thisEntity) {
 		final Vec3d[] illusions = ClientPlayerDataManager.getPlayerData(thisEntity.getUuid()).getIllusions(Objects.requireNonNull(MinecraftClient.getInstance().world).getTime());
 
 		matrices.push();
