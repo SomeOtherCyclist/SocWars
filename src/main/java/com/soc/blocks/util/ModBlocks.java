@@ -36,6 +36,7 @@ public interface ModBlocks {
     Block BRICKCRETE = ModBlocks.register("brickcrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
     Block BRICKCRETE_CORNER = ModBlocks.register("brickcrete_corner", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
     Block JUNGLECRETE = ModBlocks.register("junglecrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
+    Block JONGLECRETE = ModBlocks.register("jonglecrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
 
     Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2f), true, ItemGroups.BLOCKS_KEY);
     Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3f), true, ItemGroups.BLOCKS_KEY);
