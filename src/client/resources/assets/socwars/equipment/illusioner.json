@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "socwars:illusioner"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "socwars:illusioner"
+      }
+    ]
+  }
+}
