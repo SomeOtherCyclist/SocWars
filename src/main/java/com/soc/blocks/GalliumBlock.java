@@ -14,6 +14,7 @@ import net.minecraft.util.ColorCode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import static com.soc.blocks.util.ModBlocks.GALLIUM_BLOCK;
 import static com.soc.lib.SocWarsLib.damageSource;
 
 public class GalliumBlock extends ColoredFallingBlock {
@@ -28,7 +29,9 @@ public class GalliumBlock extends ColoredFallingBlock {
     @Override
     protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         final BlockPos posDown = pos.down();
-        if (!world.getBlockState(posDown).isIn(ModBlockTags.IMMUNE)) {
+        final BlockState stateDown = world.getBlockState(posDown);
+
+        if (!(stateDown.isIn(ModBlockTags.IMMUNE) || stateDown.isOf(GALLIUM_BLOCK))) {
             world.setBlockState(posDown, Blocks.AIR.getDefaultState());
         }
 
