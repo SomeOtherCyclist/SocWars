@@ -22,6 +22,7 @@
     "OpenKitBlockSelectionScreen",
     "OpenMapBlockScreen",
     "RenderFirstPersonMorph",
+    "RenderPlayerIllusions",
     "RenderPlayerMorph",
     "SideLocalPlayerDataGetter",
     "TransparentGlassArmour",
