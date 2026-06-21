@@ -157,6 +157,13 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new TitleFadeS2CPacket(10, 140, 0)));
 
         this.getPlayers().forEach(this::sendJoinGamePayload);
+
+        this.getPlayers().forEach(player -> { //TODO: Remove this for actual release because this is gross
+            player.removeCommandTag("down");
+            player.removeCommandTag("gambling");
+            player.removeCommandTag("dungeon_run");
+            player.removeCommandTag("dungeon_lobby");
+        });
     }
 
     protected void onFinishCountdown() {

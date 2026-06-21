@@ -54,6 +54,7 @@ public class SocWarsClient implements ClientModInitializer {
 		BlockRenderLayerMap.putBlock(ModBlocks.SPAWN_PLACEHOLDER, BlockRenderLayer.TRANSLUCENT);
 		BlockRenderLayerMap.putBlock(ModBlocks.ITSEVOCAT_SKULL, BlockRenderLayer.TRANSLUCENT);
 		BlockRenderLayerMap.putBlock(ModBlocks.KIT_BLOCK, BlockRenderLayer.TRANSLUCENT);
+		BlockRenderLayerMap.putBlock(ModBlocks.PERSPEX_BLOCK, BlockRenderLayer.TRANSLUCENT);
 
 		S2CReceivers.initialise();
 		HandledScreens.initialise();
