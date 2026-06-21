@@ -1,6 +1,5 @@
 package com.soc;
 
-import com.soc.blocks.util.ModBlocks;
 import com.soc.gui.hud.*;
 import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
 import com.soc.gui.hud.sidebar.EventsHud;
@@ -15,21 +14,15 @@ import com.soc.networking.S2CReceivers;
 import com.soc.player.ClientPlayerDataManager;
 import com.soc.player.Hotkeys;
 import com.soc.renderer.*;
-import com.soc.renderer.blockentity.CollectibleBlockEntityRenderer;
-import com.soc.renderer.blockentity.DisplayBlockEntityRenderer;
-import com.soc.renderer.blockentity.KitBlockEntityRenderer;
-import com.soc.renderer.blockentity.MapBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexRendering;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.HitResult;
@@ -39,27 +32,27 @@ import net.minecraft.util.shape.VoxelShapes;
 
 import java.awt.*;
 
-import static com.soc.blocks.blockentities.ModBlockEntities.*;
-
 @Environment(EnvType.CLIENT)
 public class SocWarsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		BlockEntityRendererFactories.register(MAP_BLOCK_ENTITY, MapBlockEntityRenderer::new);
-		BlockEntityRendererFactories.register(COLLECTIBLE_BLOCK_ENTITY, CollectibleBlockEntityRenderer::new);
-		BlockEntityRendererFactories.register(DISPLAY_BLOCK_ENTITY, DisplayBlockEntityRenderer::new);
-		BlockEntityRendererFactories.register(KIT_BLOCK_ENTITY, KitBlockEntityRenderer::new);
-
-		BlockRenderLayerMap.putBlock(ModBlocks.SPAWN_PLACEHOLDER, BlockRenderLayer.TRANSLUCENT);
-		BlockRenderLayerMap.putBlock(ModBlocks.ITSEVOCAT_SKULL, BlockRenderLayer.TRANSLUCENT);
-		BlockRenderLayerMap.putBlock(ModBlocks.KIT_BLOCK, BlockRenderLayer.TRANSLUCENT);
-		BlockRenderLayerMap.putBlock(ModBlocks.PERSPEX_BLOCK, BlockRenderLayer.TRANSLUCENT);
-
 		S2CReceivers.initialise();
 		HandledScreens.initialise();
 		ClientPlayerDataManager.initialise();
 		Hotkeys.initialise();
+
+		SidebarHud.initialise();
+		BedwarsTeamsHud.initialise();
+		SkywarsTeamsHud.initialise();
+		EventsHud.initialise();
+		QueueHud.initialise();
+		BlockProtectionManagerAndHud.initialise();
+		
+		EntityModelLayers.initialise();
+		EntityRenderers.initialise();
+		BlockEntityRenderers.initialise();
+		BlockRenderLayers.initialise();
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (!client.isIntegratedServerRunning()) {
@@ -126,14 +119,5 @@ public class SocWarsClient implements ClientModInitializer {
 				matrices.pop();
 			} catch (Exception ignored) {}
 		});
-
-		SidebarHud.initialise();
-		BedwarsTeamsHud.initialise();
-		SkywarsTeamsHud.initialise();
-		EventsHud.initialise();
-		QueueHud.initialise();
-		BlockProtectionManagerAndHud.initialise();
-		EntityModelLayers.initialise();
-		EntityRenderers.initialise();
 	}
 }
