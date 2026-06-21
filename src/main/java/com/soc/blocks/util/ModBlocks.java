@@ -40,7 +40,7 @@ public interface ModBlocks {
 
     Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2f), true, ItemGroups.BLOCKS_KEY);
     Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3f), true, ItemGroups.BLOCKS_KEY);
-    Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f), true, ItemGroups.BLOCKS_KEY);
+    Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f).nonOpaque().solidBlock(Blocks::never), true, ItemGroups.BLOCKS_KEY);
     Block HARDENED_LAVA_BLOCK = ModBlocks.register("hardened_lava_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(50f, 1200f), settings -> settings.rarity(Rarity.RARE), ItemGroups.BLOCKS_KEY);
     Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(120f, 1200f), settings -> settings.rarity(Rarity.RARE), ItemGroups.BLOCKS_KEY);
     Block NEAR_INFINITE_DENSITY_BLOCK = ModBlocks.register("near_infinite_density_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(250f, 1200f), settings -> settings.rarity(Rarity.EPIC), ItemGroups.BLOCKS_KEY);
