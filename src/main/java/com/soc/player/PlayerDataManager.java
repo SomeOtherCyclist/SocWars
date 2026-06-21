@@ -9,6 +9,7 @@ import com.soc.networking.s2c.AllSyncPlayerDataPayload;
 import com.soc.networking.s2c.SinglePlayerDataPayload;
 import com.soc.util.ModCodecs;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -31,6 +32,7 @@ public class PlayerDataManager extends PersistentState {
             ifNotNull(world.getPlayerByUuid(uuid), player -> sendData((ServerPlayerEntity)player));
             playerData.resetCollectible(id);
         }));
+        ServerTickEvents.END_SERVER_TICK.register(server -> PlayerDataManager.getPersistentState(server.getOverworld()).getPlayerDataMap().values().forEach(playerData -> playerData.checkIllusions(server.getOverworld().getTime())));
     }
 
     public static void sendData(ServerPlayerEntity player) {
@@ -38,7 +40,7 @@ public class PlayerDataManager extends PersistentState {
     }
 
     public static void sendDataToAll(MinecraftServer server) {
-        final AllSyncPlayerDataPayload payload = new AllSyncPlayerDataPayload(getPersistentState(server.getOverworld()).playerDataMap);
+        final AllSyncPlayerDataPayload payload = new AllSyncPlayerDataPayload(getPersistentState(server.getOverworld()).playerDataMap); //TODO: Filter for only dirty playerdata
 		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
 			ServerPlayNetworking.send(player, payload);
 		}

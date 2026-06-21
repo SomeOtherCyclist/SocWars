@@ -14,13 +14,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static com.soc.lib.SocWarsLib.ifNotNull;
+import static com.soc.lib.SocWarsLib.*;
 
 public class PlayerData {
     //Maybe I should just replace this with a normal tuple codec. --> What is now the present me says yes that was a good idea it was much easier thank you.
@@ -33,7 +34,7 @@ public class PlayerData {
 
     public static final PacketCodec<ByteBuf, PlayerData> ALL_SYNC_PACKET_CODEC = PacketCodec.tuple(
 			PacketCodecs.optional(Morph.PACKET_CODEC), playerData -> Optional.ofNullable(playerData.morph),
-            PacketCodecs.map(HashMap::newHashMap, EquipmentSlot.PACKET_CODEC, PacketCodecs.LONG), playerData -> playerData.illusions,
+            PacketCodecs.map(ConcurrentHashMap::new, EquipmentSlot.PACKET_CODEC, Illusion.PACKET_CODEC), playerData -> playerData.illusions,
             PlayerData::new
     );
 
@@ -48,11 +49,11 @@ public class PlayerData {
     private Map<GameType, Kit> equippedKits;
     private final Set<String> ownedKits;
     private Morph morph;
-    private final Map<EquipmentSlot, Long> illusions;
+    private final Map<EquipmentSlot, Illusion> illusions;
 
     //Canonical constructor
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, Set<String> ownedKits, Optional<Morph> morph, Map<EquipmentSlot, Long> illusions) {
+    public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, Set<String> ownedKits, Optional<Morph> morph, Map<EquipmentSlot, Illusion> illusions) {
         this.collectibles = new ArrayList<>(collectibles);
         this.equippedKits = new HashMap<>(equippedKits);
         this.ownedKits = ownedKits;
@@ -63,24 +64,24 @@ public class PlayerData {
     //Codec
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public PlayerData(List<Boolean> collectibles, Map<GameType, Kit> equippedKits, List<String> ownedKits, Optional<Morph> morph) {
-        this(collectibles, equippedKits, new HashSet<>(ownedKits), morph, new HashMap<>());
+        this(collectibles, equippedKits, new HashSet<>(ownedKits), morph, new ConcurrentHashMap<>());
     }
 
     //Packet codec
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public PlayerData(List<Boolean> collectibles, Set<String> ownedKits, Optional<Morph> morph) {
-        this(collectibles, new HashMap<>(), ownedKits, morph, new HashMap<>());
+        this(collectibles, new HashMap<>(), ownedKits, morph, new ConcurrentHashMap<>());
     }
 
     //All sync packet codec
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-	public PlayerData(Optional<Morph> morph, Map<EquipmentSlot, Long> illusions) {
+	public PlayerData(Optional<Morph> morph, Map<EquipmentSlot, Illusion> illusions) {
 		this(new ArrayList<>(), new HashMap<>(), new HashSet<>(), morph, illusions);
 	}
 
     //Empty
     public PlayerData() {
-        this(new ArrayList<>(), new HashMap<>(), new HashSet<>(), Optional.empty(), new HashMap<>());
+        this(new ArrayList<>(), new HashMap<>(), new HashSet<>(), Optional.empty(), new ConcurrentHashMap<>());
     }
 
     public void merge(PlayerData other) {
@@ -88,6 +89,7 @@ public class PlayerData {
         if (!other.equippedKits.isEmpty()) this.equippedKits = other.equippedKits;
         this.ownedKits.addAll(other.ownedKits);
         this.morph = other.morph;
+        this.illusions.putAll(other.illusions);
     }
 
     public boolean collectCollectible(int id) {
@@ -167,20 +169,21 @@ public class PlayerData {
     }
 
     public void addIllusion(World world, EquipmentSlot slot) {
-        this.illusions.put(slot, world.getTime() + 3 * 20);
+        final long expiryTime = world.getTime() + 3 * 20;
 
+        ifNotNullElse(this.illusions.get(slot), illusion -> illusion.setExpiryTime(expiryTime), () -> illusions.put(slot, new Illusion(randomCentredVec3d(world.random, 3d, 0d, 3d), expiryTime)));
         ifNotNull(world.getServer(), PlayerDataManager::sendDataToAll);
     }
 
-    public EquipmentSlot[] checkIllusions(long worldTime) {
-        return this.illusions.entrySet().stream().map(entry -> {
-            if (entry.getValue() <= worldTime) {
-                this.illusions.remove(entry.getKey());
-                return null;
-            } else {
-                return entry.getKey();
-            }
-        }).filter(Objects::nonNull).toArray(EquipmentSlot[]::new);
+    public void checkIllusions(long worldTime) {
+        this.illusions.forEach((slot, illusion) -> {
+            if (illusion.isExpired(worldTime)) this.illusions.remove(slot);
+        });
+    }
+
+    public Vec3d[] getIllusions(long worldTime) {
+        this.checkIllusions(worldTime);
+        return this.illusions.values().stream().filter(illusion -> !illusion.isExpired(worldTime)).map(Illusion::getPos).toArray(Vec3d[]::new);
 
         //Shouldn't need to bother syncing this because it gets checked on all clients
     }

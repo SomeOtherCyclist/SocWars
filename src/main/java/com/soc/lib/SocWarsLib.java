@@ -548,8 +548,12 @@ public final class SocWarsLib {
         }
     }
 
+    public static Vec3d randomCentredVec3d(Random random, double xSize, double ySize, double zSize) {
+        return new Vec3d(random.nextDouble() * 2 * xSize - xSize, random.nextDouble() * 2 * ySize - ySize, random.nextDouble() * 2 * zSize - zSize);
+    }
+
     public static Vec3d randomCentredVec3d(Random random, double size) {
-        return new Vec3d(random.nextDouble() * 2 * size - size, random.nextDouble() * 2 * size - size, random.nextDouble() * 2 * size - size);
+        return randomCentredVec3d(random, size, size, size);
     }
 
     public static Vec3d randomCentredVec3d(Random random) {
