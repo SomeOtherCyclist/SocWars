@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "socwars:block/map_bomb"
+    "model": "socwars:block/map_block"
   }
 }

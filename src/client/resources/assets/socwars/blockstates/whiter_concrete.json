@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:block/cube_all",
   "variants": {
     "": {
       "model": "socwars:block/whiter_concrete"

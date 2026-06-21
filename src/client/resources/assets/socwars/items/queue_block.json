@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "socwars:item/collectible_block"
+    "model": "socwars:block/queue_block"
   }
 }

@@ -1,5 +1,5 @@
 {
-	"parent": "minecraft:block/block",
+	"parent": "minecraft:block/cube_all",
 	"textures": {
 		"bottom": "socwars:block/map_block",
 		"top": "socwars:block/map_block",
