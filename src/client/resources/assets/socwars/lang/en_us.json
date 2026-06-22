@@ -403,6 +403,7 @@
   "item.socwars.molotov_cocktail": "Molotov Cocktail",
   "item.socwars.molotov_cocktail.info": "Right click to throw",
   "item.socwars.morph_wand": "Morph Wand",
+  "item.socwars.morph_wand.info": "Right click to morph into a block. Shift right clear to unmorph.",
   "item.socwars.moshpit_map": "Moshpit Map",
   "item.socwars.nailed_bat": "Nailed Baseball Bat",
   "item.socwars.near_infinite_density_block": "Block of Near Infinite Density",

@@ -6,6 +6,7 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.AttackFunctionWeapon;
+import com.soc.items.BowItem;
 import com.soc.items.MorphWand;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -50,6 +51,7 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 		final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));
 		this.getPlayers(SEEKER_COLOUR).forEach(seeker -> {
 			seeker.giveItemStack(new ItemStack(AttackFunctionWeapon.SEEKING_STICK));
+			seeker.giveItemStack(new ItemStack(BowItem.SEEKING_BOW));
 			seeker.networkHandler.sendPacket(youAreSeekingPacket);
 		});
 

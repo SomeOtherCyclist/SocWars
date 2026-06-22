@@ -63,6 +63,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
         addItemToGroupsAndBaseItemGroup(HEATER_BOW, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(CHORUS_BOW, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(CATASTROPHE_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(SEEKING_BOW, ItemGroups.COMBAT);
     }
 
     public static final Item BOOM_BOW = ModItems.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
@@ -187,7 +188,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                         }
                     });
                 }
-            }, stack -> 0.5f, stack -> 2.5f), new Settings()
+            }, stack -> 0.5f, stack -> 3.5f), new Settings()
             .rarity(Rarity.UNCOMMON)
             .maxDamage(500)
             .attributeModifiers(new AttributeModifiersComponent(List.of(
