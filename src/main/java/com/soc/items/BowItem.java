@@ -1,12 +1,19 @@
 package com.soc.items;
 
+import com.soc.SocWars;
+import com.soc.game.manager.AbstractHidingGameManager;
+import com.soc.game.manager.GamesManager;
 import com.soc.items.util.ArrowFactory;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.ScaledUseDuration;
 import com.soc.util.DamageTypes;
 import com.soc.util.SphereExplosion;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -167,6 +174,25 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             }, new Settings()
             .rarity(Rarity.EPIC)
             .maxDamage(10)
+    );
+    public static final Item SEEKING_BOW = ModItems.register("seeking_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+                @Override
+                protected void onHit(LivingEntity target) {
+                    super.onHit(target);
+                    this.discard();
+
+                    GamesManager.getInstance().getGame(user).ifPresent(game -> {
+                        if (game instanceof AbstractHidingGameManager<?, ?, ?> hidingGameManager) {
+                            hidingGameManager.tryFindPlayer(user, (ServerPlayerEntity)target);
+                        }
+                    });
+                }
+            }, stack -> 0.5f, stack -> 2.5f), new Settings()
+            .rarity(Rarity.UNCOMMON)
+            .maxDamage(500)
+            .attributeModifiers(new AttributeModifiersComponent(List.of(
+                    new AttributeModifiersComponent.Entry(EntityAttributes.MOVEMENT_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_speed"), 0.05d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND, AttributeModifiersComponent.Display.getHidden())
+            )))
     );
 
     @Override

@@ -2,6 +2,7 @@ package com.soc.items;
 
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
+import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.game.manager.HideAndSeekGameManager;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
@@ -258,8 +259,8 @@ public class AttackFunctionWeapon extends Item {
     );
     public static final Item SEEKING_STICK = ModItems.register("seeking_stick", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 GamesManager.getInstance().getGame(target).ifPresent(game -> {
-                    if (game instanceof HideAndSeekGameManager hideAndSeekGameManager) {
-                        hideAndSeekGameManager.tryFindPlayer(attacker, (ServerPlayerEntity)target);
+                    if (game instanceof AbstractHidingGameManager<?, ?, ?> hidingGameManager) {
+                        hidingGameManager.tryFindPlayer(attacker, (ServerPlayerEntity)target);
                     }
                 });
             }), new Settings()

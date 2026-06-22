@@ -1,7 +1,0 @@
-{
-  "variants": {
-    "": {
-      "model": "socwars:block/queue_block"
-    }
-  }
-}

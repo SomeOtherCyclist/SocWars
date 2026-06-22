@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "socwars:block/join_queue_block"
+    "model": "socwars:block/join_queue_block/duels"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "socwars:block/queue_block"
+    "model": "socwars:item/taunt_stick"
   }
 }

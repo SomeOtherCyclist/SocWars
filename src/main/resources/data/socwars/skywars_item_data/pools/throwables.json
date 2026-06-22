@@ -73,6 +73,12 @@
     "pool": 8
   },
   {
+    "id": "socwars:red_shell",
+    "tier_2_weight": 15,
+    "tier_3_weight": 10,
+    "pool": 8
+  },
+  {
     "id": "socwars:holy_hand_grenade",
     "tier_3_weight": 8,
     "tier_4_weight": 14,

@@ -98,7 +98,8 @@
         "socwars:bedwars_shop_data/simple_items/hand_grenade",
         "socwars:bedwars_shop_data/simple_items/holy_hand_grenade",
         "socwars:bedwars_shop_data/simple_items/shrink_ray",
-        "socwars:bedwars_shop_data/simple_items/biggening_ray"
+        "socwars:bedwars_shop_data/simple_items/biggening_ray",
+        "socwars:bedwars_shop_data/simple_items/blue_shell"
       ]
     }
   ]

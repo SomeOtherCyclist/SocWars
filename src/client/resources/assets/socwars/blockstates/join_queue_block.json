@@ -1,0 +1,79 @@
+{
+  "variants": {
+    "facing=east,queue_type=skywars": {
+      "model": "socwars:block/join_queue_block/skywars"
+    },
+    "facing=north,queue_type=skywars": {
+      "model": "socwars:block/join_queue_block/skywars",
+      "y": 270
+    },
+    "facing=south,queue_type=skywars": {
+      "model": "socwars:block/join_queue_block/skywars",
+      "y": 90
+    },
+    "facing=west,queue_type=skywars": {
+      "model": "socwars:block/join_queue_block/skywars",
+      "y": 180
+    },
+    "facing=east,queue_type=bedwars": {
+      "model": "socwars:block/join_queue_block/bedwars"
+    },
+    "facing=north,queue_type=bedwars": {
+      "model": "socwars:block/join_queue_block/bedwars",
+      "y": 270
+    },
+    "facing=south,queue_type=bedwars": {
+      "model": "socwars:block/join_queue_block/bedwars",
+      "y": 90
+    },
+    "facing=west,queue_type=bedwars": {
+      "model": "socwars:block/join_queue_block/bedwars",
+      "y": 180
+    },
+    "facing=east,queue_type=prop_hunt": {
+      "model": "socwars:block/join_queue_block/prop_hunt"
+    },
+    "facing=north,queue_type=prop_hunt": {
+      "model": "socwars:block/join_queue_block/prop_hunt",
+      "y": 270
+    },
+    "facing=south,queue_type=prop_hunt": {
+      "model": "socwars:block/join_queue_block/prop_hunt",
+      "y": 90
+    },
+    "facing=west,queue_type=prop_hunt": {
+      "model": "socwars:block/join_queue_block/prop_hunt",
+      "y": 180
+    },
+    "facing=east,queue_type=hide_and_seek": {
+      "model": "socwars:block/join_queue_block/hide_and_seek"
+    },
+    "facing=north,queue_type=hide_and_seek": {
+      "model": "socwars:block/join_queue_block/hide_and_seek",
+      "y": 270
+    },
+    "facing=south,queue_type=hide_and_seek": {
+      "model": "socwars:block/join_queue_block/hide_and_seek",
+      "y": 90
+    },
+    "facing=west,queue_type=hide_and_seek": {
+      "model": "socwars:block/join_queue_block/hide_and_seek",
+      "y": 180
+    },
+    "facing=east,queue_type=duels": {
+      "model": "socwars:block/join_queue_block/duels"
+    },
+    "facing=north,queue_type=duels": {
+      "model": "socwars:block/join_queue_block/duels",
+      "y": 270
+    },
+    "facing=south,queue_type=duels": {
+      "model": "socwars:block/join_queue_block/duels",
+      "y": 90
+    },
+    "facing=west,queue_type=duels": {
+      "model": "socwars:block/join_queue_block/duels",
+      "y": 180
+    }
+  }
+}

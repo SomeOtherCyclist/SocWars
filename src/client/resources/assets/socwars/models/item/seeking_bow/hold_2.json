@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/seeking_bow/base",
+  "textures": {
+    "layer0": "socwars:item/seeking_bow/hold_2"
+  }
+}
