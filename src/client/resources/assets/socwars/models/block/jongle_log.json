@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "socwars:block/jongle_log_top",
-    "side": "socwars:block/jongle_log"
-  }
-}

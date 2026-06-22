@@ -31,7 +31,6 @@ public interface ModBlocks {
     static void initialise() {}
 
     Block WHITER_CONCRETE = ModBlocks.register("whiter_concrete", Block::new, AbstractBlock.Settings.create().mapColor(DyeColor.WHITE).instrument(NoteBlockInstrument.BASS).sounds(BlockSoundGroup.STONE).requiresTool().strength(1.8f), true, ItemGroups.BLOCKS_KEY);
-    Block JONGLE_LOG = ModBlocks.register("jongle_log", PillarBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
     Block JONGLE_PLANKS = ModBlocks.register("jongle_planks", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
     Block BRICKCRETE = ModBlocks.register("brickcrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
     Block BRICKCRETE_CORNER = ModBlocks.register("brickcrete_corner", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
