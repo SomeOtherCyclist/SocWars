@@ -1,6 +1,24 @@
 {
-  "parent": "minecraft:item/handheld",
+  "parent": "minecraft:item/bow",
   "textures": {
     "layer0": "socwars:item/shrink_ray"
+  },
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [0, 88, 2],
+      "translation": [-2, 2, -2]
+    },
+    "firstperson_lefthand": {
+      "rotation": [0, -86, -2],
+      "translation": [-2, 2, -2]
+    },
+    "thirdperson_righthand": {
+      "rotation": [0, 85, 0],
+      "translation": [0, 1, -1.5]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [0, -95, 0],
+      "translation": [0, 1, -1.5]
+    }
   }
 }

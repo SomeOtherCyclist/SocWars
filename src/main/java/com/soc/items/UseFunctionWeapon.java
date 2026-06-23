@@ -430,8 +430,8 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-                    .useCooldown(5f)
-                    .rarity(Rarity.RARE)
+            .useCooldown(5f)
+            .rarity(Rarity.RARE)
     );
     public static final Item TAUNT_STICK = ModItems.register("taunt_stick", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
                 final SoundEvent soundEvent = TAUNTS[world.random.nextBetween(0, TAUNTS.length - 1)];
@@ -439,8 +439,8 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-                    .rarity(Rarity.UNCOMMON)
-                    .useCooldown(20 * 20)
+            .rarity(Rarity.UNCOMMON)
+            .useCooldown(5f)
     );
 
     @Override
