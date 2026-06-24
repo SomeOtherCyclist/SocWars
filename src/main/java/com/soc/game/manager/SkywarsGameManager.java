@@ -156,11 +156,6 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     }
 
     @Override
-    protected EventQueue<SkywarsGameManager> buildEventQueue() {
-        return super.buildEventQueue().addEvent(20 * 60 * 20, manager -> manager.endGame(false), Text.translatable("events.game.end"));
-    }
-
-    @Override
     protected Function<UUID, SkywarsTable> dbTableBuilder() {
         return SkywarsTable::new;
     }

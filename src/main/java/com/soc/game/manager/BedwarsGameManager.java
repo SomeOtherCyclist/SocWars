@@ -254,7 +254,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
                 if (stats.getNumPlayersAlive() == 0) manager.buyGeneratorUpgrade(team, finalI);
             }), Text.translatable("events.bedwars.island_generator", romanNumeralsText(i).formatted(Formatting.GOLD)));
         }
-        queue.addEvent(30 * 60 * 20, manager -> manager.endGame(false), Text.translatable("events.game.end"));
 
         return queue;
     }

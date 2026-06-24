@@ -98,7 +98,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected EventQueue<EVENT> buildEventQueue() {
-        return new EventQueue<>();
+        EventQueue<EVENT> queue = new EventQueue<>();
+        queue.addEvent(this.map.getGameDuration(), manager -> manager.endGame(false), Text.translatable("events.game.end"));
+
+        return queue;
     }
 
     /// Designed for adding events while the game is in progress

@@ -110,7 +110,6 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
         if (this.map.hasPowerups()) for (int i = 45; (i += this.world.random.nextBetween(25, 35) * 20) < this.map.getGameDuration(); ) {
             eventQueue.addEvent(i, manager -> manager.map.spawnPowerup(), Text.translatable("events.hide_and_seek.next_powerup"));
         }
-        eventQueue.addEvent(this.map.getGameDuration(), manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
 
         return eventQueue;
     }
