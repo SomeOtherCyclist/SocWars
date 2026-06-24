@@ -6,9 +6,7 @@ import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
 import com.soc.resourcedata.listeners.SkywarsLootData;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
 import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
@@ -25,6 +23,10 @@ import java.util.stream.Collectors;
 
 public class SkywarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "swmap";
+    private static final int DEFAULT_GAME_DURATION = 15 * 60 * 20;
+    public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
+            new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDuration)
+    );
 
     private final Map<BlockPos, IngameSkywarsChest> lootChests;
 
@@ -36,11 +38,12 @@ public class SkywarsGameMap extends AbstractGameMap {
             SparseVoxelOctree<Boolean> blockProtectionOverlay,
             int minBuildY,
             int maxBuildY,
+            int gameDuration,
             ServerWorld world,
             Set<SkywarsChest> lootChests,
             File file
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, gameDuration, world, file);
         this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
 
@@ -52,7 +55,7 @@ public class SkywarsGameMap extends AbstractGameMap {
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
             Set<SkywarsChest> lootChests,
             Map<String, Integer> fields) {
-        super(structure, spawnPositions, centrePos, blockProtectionOverlay);
+        super(structure, spawnPositions, centrePos, blockProtectionOverlay, fields);
         this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
 
@@ -64,6 +67,11 @@ public class SkywarsGameMap extends AbstractGameMap {
 
     public void populateInventory(int tier, BlockPos pos, int fillOrdinal) {
         SkywarsLootData.INSTANCE.getSkywarsItemData().populateInventory(tier, this.world, pos, fillOrdinal, this.starterWoolColour(tier, pos, fillOrdinal));
+    }
+
+    @Override
+    protected Map<String, RangedIntField> getMapFields() {
+        return MAP_FIELDS;
     }
 
     private Optional<DyeColor> starterWoolColour(int tier, BlockPos pos, int loadOrdinal) {
@@ -101,6 +109,7 @@ public class SkywarsGameMap extends AbstractGameMap {
                 null,
                 compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
                 compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
+                compound.getInt(GAME_DURATION_KEY, DEFAULT_GAME_DURATION) + centrePos.getY(),
                 world,
                 chests,
                 file

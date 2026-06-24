@@ -25,10 +25,11 @@ public abstract class AbstractHidingGameMap extends AbstractGameMap {
 			@Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
 			int minBuildY,
 			int maxBuildY,
+			int gameDuration,
 			ServerWorld world,
 			File file
 	) {
-		super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
+		super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, gameDuration, world, file);
 	}
 
 	/// Constructor used only for saving the map to file
@@ -39,7 +40,7 @@ public abstract class AbstractHidingGameMap extends AbstractGameMap {
 			@Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
 			Map<String, Integer> fields
 	) {
-		super(structure, spawnPositions, centrePos, blockProtectionOverlay);
+		super(structure, spawnPositions, centrePos, blockProtectionOverlay, fields);
 	}
 
 	@Override

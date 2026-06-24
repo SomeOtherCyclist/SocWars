@@ -39,7 +39,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.soc.lib.SocWarsLib.iterateInCube;
 
@@ -49,11 +48,15 @@ public abstract class AbstractGameMap {
     public static final String BLOCK_PROTECTION_OVERLAY_KEY = "block_protection_overlay";
     public static final String MIN_BUILD_Y_KEY = "min_build_y";
     public static final String MAX_BUILD_Y_KEY = "max_build_y";
+    public static final String GAME_DURATION_KEY = "game_duration";
 
     private static final int Y_CLEARING_BUFFER = 64;
     private static final int XZ_CLEARING_BUFFER = 64;
 
     private static final Direction[] HORIZONTAL_DIRECTIONS = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+    public static final int DEFAULT_MIN_BUILD_Y = 0;
+    public static final int DEFAULT_MAX_BUILD_Y = 50;
+    private static final int DEFAULT_GAME_DURATION = 30 * 60 * 20;
 
     protected final StructureTemplate structure;
     public final float size;
@@ -68,7 +71,7 @@ public abstract class AbstractGameMap {
 
     protected int minBuildY;
     protected int maxBuildY;
-    protected int gameEndTime = 5 * 60 * 20; //TODO: Properly work on this
+    protected int gameDuration;
 
     @Nullable protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
 
@@ -82,6 +85,7 @@ public abstract class AbstractGameMap {
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
             int minBuildY,
             int maxBuildY,
+            int gameDuration,
             ServerWorld world,
             File file
     ) {
@@ -96,6 +100,7 @@ public abstract class AbstractGameMap {
 
         this.minBuildY = minBuildY + this.absoluteCentrePos.getY();
         this.maxBuildY = maxBuildY + this.absoluteCentrePos.getY();
+        this.gameDuration = gameDuration;
         this.blockProtectionPacket = new BlockProtectionPayload(Optional.ofNullable(blockProtectionOverlay), blockProtectionOverlay == null ? Optional.empty() : Optional.of(this.getOrigin()), this.minBuildY, this.maxBuildY);
     }
 
@@ -104,7 +109,8 @@ public abstract class AbstractGameMap {
             StructureTemplate structure,
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
-            SparseVoxelOctree<Boolean> blockProtectionOverlay
+            SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            Map<String, Integer> fields
     ) {
         this(
                 structure,
@@ -112,11 +118,14 @@ public abstract class AbstractGameMap {
                 centrePos.toImmutable(),
                 BlockPos.ORIGIN,
                 blockProtectionOverlay,
-                0,
-                50,
+                DEFAULT_MIN_BUILD_Y,
+                DEFAULT_MAX_BUILD_Y,
+                DEFAULT_GAME_DURATION,
                 null,
                 null
         );
+
+        this.applyFields(fields);
     }
 
     public abstract void tick();
@@ -163,6 +172,7 @@ public abstract class AbstractGameMap {
         compound.putLong(CENTRE_POS_KEY, this.centrePos.asLong());
         compound.putInt(MIN_BUILD_Y_KEY, this.minBuildY);
         compound.putInt(MAX_BUILD_Y_KEY, this.maxBuildY);
+        compound.putInt(GAME_DURATION_KEY, this.gameDuration);
 
         if (this.blockProtectionOverlay != null) this.blockProtectionOverlay.writeToNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound);
 
@@ -357,12 +367,18 @@ public abstract class AbstractGameMap {
         return this.name;
     }
 
+    public void populateInventory(int tier, BlockPos pos, int fillOrdinal) { //TODO: exclude pools
+        SkywarsLootData.INSTANCE.getSkywarsItemData().populateInventory(tier, this.world, pos, fillOrdinal, Optional.empty());
+    }
+
     public static Map<String, RangedIntField> buildFields(RangedIntField... fields) {
         return Arrays.stream(fields).collect(Collectors.toMap(RangedIntField::name, Function.identity(), (a, b) -> a, LinkedHashMap::new));
     }
 
-    public void applyFields(Map<String, Integer> fields, Map<String, RangedIntField> mapFields) {
-        fields.forEach((key, value) -> mapFields.get(key).apply(this, value));
+    protected abstract Map<String, RangedIntField> getMapFields();
+
+    public void applyFields(Map<String, Integer> fields) {
+        fields.forEach((key, value) -> this.getMapFields().get(key).apply(this, value));
     }
 
     public static void setMinBuildY(AbstractGameMap map, int minBuildY) {
@@ -373,11 +389,11 @@ public abstract class AbstractGameMap {
         map.maxBuildY = maxBuildY;
     }
 
-    public int getGameEndTime() {
-        return this.gameEndTime;
+    public static void setGameDuration(AbstractGameMap map, int maxGameTime) {
+        //map.maxGameTime = maxGameTime;
     }
 
-    public void populateInventory(int tier, BlockPos pos, int fillOrdinal) { //TODO: exclude pools
-        SkywarsLootData.INSTANCE.getSkywarsItemData().populateInventory(tier, this.world, pos, fillOrdinal, Optional.empty());
+    public int getGameDuration() {
+        return this.gameDuration;
     }
 }

@@ -24,7 +24,9 @@ import static com.soc.player.Morph.calculateBlockVolume;
 public class PropHuntGameMap extends AbstractHidingGameMap {
 	public static final String FILE_EXTENSION = "phmap";
 	public static final String MIN_BLOCK_SIZE_KEY = "min_block_size";
+	private static final int DEFAULT_GAME_DURATION = 5 * 60 * 20;
 	public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
+			new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDuration),
 			new RangedIntField("min_block_size", 0, 100, PropHuntGameMap::setMinBlockSize)
 	);
 
@@ -39,11 +41,12 @@ public class PropHuntGameMap extends AbstractHidingGameMap {
 			@Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
 			int minBuildY,
 			int maxBuildY,
+			int gameDuration,
 			ServerWorld world,
 			File file,
 			float minBlockSize
 	) {
-		super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
+		super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, gameDuration, world, file);
 		this.disallowedMorphs = Set.of();
 		this.minBlockSize = minBlockSize;
 	}
@@ -58,8 +61,6 @@ public class PropHuntGameMap extends AbstractHidingGameMap {
 	) {
 		super(structure, spawnPositions, centrePos, blockProtectionOverlay, fields);
 		this.disallowedMorphs = Set.of();
-
-		this.applyFields(fields, MAP_FIELDS);
 	}
 
 	public boolean allowsMorph(BlockState morph, World world) {
@@ -91,6 +92,7 @@ public class PropHuntGameMap extends AbstractHidingGameMap {
 				SparseVoxelOctree.fromNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound),
 				compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
 				compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
+				compound.getInt(GAME_DURATION_KEY, DEFAULT_GAME_DURATION) + centrePos.getY(),
 				world,
 				file,
 				compound.getFloat(MIN_BLOCK_SIZE_KEY, 0)
@@ -104,6 +106,11 @@ public class PropHuntGameMap extends AbstractHidingGameMap {
 		compound.putFloat(MIN_BLOCK_SIZE_KEY, this.minBlockSize);
 
 		return compound;
+	}
+
+	@Override
+	protected Map<String, RangedIntField> getMapFields() {
+		return MAP_FIELDS;
 	}
 
 	private static void setMinBlockSize(AbstractGameMap abstractGameMap, int minBlockSize) {

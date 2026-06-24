@@ -9,7 +9,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -20,6 +19,10 @@ import static com.soc.lib.SocWarsLib.*;
 
 public class HideAndSeekGameMap extends AbstractHidingGameMap {
     public static final String FILE_EXTENSION = "hsmap";
+    private static final int DEFAULT_GAME_DURATION = 5 * 60 * 20;
+    public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
+            new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDuration)
+    );
 
     public static final String POWERUPS_KEY = "powerups";
 
@@ -34,10 +37,11 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
             List<BlockPos> powerups,
             int minBuildY,
             int maxBuildY,
+            int gameDuration,
             ServerWorld world,
             File file
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, gameDuration, world, file);
         this.powerups = powerups;
     }
 
@@ -52,7 +56,6 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
     ) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay, fields);
         this.powerups = powerups.stream().toList();
-        //Not going to bother initialising nextPowerupTime
     }
 
     public static Optional<HideAndSeekGameMap> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos, File file) {
@@ -77,6 +80,7 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
                 getBlockPosCollection(compound, POWERUPS_KEY, Collectors.toList()).orElseGet(() -> { SocWars.LOGGER.error("Failed to load powerups"); return List.of(); }),
                 compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
                 compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
+                compound.getInt(GAME_DURATION_KEY, DEFAULT_GAME_DURATION) + centrePos.getY(),
                 world,
                 file
         ));
@@ -89,6 +93,11 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
         putBlockPosCollection(compound, POWERUPS_KEY, this.powerups);
 
         return compound;
+    }
+
+    @Override
+    protected Map<String, RangedIntField> getMapFields() {
+        return MAP_FIELDS;
     }
 
     public void spawnPowerup() {

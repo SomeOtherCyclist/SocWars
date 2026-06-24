@@ -13,11 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
 
 public enum GameType implements StringIdentifiable {
-    SKYWARS(2, 8, "skywars", SkywarsGameMap.FILE_EXTENSION, Map.of()),
+    SKYWARS(2, 8, "skywars", SkywarsGameMap.FILE_EXTENSION, SkywarsGameMap.MAP_FIELDS),
     BEDWARS(2, 16, "bedwars", BedwarsGameMap.FILE_EXTENSION, BedwarsGameMap.MAP_FIELDS),
     PROP_HUNT(2, 8, "prop_hunt", PropHuntGameMap.FILE_EXTENSION, PropHuntGameMap.MAP_FIELDS),
-    HIDE_AND_SEEK(2, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION, Map.of()),
-    DUELS(2, 2, "duels", DuelsGameMap.FILE_EXTENSION, Map.of());
+    HIDE_AND_SEEK(2, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION, HideAndSeekGameMap.MAP_FIELDS),
+    DUELS(2, 2, "duels", DuelsGameMap.FILE_EXTENSION, DuelsGameMap.MAP_FIELDS);
 
     public static final PacketCodec<RegistryByteBuf, GameType> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, GameType::ordinal, GameType::fromOrdinal);
     public static final Codec<GameType> CODEC = StringIdentifiable.createCodec(GameType::values);

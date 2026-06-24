@@ -23,6 +23,11 @@ import java.util.stream.Collectors;
 
 public class DuelsGameMap extends AbstractGameMap {
 	public static final String FILE_EXTENSION = "dmap";
+	private static final int DEFAULT_GAME_DURATION = 5 * 60 * 20;
+	public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
+			new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDuration)
+	);
+
 	private final Map<BlockPos, IngameSkywarsChest> lootChests;
 
 	public DuelsGameMap(
@@ -33,10 +38,11 @@ public class DuelsGameMap extends AbstractGameMap {
 			@Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
 			int minBuildY,
 			int maxBuildY,
+			int gameDuration,
 			ServerWorld world,
 			Set<SkywarsChest> lootChests,
 			File file) {
-		super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
+		super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, gameDuration, world, file);
 		this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
 	}
 
@@ -48,7 +54,7 @@ public class DuelsGameMap extends AbstractGameMap {
 			Set<SkywarsChest> lootChests,
 			Map<String, Integer> fields
 	) {
-		super(structure, spawnPositions, centrePos, blockProtectionOverlay);
+		super(structure, spawnPositions, centrePos, blockProtectionOverlay, fields);
 		this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
 	}
 
@@ -79,6 +85,7 @@ public class DuelsGameMap extends AbstractGameMap {
 				SparseVoxelOctree.fromNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound),
 				compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
 				compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
+				compound.getInt(GAME_DURATION_KEY, DEFAULT_GAME_DURATION) + centrePos.getY(),
 				world,
 				chests,
 				file
@@ -92,6 +99,11 @@ public class DuelsGameMap extends AbstractGameMap {
 		compound.put(SkywarsChest.LIST_KEY, this.getChestsAsNbt());
 
 		return compound;
+	}
+
+	@Override
+	protected Map<String, RangedIntField> getMapFields() {
+		return MAP_FIELDS;
 	}
 
 	private NbtList getChestsAsNbt() {
