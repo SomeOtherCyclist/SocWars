@@ -389,8 +389,8 @@ public abstract class AbstractGameMap {
         map.maxBuildY = maxBuildY;
     }
 
-    public static void setGameDuration(AbstractGameMap map, int maxGameTime) {
-        //map.maxGameTime = maxGameTime;
+    public static void setGameDurationSeconds(AbstractGameMap map, int gameDuration) {
+        map.gameDuration = gameDuration * 20;
     }
 
     public int getGameDuration() {

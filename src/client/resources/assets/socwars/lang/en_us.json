@@ -599,6 +599,7 @@
   "text.map_block.field.max_build_height": "Maximum Build Y:",
   "text.map_block.field.min_block_size": "Minimum Morph Block Size%",
   "text.map_block.field.min_build_height": "Minimum Build Y:",
+  "text.map_block.field.game_duration": "Game Duration: (s)",
   "text.map_block.game_type": "Map Type:",
   "tick_function.heal_pool": "Heal Pool",
   "tick_function.invisibility": "Permanent Invisibility",

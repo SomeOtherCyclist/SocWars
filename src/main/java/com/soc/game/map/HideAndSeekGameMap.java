@@ -21,7 +21,7 @@ public class HideAndSeekGameMap extends AbstractHidingGameMap {
     public static final String FILE_EXTENSION = "hsmap";
     private static final int DEFAULT_GAME_DURATION = 5 * 60 * 20;
     public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
-            new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDuration)
+            new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDurationSeconds)
     );
 
     public static final String POWERUPS_KEY = "powerups";

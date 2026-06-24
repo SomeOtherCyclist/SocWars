@@ -18,7 +18,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.BossBarS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
