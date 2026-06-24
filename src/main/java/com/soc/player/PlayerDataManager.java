@@ -75,7 +75,7 @@ public class PlayerDataManager extends PersistentState {
         return player == null ? null : getPersistentState(player.getWorld()).playerDataMap.computeIfAbsent(player.getUuid(), uuid2 -> new PlayerData());
     }
 
-    public static PlayerData getSideLocalPlayerData(Entity entity) {
+    public static PlayerData getSideLocalPlayerDataEntity(Entity entity) {
         if (entity.getType() != EntityType.PLAYER) return null;
 
         return getSideLocalPlayerData((PlayerEntity)entity);
