@@ -26,7 +26,7 @@ public class BedwarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "bwmap";
     private static final int DEFAULT_GAME_DURATION = 45 * 60 * 20;
     public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
-            new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDurationSeconds),
+            new RangedIntField("game_duration", 0, 24 * 60 * 60, AbstractGameMap::setGameDurationSeconds),
             new RangedIntField("min_build_height", -384, 384, AbstractGameMap::setMinBuildY),
             new RangedIntField("max_build_height", -384, 384, AbstractGameMap::setMaxBuildY)
     );

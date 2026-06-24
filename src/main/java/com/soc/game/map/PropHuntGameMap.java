@@ -26,7 +26,7 @@ public class PropHuntGameMap extends AbstractHidingGameMap {
 	public static final String MIN_BLOCK_SIZE_KEY = "min_block_size";
 	private static final int DEFAULT_GAME_DURATION = 5 * 60 * 20;
 	public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
-			new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDurationSeconds),
+			new RangedIntField("game_duration", 0, 24 * 60 * 60, AbstractGameMap::setGameDurationSeconds),
 			new RangedIntField("min_block_size", 0, 100, PropHuntGameMap::setMinBlockSize)
 	);
 

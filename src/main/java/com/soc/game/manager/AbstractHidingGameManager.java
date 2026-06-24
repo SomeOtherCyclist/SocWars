@@ -115,7 +115,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 		final HashMultimap<DyeColor, UUID> map = HashMultimap.create();
 
-		map.put(SEEKER_COLOUR, playerStack.pop());
+		map.put(SEEKER_COLOUR, playerStack.remove(this.world.random.nextBetween(0, playerStack.size() - 1)));
 
 		while (!playerStack.isEmpty()) {
 			map.put(HIDER_COLOUR, playerStack.pop());

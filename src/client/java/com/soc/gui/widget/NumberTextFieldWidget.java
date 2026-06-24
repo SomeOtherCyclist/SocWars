@@ -17,7 +17,7 @@ public class NumberTextFieldWidget extends TextFieldWidget {
         this.minValue = minValue;
         this.maxValue = maxValue;
 
-        this.setMaxLength(4);
+        this.setMaxLength(Math.max(String.valueOf(Math.abs(minValue)).length(), String.valueOf(Math.abs(maxValue)).length()) + 1);
         this.setChangedListener(string -> this.charTypedCallback.accept(this.parseInt(string)));
     }
 

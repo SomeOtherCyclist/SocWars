@@ -25,7 +25,7 @@ public class DuelsGameMap extends AbstractGameMap {
 	public static final String FILE_EXTENSION = "dmap";
 	private static final int DEFAULT_GAME_DURATION = 5 * 60 * 20;
 	public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
-			new RangedIntField("game_duration", 0, 24 * 60 * 60 * 20, AbstractGameMap::setGameDurationSeconds)
+			new RangedIntField("game_duration", 0, 24 * 60 * 60, AbstractGameMap::setGameDurationSeconds)
 	);
 
 	private final Map<BlockPos, IngameSkywarsChest> lootChests;
