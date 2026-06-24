@@ -8,6 +8,8 @@ import com.soc.items.AttackFunctionWeapon;
 import com.soc.items.BowItem;
 import com.soc.items.MorphWand;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
@@ -19,6 +21,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -28,8 +31,7 @@ import java.util.function.Function;
 
 import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
-import static com.soc.lib.SocWarsLib.getPlayerAttacker;
-import static com.soc.lib.SocWarsLib.ifNotNull;
+import static com.soc.lib.SocWarsLib.*;
 
 public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameMap, PropHuntTable, PropHuntGameManager> {
 	protected PropHuntGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules, int gameId) {
@@ -47,7 +49,9 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 		final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));
 		this.getPlayers(SEEKER_COLOUR).forEach(seeker -> {
 			seeker.giveItemStack(new ItemStack(AttackFunctionWeapon.SEEKING_STICK));
-			seeker.giveItemStack(new ItemStack(BowItem.SEEKING_BOW));
+			final ItemStack stack = new ItemStack(BowItem.SEEKING_BOW);
+			stack.addEnchantment(enchantmentEntry(this.world, Enchantments.INFINITY), 1);
+			seeker.giveItemStack(stack);
 			seeker.networkHandler.sendPacket(youAreSeekingPacket);
 		});
 

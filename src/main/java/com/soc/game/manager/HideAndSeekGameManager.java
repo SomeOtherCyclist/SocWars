@@ -8,6 +8,7 @@ import com.soc.game.map.HideAndSeekGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.AttackFunctionWeapon;
 import com.soc.items.BowItem;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
@@ -54,7 +55,9 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
         final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));
         this.getPlayers(SEEKER_COLOUR).forEach(seeker -> {
             seeker.giveItemStack(new ItemStack(AttackFunctionWeapon.SEEKING_STICK));
-            seeker.giveItemStack(new ItemStack(BowItem.SEEKING_BOW));
+            final ItemStack stack = new ItemStack(BowItem.SEEKING_BOW);
+            stack.addEnchantment(enchantmentEntry(this.world, Enchantments.INFINITY), 1);
+            seeker.giveItemStack(stack);
             seeker.networkHandler.sendPacket(youAreSeekingPacket);
         });
 
