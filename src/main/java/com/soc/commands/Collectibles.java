@@ -24,7 +24,6 @@ public interface Collectibles {
 
     static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal(COLLECTIBLES_COMMAND_ID)
-            .requires(source -> source.hasPermissionLevel(1))
             .executes(Collectibles::execute)
                 .then(
                     CommandManager.argument(FULL_LIST_ARGUMENT, BoolArgumentType.bool())
