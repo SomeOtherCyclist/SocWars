@@ -34,6 +34,8 @@ loom {
 		}
 	}
 
+	accessWidenerPath = file("src/main/resources/socwars.classtweaker")
+
 	//mixin {
 	//	defaultRefmapName = "socwars.refmap.json"
 	//}

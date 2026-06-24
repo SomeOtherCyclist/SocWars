@@ -11,6 +11,8 @@ import com.soc.util.ModCodecs;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -71,6 +73,12 @@ public class PlayerDataManager extends PersistentState {
     //region General helpers
     public static PlayerData getPlayerData(ServerPlayerEntity player) {
         return player == null ? null : getPersistentState(player.getWorld()).playerDataMap.computeIfAbsent(player.getUuid(), uuid2 -> new PlayerData());
+    }
+
+    public static PlayerData getSideLocalPlayerData(Entity entity) {
+        if (entity.getType() != EntityType.PLAYER) return null;
+
+        return getSideLocalPlayerData((PlayerEntity)entity);
     }
 
     public static PlayerData getSideLocalPlayerData(PlayerEntity player) {

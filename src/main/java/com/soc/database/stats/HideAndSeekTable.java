@@ -2,7 +2,7 @@ package com.soc.database.stats;
 
 import java.util.UUID;
 
-public class HideAndSeekTable extends SeekingTable {
+public class HideAndSeekTable extends AbstractHidingTable {
 	@Override
 	public void winAsSeeker() {
 		this.wins++;
@@ -31,6 +31,11 @@ public class HideAndSeekTable extends SeekingTable {
 	public void findPlayer() {
 		this.seekerKills++;
 		this.addXp(100);
+	}
+
+	public void surviveSecond() {
+		this.secondsSurvived++;
+		this.addXp(2);
 	}
 
 	public HideAndSeekTable(UUID player) {

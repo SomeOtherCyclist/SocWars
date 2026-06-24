@@ -138,6 +138,34 @@
     "pool": 2
   },
   {
+    "id": "socwars:illusioner_helmet",
+    "tier_2_weight": 3,
+    "tier_3_weight": 6,
+    "tier_4_weight": 9,
+    "pool": 2
+  },
+  {
+    "id": "socwars:illusioner_chestplate",
+    "tier_2_weight": 3,
+    "tier_3_weight": 6,
+    "tier_4_weight": 9,
+    "pool": 2
+  },
+  {
+    "id": "socwars:illusioner_leggings",
+    "tier_2_weight": 3,
+    "tier_3_weight": 6,
+    "tier_4_weight": 9,
+    "pool": 2
+  },
+  {
+    "id": "socwars:illusioner_boots",
+    "tier_2_weight": 3,
+    "tier_3_weight": 6,
+    "tier_4_weight": 9,
+    "pool": 2
+  },
+  {
     "id": "socwars:training_weights",
     "tier_1_weight": 13,
     "tier_2_weight": 10,

@@ -46,7 +46,8 @@ public record Morph(BlockState blockState, Box boundingBox, float health) {
 
 	private static Box makeBoundingBox(BlockState blockState, BlockView world) {
 		final VoxelShape shape = getShape(blockState, world);
-		return shape.getBoundingBox().stretch(0d, -shape.getMin(Direction.Axis.Y), 0d);
+		final Box preShrinkBox = shape.getBoundingBox().stretch(0d, -shape.getMin(Direction.Axis.Y), 0d);
+		return new Box(Math.max(preShrinkBox.minX, 0.08d), preShrinkBox.minY, Math.max(preShrinkBox.minZ, 0.08d), Math.min(preShrinkBox.maxX, 0.92d), preShrinkBox.maxY, Math.min(preShrinkBox.maxZ, 0.92d));
 	}
 
 	private static float calculateMaxHealth(BlockState blockState, BlockView world) {

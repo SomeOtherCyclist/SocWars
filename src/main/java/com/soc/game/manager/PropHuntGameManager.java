@@ -1,7 +1,6 @@
 package com.soc.game.manager;
 
 import com.soc.database.stats.PropHuntTable;
-import com.soc.database.stats.SeekingTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
@@ -11,13 +10,10 @@ import com.soc.items.MorphWand;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +41,7 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 		this.map.spawnCages(false, HIDER_COLOUR);
 		this.getPlayers(HIDER_COLOUR).forEach(hider -> {
 			hider.giveItemStack(new ItemStack(MorphWand.MORPH_WAND));
-			hider.changeGameMode(GameMode.ADVENTURE);
+			hider.changeGameMode(GameMode.SURVIVAL);
 		});
 
 		final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));

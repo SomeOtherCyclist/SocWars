@@ -63,7 +63,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     public static final int KILLZONE_Y_OFFSET = -35;
 
     private final GameType gameType;
-    private final int gameId;
+    protected final int gameId;
 
     protected final ServerWorld world;
     protected final List<UUID> spectators;
@@ -231,8 +231,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
         ((CombatTable)targetTable).takeDamage(cappedDamage);
 
-        final CombatTable attackerTable = ((CombatTable)this.getDbTable(source.getAttacker())); //More Map#get abuse
-        if (attackerTable != null) attackerTable.dealDamage(cappedDamage);
+        if (source != null) {
+            final CombatTable attackerTable = ((CombatTable)this.getDbTable(source.getAttacker())); //More Map#get abuse
+            if (attackerTable != null) attackerTable.dealDamage(cappedDamage);
+        }
 
         return true;
     }
@@ -449,6 +451,14 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected void broadcastPacket(DyeColor team, CustomPayload packet) {
         this.getPlayers(team).forEach(player -> ServerPlayNetworking.send(player, packet));
+    }
+
+    protected void broadcastPacket(Packet<?> packet) {
+        this.getPlayers().forEach(player -> player.networkHandler.sendPacket(packet));
+    }
+
+    protected void broadcastPacket(DyeColor team, Packet<?> packet) {
+        this.getPlayers(team).forEach(player -> player.networkHandler.sendPacket(packet));
     }
 
     protected void setGameMode(GameMode gameMode) {

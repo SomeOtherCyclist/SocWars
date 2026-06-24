@@ -1,6 +1,7 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.Multimap;
+import com.soc.SocWars;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
@@ -12,11 +13,14 @@ import com.soc.networking.s2c.skywars.LeaveSkywarsPayload;
 import com.soc.networking.s2c.skywars.SetTeamLivesPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.boss.CommandBossBar;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.BossBarS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -25,6 +29,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +45,8 @@ import static com.soc.lib.SocWarsLib.*;
 public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, SkywarsTable, SkywarsGameManager> {
     private final Settings settings;
     private final Map<UUID, PlayerStats> playerMap;
+
+    private final Map<UUID, CommandBossBar> bossBarMap;
 
     public static class Settings {
         public static final Settings DEFAULT = new Settings(5);
@@ -81,6 +88,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
         super(GameType.SKYWARS, world, players, spreadRules, gameId);
         this.settings = settings;
         this.playerMap = players.stream().collect(Collectors.toMap(Entity::getUuid,key -> new PlayerStats()));
+        this.bossBarMap = new HashMap<>(2, 1f);
     }
 
     @Override
@@ -95,6 +103,8 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     public void startGame() {
         super.startGame();
         this.map.placeLootChests();
+
+        this.onPlayerEliminate(null);
     }
 
     @Override
@@ -123,6 +133,10 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
                 }
             }, 10);
         });
+
+        for (CommandBossBar bar : this.bossBarMap.values()) {
+            this.broadcastPacket(BossBarS2CPacket.remove(bar.getUuid()));
+        }
 
         if (immediate) {
             super.endGame(true);
@@ -183,6 +197,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
         if (canRespawn) {
             PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), true, player);
         } else {
+            this.onPlayerEliminate(player);
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.skywars.eliminate")));
         }
 
@@ -256,6 +271,29 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
         });
     }
 
+    private Identifier getBossBarId() {
+        return Identifier.of(SocWars.MOD_ID, "skywars_boss_bar_game_" + this.gameId);
+    }
+
+    private void onPlayerEliminate(ServerPlayerEntity player) { //Redo this all properly
+        final List<UUID> alivePlayers = this.getAlivePlayers();
+        if (alivePlayers.size() == 2) {
+            final List<ServerPlayerEntity> serverPlayerEntities = mapUuidsToPlayers(this.world, alivePlayers);
+            if (serverPlayerEntities.size() != 2) return;
+
+            this.bossBarMap.put(serverPlayerEntities.get(1).getUuid(), new CommandBossBar(this.getBossBarId(), serverPlayerEntities.get(1).getDisplayName()));
+            this.bossBarMap.put(serverPlayerEntities.get(0).getUuid(), new CommandBossBar(this.getBossBarId(), serverPlayerEntities.get(0).getDisplayName()));
+
+            serverPlayerEntities.get(0).networkHandler.sendPacket(BossBarS2CPacket.add(this.bossBarMap.get(serverPlayerEntities.get(1).getUuid())));
+            serverPlayerEntities.get(1).networkHandler.sendPacket(BossBarS2CPacket.add(this.bossBarMap.get(serverPlayerEntities.get(0).getUuid())));
+
+            this.broadcastSound(SoundEvents.ENTITY_WITHER_SPAWN);
+
+            //this.onPlayerDamage(serverPlayerEntities.get(0), null, 0f);
+            //this.onPlayerDamage(serverPlayerEntities.get(1), null, 0f); //More disgusting code
+        }
+    }
+
     @Override
     public boolean onChestOpened(ServerPlayerEntity player, BlockPos pos) {
         if (player.isSpectator()) return true;
@@ -268,6 +306,21 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
         return true;
     }
+
+    //@Override
+    //public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
+    //    if (!this.bossBarMap.isEmpty()) {
+    //        this.bossBarMap.entrySet().stream().filter(entry -> !entry.getKey().equals(player.getUuid())).findFirst().ifPresent(entry -> {
+    //            ifNotNull(this.world.getPlayerByUuid(entry.getKey()), otherPlayer -> {
+    //                entry.getValue().setMaxValue((int)player.getMaxHealth());
+    //                entry.getValue().setValue((int)player.getHealth());
+    //                ((ServerPlayerEntity)otherPlayer).networkHandler.sendPacket(BossBarS2CPacket.updateProgress(entry.getValue()));
+    //            });
+    //        });
+    //    }
+
+    //    return super.onPlayerDamage(player, source, amount);
+    //}
 
     private List<UUID> getAlivePlayers() {
         return this.playerMap.entrySet().stream().filter(entry -> entry.getValue().isAlive()).map(Map.Entry::getKey).toList();

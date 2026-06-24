@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = PlayerDataManager.class, remap = false)
 abstract class SideLocalPlayerDataGetter {
-	@Inject(method = "getSideLocalPlayerData", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "getSideLocalPlayerData(Lnet/minecraft/entity/player/PlayerEntity;)Lcom/soc/player/PlayerData;", at = @At("HEAD"), cancellable = true)
 	private static void socwars_getSideLocalPlayerData(PlayerEntity player, CallbackInfoReturnable<PlayerData> cir) {
 		cir.setReturnValue(ClientPlayerDataManager.getPlayerData(player.getUuid()));
 	}

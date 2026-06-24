@@ -17,6 +17,6 @@ public abstract class DisableEntityDismount extends Entity {
 
     @Redirect(method = "tickRiding", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;hasVehicle()Z"))
     private boolean socwars_disableEntityDismount(PlayerEntity instance) {
-        return instance.hasVehicle() && (!(this.getVehicle() instanceof AllowsDismount allowsDismountEntity) || allowsDismountEntity.allowsDismount());
+        return instance.hasVehicle() && (!instance.getCommandTags().contains("disallow_leave") && (!(this.getVehicle() instanceof AllowsDismount allowsDismountEntity) || allowsDismountEntity.allowsDismount()));
     }
 }

@@ -94,7 +94,8 @@
         "socwars:bedwars_shop_data/simple_items/steadfast_helmet",
         "socwars:bedwars_shop_data/simple_items/demolitionist_helmet",
         "socwars:bedwars_shop_data/simple_items/gambler_helmet",
-        "socwars:bedwars_shop_data/simple_items/glass_helmet"
+        "socwars:bedwars_shop_data/simple_items/glass_helmet",
+        "socwars:bedwars_shop_data/simple_items/illusioner_boots"
       ]
     },
     {
@@ -104,7 +105,8 @@
         "socwars:bedwars_shop_data/simple_items/steadfast_chestplate",
         "socwars:bedwars_shop_data/simple_items/demolitionist_chestplate",
         "socwars:bedwars_shop_data/simple_items/gambler_chestplate",
-        "socwars:bedwars_shop_data/simple_items/glass_chestplate"
+        "socwars:bedwars_shop_data/simple_items/glass_chestplate",
+        "socwars:bedwars_shop_data/simple_items/illusioner_boots"
       ]
     },
     {
@@ -114,7 +116,8 @@
         "socwars:bedwars_shop_data/simple_items/steadfast_leggings",
         "socwars:bedwars_shop_data/simple_items/demolitionist_leggings",
         "socwars:bedwars_shop_data/simple_items/gambler_leggings",
-        "socwars:bedwars_shop_data/simple_items/glass_leggings"
+        "socwars:bedwars_shop_data/simple_items/glass_leggings",
+        "socwars:bedwars_shop_data/simple_items/illusioner_boots"
       ]
     },
     {
@@ -124,7 +127,8 @@
         "socwars:bedwars_shop_data/simple_items/steadfast_boots",
         "socwars:bedwars_shop_data/simple_items/demolitionist_boots",
         "socwars:bedwars_shop_data/simple_items/gambler_boots",
-        "socwars:bedwars_shop_data/simple_items/glass_boots"
+        "socwars:bedwars_shop_data/simple_items/glass_boots",
+        "socwars:bedwars_shop_data/simple_items/illusioner_boots"
       ]
     }
   ]

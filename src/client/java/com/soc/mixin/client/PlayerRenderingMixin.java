@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Objects;
 
+import static com.soc.lib.SocWarsLib.mapIfNotNull;
 import static net.minecraft.client.render.entity.LivingEntityRenderer.getOverlay;
 
 @Mixin(EntityRenderDispatcher.class)
@@ -36,6 +37,8 @@ abstract class PlayerRenderingMixin {
 			final PlayerEntityRenderer thisRenderer = (PlayerEntityRenderer)renderer;
 
 			final PlayerEntity thisEntity = (PlayerEntity)Objects.requireNonNull(MinecraftClient.getInstance().world).getEntityById(playerState.id);
+
+			if (thisEntity == null) return;
 
 			this.tryRenderMorph(x, y, z, matrices, vertices, light, ci, playerState, thisEntity);
 			this.renderIllusions(x, y, z, matrices, vertices, light, playerState, thisRenderer, thisEntity);
@@ -76,7 +79,9 @@ abstract class PlayerRenderingMixin {
 
 	@Unique
 	private void renderIllusions(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, PlayerEntityRenderer renderer, PlayerEntity thisEntity) {
-		final Vec3d[] illusions = ClientPlayerDataManager.getPlayerData(thisEntity.getUuid()).getIllusions(Objects.requireNonNull(MinecraftClient.getInstance().world).getTime());
+		final Vec3d[] illusions = mapIfNotNull(ClientPlayerDataManager.getPlayerData(thisEntity.getUuid()), playerData -> playerData.getIllusions(Objects.requireNonNull(MinecraftClient.getInstance().world).getTime()), null);
+
+		if (illusions == null) return;
 
 		matrices.push();
 		final Vec3d vec3d = renderer.getPositionOffset(state);

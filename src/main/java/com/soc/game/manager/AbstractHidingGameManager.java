@@ -2,7 +2,7 @@ package com.soc.game.manager;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.soc.database.stats.SeekingTable;
+import com.soc.database.stats.AbstractHidingTable;
 import com.soc.game.map.AbstractHidingGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
@@ -30,7 +30,7 @@ import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.game.map.AbstractHidingGameMap.*;
 import static com.soc.lib.SocWarsLib.ifNotNull;
 
-public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMap, TABLE extends SeekingTable, EVENT extends AbstractHidingGameManager<?, ?, ?>> extends AbstractGameManager<MAP, TABLE, EVENT> {
+public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMap, TABLE extends AbstractHidingTable, EVENT extends AbstractHidingGameManager<?, ?, ?>> extends AbstractGameManager<MAP, TABLE, EVENT> {
 	protected AbstractHidingGameManager(GameType gameType, ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
 		super(gameType, world, players, spreadRules, gameId);
 	}
@@ -54,7 +54,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 			final Text message;
 			final SoundEvent sound;
-			final SeekingTable dbTable = this.getDbTable(player);
+			final AbstractHidingTable dbTable = this.getDbTable(player);
 			if (playerTeam == winningTeam) {
 				message = Text.translatable("game.hiding.win." + playerTeamSuffix);
 				sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
@@ -97,7 +97,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 	protected abstract void onHiderDeath(ServerPlayerEntity player, DamageSource source, float amount);
 
 	protected void onSeekerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
-		ifNotNull(this.getDbTable(source.getSource()), SeekingTable::killSeeker);
+		ifNotNull(this.getDbTable(source.getSource()), AbstractHidingTable::killSeeker);
 		player.changeGameMode(GameMode.SPECTATOR);
 
 		this.endGame(false, HIDER_COLOUR);
@@ -168,4 +168,13 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 	@Override
 	protected void tickKillzone() {}
+
+	@Override
+	public void tick() {
+		super.tick();
+
+		if (this.time % 20 == 0) {
+			this.dbTables.values().forEach(AbstractHidingTable::surviveSecond);
+		}
+	}
 }

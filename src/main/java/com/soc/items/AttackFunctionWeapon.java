@@ -191,10 +191,9 @@ public class AttackFunctionWeapon extends Item {
     );
     public static final Item LEATHERER = ModItems.register("leatherer", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 modifyEquipment(target, attacker, ReplaceMode.NOT_LEATHER, (targetEntity, slot) -> {
-                    ItemStack item = leatherArmour(slot).getDefaultStack();
+                    final ItemStack item = leatherArmour(slot).getDefaultStack();
                     item.addEnchantment(enchantmentEntry(target.getWorld(), Enchantments.BINDING_CURSE), 1);
                     item.addEnchantment(enchantmentEntry(target.getWorld(), Enchantments.VANISHING_CURSE), 1);
-                    item.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
 
                     target.equipStack(slot, item);
                 }, null);

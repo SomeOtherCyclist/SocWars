@@ -8,7 +8,7 @@ import java.util.UUID;
 import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
 
-public abstract class SeekingTable extends BaseGameTable {
+public abstract class AbstractHidingTable extends BaseGameTable {
     protected int seekerWins = 0;
     public void winAsSeeker() {
         this.wins++;
@@ -39,11 +39,16 @@ public abstract class SeekingTable extends BaseGameTable {
         this.seekerKills++;
     }
 
-    public SeekingTable(UUID player) {
+    protected long secondsSurvived = 0;
+    public void surviveSecond() {
+        this.secondsSurvived++;
+    }
+
+    public AbstractHidingTable(UUID player) {
         super(player);
     }
 
-    public SeekingTable() {
+    public AbstractHidingTable() {
         this(null);
     }
 }

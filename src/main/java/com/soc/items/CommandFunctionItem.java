@@ -45,6 +45,6 @@ public class CommandFunctionItem extends Item implements OnAttackButtonPressed {
 	}
 
 	private static final Item PARKOUR_RESET = ModItems.register("parkour_reset", CommandFunctionItem::new, new Settings()
-			.component(ModComponents.COMMAND_FUNCTION, new CommandFunctionComponent("parkour:cancel", "parkour:reset"))
+			.component(ModComponents.COMMAND_FUNCTION, new CommandFunctionComponent("parkour:cancel", "parkour:checkpoint"))
 	);
 }

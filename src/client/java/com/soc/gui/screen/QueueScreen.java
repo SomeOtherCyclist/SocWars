@@ -23,11 +23,12 @@ import java.util.Map;
 import static com.soc.lib.SocWarsLib.*;
 
 public class QueueScreen extends Screen {
-	private static final Map<GameType, Identifier> BACKGROUND_TEXTURES = Map.of(
+	private static final Map<GameType, Identifier> BACKGROUND_TEXTURES = Map.of( //Yeah this is also gross I should fix this
 			GameType.SKYWARS, Identifier.of(SocWars.MOD_ID, "widget/game_icons/skywars"),
 			GameType.BEDWARS, Identifier.of(SocWars.MOD_ID, "widget/game_icons/bedwars"),
 			GameType.PROP_HUNT, Identifier.of(SocWars.MOD_ID, "widget/game_icons/prop_hunt"),
-			GameType.HIDE_AND_SEEK, Identifier.of(SocWars.MOD_ID, "widget/game_icons/hide_and_seek")
+			GameType.HIDE_AND_SEEK, Identifier.of(SocWars.MOD_ID, "widget/game_icons/hide_and_seek"),
+			GameType.DUELS, Identifier.of(SocWars.MOD_ID, "widget/game_icons/duels")
 	);
 
 	public static final int TILE_WIDTH = 144;

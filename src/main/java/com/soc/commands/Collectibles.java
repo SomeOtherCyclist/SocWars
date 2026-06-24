@@ -34,7 +34,7 @@ public interface Collectibles {
     }
 
     static int execute(CommandContext<ServerCommandSource> context) {
-        boolean fullList = true;
+        boolean fullList = false;
 
         try {
             fullList = BoolArgumentType.getBool(context, FULL_LIST_ARGUMENT);
