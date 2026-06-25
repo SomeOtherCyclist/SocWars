@@ -175,7 +175,7 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(500)
     );
     public static final Item DETONATOR = ModItems.register("detonator", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                SphereExplosion.explode(target.getWorld(), target.getPos(), 3.5f, 1.5f, 0.4f, 0.25f, true, attacker, null);
+                SphereExplosion.explode(target.getWorld(), target.getPos(), 2f, 0.5f, 1.5f, 0.75f, true, attacker, null);
             }), new Settings()
             .rarity(Rarity.RARE)
             .sword(ToolMaterials.BASE, 4.5f, -2.2f)

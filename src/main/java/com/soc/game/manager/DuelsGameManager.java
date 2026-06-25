@@ -48,7 +48,7 @@ public class DuelsGameManager extends AbstractGameManager<DuelsGameMap, DuelsTab
 	@Override
 	public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
 		this.endGame(false, player);
-		return true;
+		return false;
 	}
 
 	public void endGame(boolean immediate, ServerPlayerEntity dyingPlayer) {

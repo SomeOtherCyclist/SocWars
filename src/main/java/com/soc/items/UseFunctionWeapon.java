@@ -299,11 +299,15 @@ public class UseFunctionWeapon extends Item {
                 final Vec3d rotationVec = user.getRotationVector();
                 final double rotationAngle = Math.atan2(rotationVec.z, rotationVec.x);
 
+                final BiPredicate<BlockPos, BlockState> blockDamagePredicate = getBlockDamagePredicate(world, true, user);
+
                 final BlockPos[] positions = findAdjacentBlocksFromViewAngle(BlockPos.ofFloored(user.getPos().add(rotationVec.getHorizontal().normalize().multiply(0.5f))), rotationAngle);
                 for (int y: new int[] {0, 1}) {
                     for (BlockPos position : positions) {
-                        BlockPos currentPos = position.add(0, y, 0);
-                        world.setBlockState(currentPos, Blocks.HAY_BLOCK.getDefaultState());
+                        final BlockPos pos = position.up(y);
+                        if (blockDamagePredicate.test(pos, world.getBlockState(pos))) {
+                            world.setBlockState(pos, Blocks.HAY_BLOCK.getDefaultState());
+                        }
                     }
                 }
 

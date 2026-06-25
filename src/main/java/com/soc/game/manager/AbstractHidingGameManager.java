@@ -3,6 +3,7 @@ package com.soc.game.manager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.database.stats.AbstractHidingTable;
+import com.soc.effects.util.ModEffects;
 import com.soc.game.map.AbstractHidingGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
@@ -11,6 +12,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.scoreboard.Team;
@@ -39,12 +41,17 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 	public void startGame() {
 		super.startGame();
 		this.getPlayers(SEEKER_COLOUR).forEach(player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 450, 0, false, false)));
+		this.getPlayers(HIDER_COLOUR).forEach(player -> player.addStatusEffect(new StatusEffectInstance(ModEffects.LETHARGY, 150, 255, false, false)));
+
+		this.removePlayersFromLocators();
 	}
 
 	@Override
 	@SuppressWarnings("MethodDoesntCallSuperMethod")
 	public void endGame(boolean immediate) {
 		this.endGame(immediate, SEEKER_COLOUR);
+
+		this.addPlayersToLocators();
 	}
 
 	protected void endGame(boolean immediate, DyeColor winningTeam) {
@@ -72,6 +79,8 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 			}, 10);
 		});
 
+		this.removePlayersMorphs();
+
 		if (immediate) {
 			super.endGame(true);
 		} else {
@@ -85,10 +94,10 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 		healPlayer(player);
 
-		if (this.getTeam(player) == SEEKER_COLOUR) {
-			this.onSeekerDeath(player, source, amount);
-		} else {
+		if (this.getTeam(player) == HIDER_COLOUR) {
 			this.onHiderDeath(player, source, amount);
+		} else if (amount < 100000f){
+			this.onSeekerDeath(player, source, amount);
 		}
 
 		return false;
@@ -108,6 +117,19 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 	public Entity getWinningPlayer(@Nullable Entity except) {
 		return null;
 	}
+
+	@Override
+	protected EventQueue<EVENT> buildEventQueue() {
+		final EventQueue<EVENT> eventQueue = super.buildEventQueue();
+
+		for (int i = this.pingInterval(); i < this.map.getGameDuration(); i += this.pingInterval()) {
+			eventQueue.addEvent(i, manager -> manager.getPlayers(HIDER_COLOUR).forEach(this::taunt), Text.translatable("events.hiding.ping"));
+		}
+
+		return eventQueue;
+	}
+
+	protected abstract int pingInterval();
 
 	@Override
 	public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
@@ -132,6 +154,11 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 		return teams;
 	}
 
+	@Override
+	public boolean onItemDropped(ServerPlayerEntity player, ItemStack stack) {
+		return false;
+	}
+
 	protected void taunt(ServerPlayerEntity player) {
 		this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
 		if (this.getAlivePlayers().size() < 2) player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));
@@ -141,6 +168,8 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 	protected void findPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
 		hider.changeGameMode(GameMode.SPECTATOR);
+
+		this.broadcastTitle(HIDER_COLOUR, Text.translatable("game.hiding.hider_found", hider.getDisplayName()), true);
 
 		if (seeker != null) {
 			hider.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(hider.getId(), hider.getPos().subtract(seeker.getPos()).normalize().multiply(2.5d)));

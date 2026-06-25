@@ -8,7 +8,6 @@ import com.soc.items.AttackFunctionWeapon;
 import com.soc.items.BowItem;
 import com.soc.items.MorphWand;
 import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -21,7 +20,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -83,6 +81,11 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	}
 
 	@Override
+	protected int pingInterval() {
+		return 15 * 20;
+	}
+
+	@Override
 	public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
 		ifNotNull(this.getDbTable(source.getSource()), PropHuntTable::hitPlayer);
 
@@ -106,17 +109,6 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	public void endGame(boolean immediate) {
 		this.removePlayersMorphs();
 		super.endGame(immediate);
-	}
-
-	@Override
-	protected EventQueue<PropHuntGameManager> buildEventQueue() {
-		final EventQueue<PropHuntGameManager> eventQueue = super.buildEventQueue();
-
-		for (int i = 1; i < 20; i++) {
-			eventQueue.addEvent(i * 15 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(this::taunt), Text.translatable("events.hiding.ping", i));
-		}
-
-		return eventQueue;
 	}
 
 	@Override

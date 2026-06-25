@@ -91,6 +91,9 @@ public class GamesManager {
         ModEvents.ON_PLAYER_MORPHED.register((player, morph) ->
                 this.getGame(player).map(game -> game.onPlayerMorphed(player, morph)).orElse(true)
         );
+        ModEvents.ON_BED_USED.register((player, world, pos) ->
+                this.getGame(player).map(game -> game.onBedUsed(player, world, pos)).orElse(true)
+        );
     }
 
     private void endAllGames() {

@@ -114,7 +114,7 @@ public class Powerup {
 
 	public static final Powerup ECCENTRIC = createGameStored("eccentric", 60 * 20);
 
-	public static final Powerup STRENGTH = effect("strength", new StatusEffectInstance(StatusEffects.STRENGTH, 30 * 20, 2, false, true));
+	public static final Powerup STRENGTH = effect("strength", new StatusEffectInstance(StatusEffects.STRENGTH, 30 * 20, 1, false, true));
 
 	public static final Powerup FLIGHT = effect("flight", new StatusEffectInstance(ModEffects.FLIGHT, 15 * 20, 0, false, true));
 

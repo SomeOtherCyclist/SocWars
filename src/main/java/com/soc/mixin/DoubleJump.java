@@ -17,7 +17,7 @@ public abstract class DoubleJump {
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isOnGround()Z", ordinal = 2), method = "tickMovement")
 	protected boolean socwars_doubleJump(LivingEntity instance) {
-		if (instance.getType() == EntityType.PLAYER && !instance.isOnGround() && this.jumpingCooldown == 0) {
+ 		if (instance.getType() == EntityType.PLAYER && !instance.isOnGround() && this.jumpingCooldown == 0) {
 			final PlayerEntity player = (PlayerEntity)instance;
 
 			boolean canDoubleJump = false;

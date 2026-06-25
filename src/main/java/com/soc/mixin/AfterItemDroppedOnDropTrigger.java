@@ -6,6 +6,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +23,7 @@ public abstract class AfterItemDroppedOnDropTrigger {
 	private void socwars_dropItemEvent(ItemStack stack, boolean dropAtSelf, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
 		if ((Object)this instanceof ServerPlayerEntity serverPlayer) {
 			if (!ModEvents.ON_ITEM_DROPPED.invoker().onDropItem(serverPlayer, stack)) {
-				this.giveOrDropStack(stack);
+				if ((Object)this instanceof PlayerEntity player) player.getInventory().insertStack(stack);
 				cir.cancel();
 			}
 		}

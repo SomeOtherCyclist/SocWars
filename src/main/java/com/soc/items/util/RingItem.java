@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class RingItem extends Item {
-    public static final int GRACE_TICKS = 5;
+    public static final int GRACE_TICKS = 9;
 
     public RingItem(Item.Settings settings) {
         super(settings

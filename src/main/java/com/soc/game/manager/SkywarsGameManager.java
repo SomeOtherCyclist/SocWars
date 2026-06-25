@@ -272,20 +272,35 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     private void onPlayerEliminate(ServerPlayerEntity player) { //Redo this all properly
         final List<UUID> alivePlayers = this.getAlivePlayers();
         if (alivePlayers.size() == 2) {
-            final List<ServerPlayerEntity> serverPlayerEntities = mapUuidsToPlayers(this.world, alivePlayers);
-            if (serverPlayerEntities.size() != 2) return;
-
-            this.bossBarMap.put(serverPlayerEntities.get(1).getUuid(), new CommandBossBar(this.getBossBarId(), serverPlayerEntities.get(1).getDisplayName()));
-            this.bossBarMap.put(serverPlayerEntities.get(0).getUuid(), new CommandBossBar(this.getBossBarId(), serverPlayerEntities.get(0).getDisplayName()));
-
-            serverPlayerEntities.get(0).networkHandler.sendPacket(BossBarS2CPacket.add(this.bossBarMap.get(serverPlayerEntities.get(1).getUuid())));
-            serverPlayerEntities.get(1).networkHandler.sendPacket(BossBarS2CPacket.add(this.bossBarMap.get(serverPlayerEntities.get(0).getUuid())));
-
-            this.broadcastSound(SoundEvents.ENTITY_WITHER_SPAWN);
+            this.onGameReducedToTwoPlayers(alivePlayers);
 
             //this.onPlayerDamage(serverPlayerEntities.get(0), null, 0f);
             //this.onPlayerDamage(serverPlayerEntities.get(1), null, 0f); //More disgusting code
         }
+    }
+
+    private void onGameReducedToTwoPlayers(List<UUID> alivePlayers) {
+        for (int i = 15 * 20; i < this.map.getGameDuration(); i += 15 * 20) {
+            this.addEvent(i, SkywarsGameManager::pingPlayers, Text.translatable("events.skywars.ping"));
+        }
+
+        final List<ServerPlayerEntity> serverPlayerEntities = mapUuidsToPlayers(this.world, alivePlayers);
+        if (serverPlayerEntities.size() != 2) return;
+
+        this.bossBarMap.put(serverPlayerEntities.get(1).getUuid(), new CommandBossBar(this.getBossBarId(), serverPlayerEntities.get(1).getDisplayName()));
+        this.bossBarMap.put(serverPlayerEntities.get(0).getUuid(), new CommandBossBar(this.getBossBarId(), serverPlayerEntities.get(0).getDisplayName()));
+
+        serverPlayerEntities.get(0).networkHandler.sendPacket(BossBarS2CPacket.add(this.bossBarMap.get(serverPlayerEntities.get(1).getUuid())));
+        serverPlayerEntities.get(1).networkHandler.sendPacket(BossBarS2CPacket.add(this.bossBarMap.get(serverPlayerEntities.get(0).getUuid())));
+
+        this.broadcastSound(SoundEvents.ENTITY_WITHER_SPAWN);
+    }
+
+    private void pingPlayers() {
+        this.getPlayers().forEach(player -> {
+            this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 80, 0, false, false));
+        });
     }
 
     @Override

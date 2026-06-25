@@ -25,13 +25,25 @@
 
 package com.soc.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
+import com.soc.items.util.DisableOffhandSwapping;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public abstract class TooFastPort {
+public abstract class ServerNetworkHandlerMixin {
+	@Shadow public ServerPlayerEntity player;
+
 	@ModifyConstant(method = "onPlayerMove", constant = @Constant(floatValue = 100f))
 	private float getDefaultMaxPlayerSpeed(float speed) {
 		return 1000f;
@@ -45,5 +57,11 @@ public abstract class TooFastPort {
 	@ModifyConstant(method = "onVehicleMove", constant = @Constant(doubleValue = 100d))
 	private double getMaxPlayerVehicleSpeed(double speed) {
 		return 100f;
+	}
+
+	@Inject(method = "onPlayerAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;setStackInHand(Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;)V", ordinal = 0), cancellable = true)
+	private void socwars_cancelOffhandSwapping(PlayerActionC2SPacket packet, CallbackInfo ci, @Local ItemStack offHandStack) {
+		final ItemStack mainHandStack = this.player.getStackInHand(Hand.MAIN_HAND);
+		if (DisableOffhandSwapping.itemShouldDisable(mainHandStack) || DisableOffhandSwapping.itemShouldDisable(offHandStack)) ci.cancel();
 	}
 }

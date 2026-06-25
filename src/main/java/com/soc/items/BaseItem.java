@@ -36,12 +36,10 @@ public class BaseItem extends Item {
     }
 
     public static void initialise() {
-        ItemGroups.addItemToItemsGroup(PORTABLE_STEPPING_STOOL);
         ItemGroups.addItemToItemsGroup(SHARPENED_POKING_STICK);
         ItemGroups.addItemToItemsGroup(BALUSTRADE);
     }
 
-    public static final Item PORTABLE_STEPPING_STOOL = ModItems.register("portable_stepping_stool", settings -> new BaseItem(settings, Text.translatable("tooltip.portable_stepping_stool")), new Settings().component(ModComponents.DOUBLE_JUMP, true).rarity(Rarity.RARE).maxCount(1));
     public static final Item SHARPENED_POKING_STICK = ModItems.register("sharpened_poking_stick", BaseItem::new, new Settings().maxDamage(150).rarity(Rarity.UNCOMMON).attributeModifiers(AttributeModifiersComponent.builder()
             .add(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_reach"), 1.75, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
             .add(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_damage"), 5, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)

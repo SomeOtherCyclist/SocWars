@@ -50,6 +50,7 @@ public interface ModItems {
         BlockItems.initialise();
         BaseTool.initialise();
         BaseItem.initialise();
+        DoubleJumpItem.initialise();
         JetShoppingTrolley.initialise();
         MorphWand.initialise();
         CommandFunctionItem.initialise();

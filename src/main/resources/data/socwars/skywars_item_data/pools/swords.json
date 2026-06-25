@@ -174,14 +174,8 @@
   },
   {
     "id": "socwars:devastator",
-    "tier_3_weight": 5,
-    "tier_4_weight": 7,
-    "pool": 1
-  },
-  {
-    "id": "socwars:devastator",
-    "tier_3_weight": 5,
-    "tier_4_weight": 7,
+    "tier_3_weight": 2,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
@@ -197,7 +191,7 @@
   },
   {
     "id": "socwars:devastator_prime",
-    "tier_4_weight": 5,
+    "tier_4_weight": 2,
     "pool": 1
   },
   {

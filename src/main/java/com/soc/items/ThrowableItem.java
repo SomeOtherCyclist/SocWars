@@ -6,10 +6,7 @@ import com.soc.items.util.AppendTooltipFunction;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.SpawnThrowableItemFunction;
 import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.TntEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.DragonFireballEntity;
 import net.minecraft.item.Item;
@@ -63,8 +60,8 @@ public class ThrowableItem extends Item {
     public static final Item LIGHTNING_ORB = ModItems.register("lightning_orb", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.LIGHTNING_ORB, world, user, Vec3d.ZERO, 0f, BWFireballEntity::lightningOrbExplosion), world, user, 2.0f)), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
     public static final Item DRAGON_FIREBALL = ModItems.register("dragon_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), world, user, 1.5f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(getWorldTime() / 50f, 1f, 1f)))), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
     public static final Item THROWABLE_TNT = ModItems.register("throwable_tnt", settings -> new ThrowableItem(settings, (world, user) -> {
-        final TntEntity tnt = spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), world, user, 0.6f);
-        tnt.setFuse(40);
+        final TntEntity tnt = spawnEntityWithVelocity(new TntEntity(world, 0d, 0d, 0d, user), world, user, 0.6f);
+        tnt.setFuse(30);
     }), new Settings().useCooldown(0.75f));
     public static final Item ENDER_BEAM = ModItems.register("ender_beam", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new EnderBeamEntity(world, user), world, user, 1.75f)), new Settings().useCooldown(0.75f));
     public static final Item HAND_GRENADE = ModItems.register("hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HandGrenadeEntity(ModEntities.HAND_GRENADE, world, 0.5f, user), world, user, 0.65f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.hand_grenade"))), new Settings().useCooldown(1f).rarity(Rarity.UNCOMMON));

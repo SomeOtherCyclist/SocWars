@@ -25,7 +25,7 @@ public class HideAndSeekTable extends AbstractHidingTable {
 	@Override
 	public void killSeeker() {
 		this.seekerKills++;
-		this.addXp(5000);
+		this.addXp(1000);
 	}
 	@Override
 	public void findPlayer() {

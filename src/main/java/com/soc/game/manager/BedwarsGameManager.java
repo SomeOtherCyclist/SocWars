@@ -33,6 +33,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -206,11 +208,12 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
-        //Probably rewrite this at some point it's a bit gross
-
         final Stack<UUID> playerStack = getRandomPlayerStack(players);
 
-        final Set<DyeColor> teamColours = this.map.getTeamColours();
+        Set<DyeColor> teamColours = this.map.getTeamColours();
+
+        teamColours = teamColours.stream().limit(Math.max(2, (int)Math.ceil(players.size() / 4d))).collect(Collectors.toSet());
+
         final int numTeams = Math.min(spreadRules.numTeams(), teamColours.size());
 
         final ImmutableMultimap.Builder<DyeColor, UUID> builder = ImmutableMultimap.builder();
@@ -224,14 +227,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         }
 
         return builder.build();
-
-//        final ImmutableMultimap.Builder<DyeColor, ServerPlayerEntity> builder2 = ImmutableMultimap.builder();
-//
-//        final DyeColor firstTeam = teamColours.stream().findFirst().get();
-//
-//        players.forEach(player -> builder2.put(firstTeam, player));
-//
-//        return builder2.build();
     }
 
     @Override
@@ -497,10 +492,19 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         this.teamStatsMap.values().forEach(stats -> stats.tick(this.time, this.world));
     }
 
-    @Override
+	@Override
+	protected void respawnPlayer(ServerPlayerEntity player) {
+		super.respawnPlayer(player);
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 3 * 20, 4, false, false));
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 5 * 20, 1, false, false));
+	}
+
+	@Override
     @Nullable
     public Entity getWinningPlayer(@Nullable Entity except) {
-        return null; //TODO: Do this
+        final DyeColor team = except == null ? null : this.getTeam(except.getUuid());
+
+        return this.dbTables.values().stream().filter(table -> this.getTeam(table.getPlayer()) != team).max(Comparator.comparingInt(BedwarsTable::getKills)).map(table -> this.world.getPlayerByUuid(table.getPlayer())).orElse(null);
     }
 
     public void checkTraps() { //TODO: Maybe make this into a default impl in the TrapGame interface
@@ -510,7 +514,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
             final Multimap<DyeColor, ServerPlayerEntity> enemiesInRange = this.getPlayers()
                     .stream()
-                    .filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE))
+                    .filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE) && player.getGameMode().isSurvivalLike())
                     .collect(Multimaps.toMultimap(this::getTeam, Function.identity(), HashMultimap::create));
 
             if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(pos, this, enemiesInRange);

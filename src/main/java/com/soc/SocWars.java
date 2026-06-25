@@ -29,6 +29,7 @@ import com.soc.util.ModItemTags;
 import com.soc.util.Sounds;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,5 +88,7 @@ public class SocWars implements ModInitializer {
 		Database.initialise();
 		CollectiblesManager.initialise();
 		PlayerDataManager.initialise();
+
+		EntitySleepEvents.ALLOW_SETTING_SPAWN.register((player, pos) -> false);
 	}
 }

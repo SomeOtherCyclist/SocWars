@@ -46,21 +46,23 @@ public interface Collectibles {
         final int collectedCollectibles = Collections.frequency(collectibles, true);
         final int numCollectibles = CollectiblesManager.getPersistentState(player.getWorld()).getNumCollectibles();
 
-        final MutableText text = Text.translatable("message.collectibles", collectedCollectibles, numCollectibles).formatted(Formatting.GOLD);
+        final Text header = Text.translatable("message.collectibles", collectedCollectibles, numCollectibles).formatted(Formatting.GOLD);
+        final MutableText message = header.copy();
 
         if (fullList) {
             final DecimalFormat indexFormat = new DecimalFormat("0".repeat(String.valueOf(numCollectibles).length())); //I hate this so much but it works - why couldn't the simple .* regex have worked out
 
             for (int i = 0; i < numCollectibles; i++) {
-                text.append("\n  " + indexFormat.format(i + 1) + ": ").append(Text.translatable(i < collectibles.size() && collectibles.get(i) ? "message.collectibles.collected" : "message.collectibles.not_collected"));
+                message.append("\n  " + indexFormat.format(i + 1) + ": ").append(Text.translatable(i < collectibles.size() && collectibles.get(i) ? "message.collectibles.collected" : "message.collectibles.not_collected"));
             }
         } else {
             for (int i = 0; i < collectibles.size(); i++) {
-                if (collectibles.get(i)) text.append(Text.literal("\n  " + (i + 1)).formatted(Formatting.DARK_GREEN));
+                if (collectibles.get(i)) message.append(Text.literal("\n  " + (i + 1)).formatted(Formatting.DARK_GREEN));
             }
+            message.append("\n").append(header);
         }
 
-        player.sendMessage(text);
+        player.sendMessage(message);
 
         return 0;
     }

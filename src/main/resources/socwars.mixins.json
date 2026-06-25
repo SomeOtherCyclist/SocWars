@@ -19,7 +19,6 @@
     "DepositableEnderChest",
     "DisableAdvancementNotifications",
     "DisableEntityDismount",
-    "DisableSleepingInBeds",
     "DisableTrampling",
     "DoubleJump",
     "DropSelectedItemOnDropTrigger",
@@ -41,6 +40,7 @@
     "MostRecentDamage",
     "NoBlockDropTag",
     "NoMorphedDoorCollisions",
+    "OnBedUsedTrigger",
     "OnBlockPlacedEventTrigger",
     "OnChestOpenedEventTrigger",
     "OnCraftingTableOpenEventTrigger",
@@ -54,9 +54,10 @@
     "OnUnequipSurvivalInventoryFix",
     "ProtectSignBlock",
     "SpongeSmokescreen",
-    "TooFastPort",
+    "ServerNetworkHandlerMixin",
     "UnequipArmourOnClear",
     "UseDurationScale",
+    "VanillaExplosionBlockProtection",
     "VelocityPacketUnlimit"
   ],
   "injectors": {

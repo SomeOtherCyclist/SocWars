@@ -230,8 +230,9 @@ public abstract class AbstractGameMap {
 
     public static Stack<UUID> getRandomPlayerStack(Collection<ServerPlayerEntity> players) {
         final Stack<UUID> playerStack = new Stack<>();
-        Collections.shuffle(new ArrayList<>(players));
-        for (ServerPlayerEntity player : players) {
+        final List<ServerPlayerEntity> randomPlayers = new ArrayList<>(players);
+        Collections.shuffle(randomPlayers);
+        for (ServerPlayerEntity player : randomPlayers) {
             playerStack.add(player.getUuid());
         }
 
@@ -378,7 +379,7 @@ public abstract class AbstractGameMap {
     protected abstract Map<String, RangedIntField> getMapFields();
 
     public void applyFields(Map<String, Integer> fields) {
-        fields.forEach((key, value) -> this.getMapFields().get(key).apply(this, value));
+        this.getMapFields().forEach((key, field) -> field.apply(this, fields.get(key)));
     }
 
     public static void setMinBuildY(AbstractGameMap map, int minBuildY) {

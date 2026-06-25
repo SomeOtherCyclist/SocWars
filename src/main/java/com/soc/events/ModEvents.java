@@ -93,4 +93,14 @@ public interface ModEvents {
 
         return allowEvent;
     });
+
+    Event<OnBedUsed> ON_BED_USED = EventFactory.createArrayBacked(OnBedUsed.class, listeners -> (player, world, pos) -> {
+        boolean allowEvent = true;
+
+        for (OnBedUsed listener : listeners) {
+            allowEvent &= listener.onUseBed(player, world, pos);
+        }
+
+        return allowEvent;
+    });
 }

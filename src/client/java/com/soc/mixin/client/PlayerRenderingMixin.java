@@ -61,7 +61,7 @@ abstract class PlayerRenderingMixin {
 	private void renderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, BlockState morph) {
 		matrices.push();
 
-		if (state.isInSneakingPose) {
+		if (state.isInSneakingPose && !morph.isReplaceable()) {
 			final Vec3d blockOffset = morph.getModelOffset(new BlockPos((int)state.x, (int)state.y, (int)state.z));
 
 			final double xOffset = state.x >= 0d ? -state.x % 1d : -state.x % 1d - 1d;

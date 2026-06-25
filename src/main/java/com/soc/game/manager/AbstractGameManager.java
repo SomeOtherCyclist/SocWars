@@ -203,6 +203,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
         GamesManager.getInstance().endGame(this.gameId);
 
+        this.clearPlayerInventoriesAndEnderChests();
+
         this.getPlayers().forEach(this::sendLeaveGamePayload);
     }
 
@@ -293,6 +295,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return false;
     }
 
+    public boolean onBedUsed(ServerPlayerEntity player, World world, BlockPos pos) {
+        return false;
+    }
+
     public boolean onPowerupPickedUp(ServerPlayerEntity player) {
         return false;
     }
@@ -321,7 +327,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public final Collection<ServerPlayerEntity> getPlayers(DyeColor team, Predicate<ServerPlayerEntity> predicate) {
-        return this.getPlayers(team).stream().filter(predicate).toList();
+        return this.getPlayers(team).stream().filter(serverPlayer -> predicate.test(serverPlayer) && serverPlayer.getGameMode().isSurvivalLike()).toList();
     }
 
     public final Collection<ServerPlayerEntity> getSpectators() {
@@ -634,4 +640,16 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     @Nullable
     public abstract Entity getWinningPlayer(@Nullable Entity except);
+
+    protected void addPlayersToLocators() {
+        for (ServerPlayerEntity player : this.getPlayers()) {
+            this.world.getWaypointHandler().addPlayer(player);
+        }
+    }
+
+    protected void removePlayersFromLocators() {
+        for (ServerPlayerEntity player : this.getPlayers()) {
+            this.world.getWaypointHandler().removePlayer(player);
+        }
+    }
 }

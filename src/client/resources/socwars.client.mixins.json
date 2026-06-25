@@ -8,6 +8,7 @@
     "BlockProtectionRenderOutline",
     "CancelItemInteractionClient",
     "CollectibleBlockEntitySparkles",
+    "DisableSwapOffhandInput",
     "DragonFireballTooltip",
     "FovTweaks",
     "GamePlayerList",

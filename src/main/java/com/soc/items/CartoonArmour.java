@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -60,7 +61,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
                 case 2 -> wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, -1, 0, false, false));
                 case 3 -> world.playSound(null, wearer.getX(), wearer.getY(), wearer.getZ(), SoundEvents.ENTITY_ITEM_BREAK.value(), SoundCategory.PLAYERS);
                 case 4 -> {
-                    final PlayerEntity other = world.getClosestPlayer(wearer.getX(), wearer.getY(), wearer.getZ(), 100f, entity -> entity != wearer);
+                    final PlayerEntity other = world.getClosestPlayer(wearer.getX(), wearer.getY(), wearer.getZ(), 100f, entity -> entity != wearer && entity instanceof ServerPlayerEntity serverPlayer && serverPlayer.getGameMode().isSurvivalLike());
                     if (other != null) {
                         swapPositions(wearer, other);
                     } else {
