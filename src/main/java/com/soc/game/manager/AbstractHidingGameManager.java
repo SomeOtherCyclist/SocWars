@@ -33,6 +33,12 @@ import static com.soc.game.map.AbstractHidingGameMap.*;
 import static com.soc.lib.SocWarsLib.ifNotNull;
 
 public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMap, TABLE extends AbstractHidingTable, EVENT extends AbstractHidingGameManager<?, ?, ?>> extends AbstractGameManager<MAP, TABLE, EVENT> {
+	static {
+		ON_GAME_END.register(((player, immediate) -> {
+			player.getWorld().getWaypointHandler().addPlayer(player);
+		}));
+	}
+
 	protected AbstractHidingGameManager(GameType gameType, ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
 		super(gameType, world, players, spreadRules, gameId);
 	}
@@ -50,8 +56,6 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 	@SuppressWarnings("MethodDoesntCallSuperMethod")
 	public void endGame(boolean immediate) {
 		this.endGame(immediate, SEEKER_COLOUR);
-
-		this.addPlayersToLocators();
 	}
 
 	protected void endGame(boolean immediate, DyeColor winningTeam) {

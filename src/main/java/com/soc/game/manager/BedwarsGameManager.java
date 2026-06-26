@@ -80,18 +80,18 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     @SuppressWarnings("DataFlowIssue")
     private static final Map<ComponentType<?>, TriConsumer<ItemStack, ServerPlayerEntity, BedwarsGameManager>> ITEM_PICKUP_COMPONENT_FUNCTION_MAP = Map.of(
             ModComponents.RESOURCE_SPLIT, (stack, player, manager) -> {
-                    stack.remove(ModComponents.RESOURCE_SPLIT);
-                    if (manager.map.isWithinSplitRange(player)) {
-                        manager.getPlayers().stream().filter(pickUpPlayer -> manager.map.isWithinSplitRange(pickUpPlayer) && pickUpPlayer.isTeammate(player) && pickUpPlayer != player).forEach(otherPlayer -> {
-                            final ItemStack giveStack = stack.copy();
-                            manager.onItemPickup(otherPlayer, giveStack);
-                            otherPlayer.giveOrDropStack(giveStack);
-                        });
-                    }
+                stack.remove(ModComponents.RESOURCE_SPLIT);
+                if (manager.map.isWithinSplitRange(player)) {
+                    manager.getPlayers().stream().filter(pickUpPlayer -> manager.map.isWithinSplitRange(pickUpPlayer) && pickUpPlayer.isTeammate(player) && pickUpPlayer != player).forEach(otherPlayer -> {
+                        final ItemStack giveStack = stack.copy();
+                        manager.onItemPickup(otherPlayer, giveStack);
+                        otherPlayer.giveOrDropStack(giveStack);
+                    });
+                }
             },
             ModComponents.RESOURCE_COUNTED, (stack, player, manager) -> {
-                    stack.remove(ModComponents.RESOURCE_COUNTED);
-                    manager.getDbTable(player).collectItem(stack);
+                stack.remove(ModComponents.RESOURCE_COUNTED);
+                manager.getDbTable(player).collectItem(stack);
             },
             ModComponents.GENERATOR_REFERENCE, (stack, player, manager) -> {
                 manager.map.getResourceGenerator(stack.get(ModComponents.GENERATOR_REFERENCE)).ifPresent(ResourceGenerator::checkItemCap);

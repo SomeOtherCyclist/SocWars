@@ -17,6 +17,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -154,14 +155,14 @@ public class PlayerData {
         return this.ownedKits.contains(name);
     }
 
-    public void setMorph(World world, BlockState morph, PlayerEntity player) {
-        this.morph = morph == null ? null : Morph.of(morph, world);
+    public void setMorph(@Nullable BlockState morph, PlayerEntity player) {
+        this.morph = morph == null ? null : Morph.of(morph, player.getWorld());
         if (this.morph == null) {
             Objects.requireNonNull(player.getAttributeInstance(EntityAttributes.MAX_HEALTH)).removeModifier(Morph.HEALTH_MODIFIER_ID);
         } else {
             Objects.requireNonNull(player.getAttributeInstance(EntityAttributes.MAX_HEALTH)).overwritePersistentModifier(new EntityAttributeModifier(Morph.HEALTH_MODIFIER_ID, this.morph.health() - 20f, EntityAttributeModifier.Operation.ADD_VALUE));
         }
-        ifNotNull(world.getServer(), PlayerDataManager::sendDataToAll);
+        ifNotNull(player.getServer(), PlayerDataManager::sendDataToAll);
     }
 
     public Morph getMorph() {

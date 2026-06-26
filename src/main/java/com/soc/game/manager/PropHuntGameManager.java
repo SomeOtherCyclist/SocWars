@@ -29,9 +29,16 @@ import java.util.function.Function;
 
 import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
+import static com.soc.items.MorphWand.clearMorph;
 import static com.soc.lib.SocWarsLib.*;
 
 public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameMap, PropHuntTable, PropHuntGameManager> {
+	static {
+		ON_GAME_END.register((player, immediate) -> {
+			clearMorph(player);
+		});
+	}
+
 	protected PropHuntGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules, int gameId) {
 		super(GameType.HIDE_AND_SEEK, world, players, spreadRules, gameId);
 	}
@@ -103,12 +110,6 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	@Override
 	protected Function<UUID, PropHuntTable> dbTableBuilder() {
 		return PropHuntTable::new;
-	}
-
-	@Override
-	public void endGame(boolean immediate) {
-		this.removePlayersMorphs();
-		super.endGame(immediate);
 	}
 
 	@Override

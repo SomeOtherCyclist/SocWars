@@ -68,21 +68,21 @@ public class MorphWand extends Item implements CancelsBlockInteraction, OnAttack
 
 	@Override
 	public void onAttackButtonPressed(PlayerEntity player, ItemStack stack) {
-		rotateMorph(player.getWorld(), player, player.isSneaking());
+		rotateMorph(player, player.isSneaking());
 	}
 
 	private static ActionResult use(World world, ServerPlayerEntity player, Hand hand, @Nullable BlockState blockState) {
 		if (player.isSneaking()) {
-			return clearMorph(world, player);
+			return clearMorph(player);
 		} else if (blockState != null) {
-			final ActionResult result = attemptMorph(world, player, blockState);
+			final ActionResult result = attemptMorph(player, blockState);
 			if (result.isAccepted()) player.getItemCooldownManager().set(player.getStackInHand(hand), 15 * 20);
 			return result;
 		}
 		return ActionResult.FAIL;
 	}
 
-	private static ActionResult attemptMorph(World world, ServerPlayerEntity player, BlockState blockState) {
+	private static ActionResult attemptMorph(ServerPlayerEntity player, BlockState blockState) {
 		if (blockState.isIn(ModBlockTags.DISALLOW_MORPH)) {
 			player.sendMessage(Text.literal("Nice try ;)"));
 			return ActionResult.FAIL;
@@ -90,24 +90,24 @@ public class MorphWand extends Item implements CancelsBlockInteraction, OnAttack
 
 		final boolean allowMorph = ModEvents.ON_PLAYER_MORPHED.invoker().onPlayerMorphed(player, blockState);
 		if (allowMorph) {
-			PlayerDataManager.getPlayerData(player).setMorph(world, blockState, player);
+			PlayerDataManager.getPlayerData(player).setMorph(blockState, player);
 			return ActionResult.SUCCESS;
 		} else {
 			return ActionResult.FAIL;
 		}
 	}
 
-	private static ActionResult clearMorph(World world, ServerPlayerEntity serverPlayer) {
-		PlayerDataManager.getPlayerData(serverPlayer).setMorph(world, null, serverPlayer);
+	public static ActionResult clearMorph(ServerPlayerEntity serverPlayer) {
+		PlayerDataManager.getPlayerData(serverPlayer).setMorph(null, serverPlayer);
 		return ActionResult.SUCCESS;
 	}
 
-	private static void rotateMorph(World world, PlayerEntity player, boolean reverse) {
+	private static void rotateMorph(PlayerEntity player, boolean reverse) {
 		final PlayerData playerData = PlayerDataManager.getSideLocalPlayerData(player);
 		final Morph morph = playerData.getMorph();
 
 		if (morph != null) CYCLING_PROPERTIES.stream().filter(morph::hasProperty).findFirst().ifPresent(property -> {
-			playerData.setMorph(world, AccessDebugStickCycle.cycle(morph.blockState(), property, reverse), player);
+			playerData.setMorph(AccessDebugStickCycle.cycle(morph.blockState(), property, reverse), player);
 			player.getItemCooldownManager().set(player.getStackInHand(Hand.OFF_HAND), 3 * 20);
 		});
 	}

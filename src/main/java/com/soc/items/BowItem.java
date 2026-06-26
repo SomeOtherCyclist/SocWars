@@ -71,7 +71,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
                     this.discard();
-                    Vec3d centre = target.getPos();
+                    final Vec3d centre = target.getPos();
                     SphereExplosion.explode(world, centre, 4f, 1.5f, 0.7f, 0.7f, true, user, null);
                 }
 
@@ -79,7 +79,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 protected void onBlockHit(BlockHitResult blockHitResult) {
                     super.onBlockHit(blockHitResult);
                     this.discard();
-                    Vec3d centre = blockHitResult.getPos();
+                    final Vec3d centre = blockHitResult.getPos();
                     SphereExplosion.explode(world, centre, 4.5f, 1.5f, 0.9f, 0.8f, true, user, null);
                 }
     }, stack -> 1.5f, stack -> 2.75f), new Settings()

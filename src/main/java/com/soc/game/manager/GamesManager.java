@@ -31,7 +31,7 @@ public class GamesManager {
     private ServerWorld world;
     private MatchmakingQueue queue;
 
-    private final ArrayList<AbstractGameManager<?, ?, ?>> games = new ArrayList<>();
+    private final List<AbstractGameManager<?, ?, ?>> games = new ArrayList<>();
     private final ConcurrentHashMap<UUID, Integer> playerGameLookup = new ConcurrentHashMap<>();
 
     private GamesManager() {
@@ -54,6 +54,7 @@ public class GamesManager {
         ServerTickEvents.START_SERVER_TICK.register(this::tick);
 
         ServerPlayerEvents.LEAVE.register(player -> {
+            this.getGame(player).ifPresent(game -> game.onPlayerLeave(player));
             if (!player.getWorld().getServer().isDedicated()) this.endAllGames();
         });
         ServerPlayerEvents.JOIN.register(player -> {
@@ -262,5 +263,9 @@ public class GamesManager {
     public boolean disallowSinglePlayer(GameType gameType) {
         this.queue.disallowSinglePlayer(gameType);
         return true;
+    }
+
+    public boolean isGameWithUuidRunning(UUID gameUuid) {
+        return this.games.stream().anyMatch(game -> game != null && game.getGameUuid().equals(gameUuid));
     }
 }

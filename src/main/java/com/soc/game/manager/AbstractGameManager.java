@@ -7,6 +7,7 @@ import com.soc.database.stats.BaseGameTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
+import com.soc.items.MorphWand;
 import com.soc.lib.Events;
 import com.soc.lib.ScoreboardHelper;
 import com.soc.networking.s2c.EventQueuePayload;
@@ -15,6 +16,8 @@ import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
 import com.soc.player.PlayerDataManager;
 import com.soc.util.ModBlockTags;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -60,10 +63,45 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.*;
 
 public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE extends BaseGameTable, EVENT extends AbstractGameManager<?, ?, ?>> {
+    protected interface OnGameEnd {
+        void onGameEnd(ServerPlayerEntity player, boolean immediate);
+
+        default void onGameEnd(ServerPlayerEntity player) {
+            this.onGameEnd(player, true);
+        }
+    }
+
+    /// Event intended for resetting player state after a game ends. Designed in this static way to also allow for players to be reset outside of games in the event that they rejoin after a game has ended
+    protected static Event<OnGameEnd> ON_GAME_END = EventFactory.createArrayBacked(OnGameEnd.class, listeners -> (player, immediate) -> {
+        for (OnGameEnd listener : listeners) {
+            listener.onGameEnd(player, immediate);
+        }
+    });
+
+    static {
+        ON_GAME_END.register((player, immediate) -> {
+            player.changeGameMode(GameMode.SPECTATOR);
+
+            player.getInventory().clear();
+            player.getEnderChestInventory().clear();
+
+            if (immediate) {
+                sendPlayerToLobby(player);
+            } else {
+                Events.getInstance().scheduleEvent(() -> sendPlayerToLobby(player), 20 * 10);
+            }
+        });
+    }
+
+    public static void resetPlayerState(ServerPlayerEntity player) {
+        ON_GAME_END.invoker().onGameEnd(player);
+    }
+
     public static final int KILLZONE_Y_OFFSET = -35;
 
     private final GameType gameType;
     protected final int gameId;
+    private final UUID gameUuid;
 
     protected final ServerWorld world;
     protected final List<UUID> spectators;
@@ -80,6 +118,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     protected AbstractGameManager(GameType gameType, ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
         this.gameType = gameType;
         this.gameId = gameId;
+        this.gameUuid = UUID.randomUUID();
         this.world = world;
         this.spectators = new ArrayList<>();
         this.map = this.buildMap();
@@ -181,15 +220,16 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     @MustBeInvokedByOverriders
     public void endGame(boolean immediate) {
+        for (ServerPlayerEntity player : this.getPlayers()) {
+            ON_GAME_END.invoker().onGameEnd(player, immediate);
+        }
+
+        for (ServerPlayerEntity player : this.getSpectators()) {
+            ON_GAME_END.invoker().onGameEnd(player, immediate);
+        }
+
         this.removeTeams();
         this.map.destroyMap(immediate);
-        this.setGameMode(GameMode.SPECTATOR);
-
-        if (immediate) {
-            this.sendPlayersToLobby();
-        } else {
-            Events.getInstance().scheduleEvent(this::sendPlayersToLobby, 20 * 10);
-        }
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
             ifNotNull(this.world.getPlayerByUuid(table.getPlayer()), player -> {
@@ -202,8 +242,6 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         }));
 
         GamesManager.getInstance().endGame(this.gameId);
-
-        this.clearPlayerInventoriesAndEnderChests();
 
         this.getPlayers().forEach(this::sendLeaveGamePayload);
     }
@@ -279,8 +317,13 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         }
     }
 
+    public void onPlayerLeave(ServerPlayerEntity player) {
+        OfflinePlayerTracker.onPlayerLeaveGame(player, this.getGameUuid());
+    }
+
     public void onPlayerJoin(ServerPlayerEntity player) {
         this.sendJoinGamePayload(player);
+        OfflinePlayerTracker.onPlayerRejoinGame(player);
     }
 
     public boolean onCraftingTableOpened(ServerPlayerEntity player, BlockPos pos) {
@@ -501,14 +544,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         //player.getHungerManager().setSaturationLevel(5f);
     }
 
-    protected final void sendPlayersToLobby() {
-        this.getPlayers().forEach(this::sendPlayerToLobby);
-        this.getSpectators().forEach(this::sendPlayerToLobby);
-    }
-
-    protected final void sendPlayerToLobby(ServerPlayerEntity player) {
-        final Vec3d pos = mapIfNotNull(player.getRespawn(), ServerPlayerEntity.Respawn::pos, this.world.getSpawnPos()).toCenterPos();
-        player.requestTeleport(pos.x + this.world.random.nextFloat() * 3f, pos.y, pos.z + this.world.random.nextFloat() * 3f);
+    protected static void sendPlayerToLobby(ServerPlayerEntity player) {
+        final Vec3d pos = mapIfNotNull(player.getRespawn(), ServerPlayerEntity.Respawn::pos, player.getWorld().getSpawnPos()).toCenterPos();
+        player.requestTeleport(pos.x + player.getRandom().nextFloat() * 3f, pos.y, pos.z + player.getWorld().random.nextFloat() * 3f);
 
         player.changeGameMode(GameMode.ADVENTURE);
         healPlayer(player);
@@ -541,7 +579,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected final void removePlayersMorphs() {
-        this.getPlayers().forEach(player -> PlayerDataManager.getPlayerData(player).setMorph(this.world, null, player));
+        this.getPlayers().forEach(MorphWand::clearMorph); //TODO: Maybe move this to a more sensible location
     }
 
     protected final void clearPlayerInventoriesAndEnderChests() {
@@ -557,6 +595,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected static void removePlayerAttributes(ServerPlayerEntity player) {
         player.getAttributes().getAttributesToSend().forEach(instance -> instance.getModifiers().forEach(instance::removeModifier));
+    }
+
+    public void sendPlayersToLobby() {
+        this.getPlayers().forEach(AbstractGameManager::sendPlayerToLobby);
+        this.getSpectators().forEach(AbstractGameManager::sendPlayerToLobby);
     }
 
     protected void tickKillzone() {
@@ -641,15 +684,13 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     @Nullable
     public abstract Entity getWinningPlayer(@Nullable Entity except);
 
-    protected void addPlayersToLocators() {
-        for (ServerPlayerEntity player : this.getPlayers()) {
-            this.world.getWaypointHandler().addPlayer(player);
-        }
-    }
-
     protected void removePlayersFromLocators() {
         for (ServerPlayerEntity player : this.getPlayers()) {
             this.world.getWaypointHandler().removePlayer(player);
         }
     }
+
+	public UUID getGameUuid() {
+		return this.gameUuid;
+	}
 }
