@@ -19,7 +19,7 @@ public class OfflinePlayerTracker extends PersistentState {
 	public static void initialise() {
 		ServerPlayerEvents.JOIN.register(player -> {
 			final OfflinePlayerTracker tracker = getPersistentState(player.getWorld());
-			if (!GamesManager.getInstance().isGameWithUuidRunning(tracker.playerGameMap.get(player.getUuid()))) {
+			if (tracker.playerGameMap.containsKey(player.getUuid()) && !GamesManager.getInstance().isGameWithUuidRunning(tracker.playerGameMap.get(player.getUuid()))) {
 				resetPlayerState(player);
 			}
 		});
@@ -48,7 +48,7 @@ public class OfflinePlayerTracker extends PersistentState {
 	}
 
 	private OfflinePlayerTracker(Map<UUID, UUID> playerGameMap) {
-		this.playerGameMap = playerGameMap;
+		this.playerGameMap = new HashMap<>(playerGameMap);
 	}
 
 	private OfflinePlayerTracker() {

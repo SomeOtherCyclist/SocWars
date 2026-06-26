@@ -8,6 +8,7 @@ import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModEntities;
 import com.soc.events.ModEvents;
 import com.soc.game.manager.GamesManager;
+import com.soc.game.manager.OfflinePlayerTracker;
 import com.soc.game.manager.bedwars.traps.Abilities;
 import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.game.manager.bedwars.tickfunctions.TickFunctions;
@@ -88,6 +89,7 @@ public class SocWars implements ModInitializer {
 		Database.initialise();
 		CollectiblesManager.initialise();
 		PlayerDataManager.initialise();
+		OfflinePlayerTracker.initialise();
 
 		EntitySleepEvents.ALLOW_SETTING_SPAWN.register((player, pos) -> false);
 	}
