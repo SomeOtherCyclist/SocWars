@@ -55,7 +55,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 	@Override
 	@SuppressWarnings("MethodDoesntCallSuperMethod")
 	public void endGame(boolean immediate) {
-		this.endGame(immediate, SEEKER_COLOUR);
+		this.endGame(immediate, HIDER_COLOUR);
 	}
 
 	protected void endGame(boolean immediate, DyeColor winningTeam) {
@@ -100,7 +100,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 		if (this.getTeam(player) == HIDER_COLOUR) {
 			this.onHiderDeath(player, source, amount);
-		} else if (amount < 100000f){
+		} else if (amount < 100000f) {
 			this.onSeekerDeath(player, source, amount);
 		}
 
