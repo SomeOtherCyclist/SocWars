@@ -1,22 +1,15 @@
 package com.soc.items.util;
 
 import com.soc.SocWars;
-import com.soc.effects.util.ModEffects;
 import com.soc.items.*;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
-import java.lang.reflect.Field;
 import java.util.function.Function;
-
-import static com.soc.items.util.ItemGroups.addItemToItemsGroup;
 
 public interface ModItems {
     static void initialise() {
@@ -53,7 +46,7 @@ public interface ModItems {
         DoubleJumpItem.initialise();
         JetShoppingTrolley.initialise();
         MorphWand.initialise();
-        CommandFunctionItem.initialise();
+        BothClickItem.initialise();
     }
 
     static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

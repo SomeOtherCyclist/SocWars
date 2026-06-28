@@ -12,12 +12,16 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
+
+import static oshi.util.FormatUtil.roundToInt;
 
 public record Morph(BlockState blockState, Box boundingBox, float health) {
 	public static final Codec<Morph> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -66,5 +70,10 @@ public record Morph(BlockState blockState, Box boundingBox, float health) {
 
 	private static double getBoxVolume(Box box) {
 		return box.getLengthX() * box.getLengthY() * box.getLengthZ();
+	}
+
+	public boolean shouldSnap(boolean isSneaking, BlockView world, BlockPos pos) {
+		final BlockState stateAtPos = world.getBlockState(pos);
+		return isSneaking && !this.blockState.isReplaceable() && stateAtPos.isReplaceable();
 	}
 }

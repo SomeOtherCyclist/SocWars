@@ -19,8 +19,6 @@ abstract class EntityGetBoundingBox {
 
 	@Shadow public abstract Vec3d getPos();
 
-	@Shadow public abstract boolean isSneaking();
-
 	@Shadow public abstract boolean isInSneakingPose();
 
 	@Inject(method = "getBoundingBox", at = @At("HEAD"), cancellable = true)

@@ -29,7 +29,7 @@ import static com.soc.items.components.ModComponents.EXPON_COMPONENT;
 import static com.soc.lib.SocWarsLib.damageSource;
 
 public class Expon extends Item {
-    public static final long DAMAGE_RESET_TIME = 2 * 20;
+    public static final long DAMAGE_RESET_TIME = 4 * 20;
 
     public Expon(Settings settings) {
         super(settings);
@@ -65,7 +65,7 @@ public class Expon extends Item {
         if (component == null) return;
 
         final ServerWorld world = (ServerWorld)target.getWorld();
-        final float damage = (1 << component.damageStage()) * 0.5f;
+        final float damage = (1 << component.damageStage());
         if (attacker instanceof PlayerEntity playerEntity) {
             playerEntity.sendMessage(Text.of(String.valueOf(damage)), true); //maybe make a hud in 1.1?
         }

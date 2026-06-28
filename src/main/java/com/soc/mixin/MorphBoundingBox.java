@@ -1,5 +1,6 @@
 package com.soc.mixin;
 
+import com.soc.player.Morph;
 import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,16 +16,17 @@ abstract class MorphBoundingBox extends EntityGetBoundingBox {
 	@Override
 	protected void socwars_getBoundingBox(CallbackInfoReturnable<Box> cir) {
 		final PlayerData playerData = PlayerDataManager.getSideLocalPlayerData((PlayerEntity)(Object)this);
-		if (playerData != null && playerData.getMorph() != null) {
-			final Vec3d thisPos = this.getPos();
+		if (playerData == null) return;
 
-			final Box boundingBox = playerData.getMorph().boundingBox();
+		final Morph morph = playerData.getMorph();
+		if (morph == null) return;
 
-			cir.setReturnValue(
-					this.isInSneakingPose() ?
-					boundingBox.offset(floor(thisPos.x), thisPos.y, floor(thisPos.z)) :
-					boundingBox.offset(thisPos.x - 0.5d, thisPos.y, thisPos.z - 0.5d)
-			);
-		}
+		final Vec3d thisPos = this.getPos();
+		final Box boundingBox = morph.boundingBox();
+
+		cir.setReturnValue(morph.shouldSnap(this.isInSneakingPose(), this.getWorld(), this.getBlockPos()) ?
+				boundingBox.offset(floor(thisPos.x), thisPos.y, floor(thisPos.z)) :
+				boundingBox.offset(thisPos.x - 0.5d, thisPos.y, thisPos.z - 0.5d)
+		);
 	}
 }

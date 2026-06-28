@@ -51,18 +51,21 @@ abstract class PlayerRenderingMixin {
 
 		final PlayerEntity player = MinecraftClient.getInstance().player;
 		if (morph != null && !thisEntity.isSpectator()) {
-			this.renderMorph(x, y, z, matrices, vertices, light, playerState, morph.blockState());
+			this.renderMorph(x, y, z, matrices, vertices, light, playerState, morph);
 
 			if (!((player.isCreative() && (this.camera.isThirdPerson() || thisEntity != player)) || player.isSpectator())) ci.cancel();
 		}
 	}
 
 	@Unique
-	private void renderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, BlockState morph) {
+	private void renderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, Morph morph) {
 		matrices.push();
 
-		if (state.isInSneakingPose && !morph.isReplaceable()) {
-			final Vec3d blockOffset = morph.getModelOffset(new BlockPos((int)state.x, (int)state.y, (int)state.z));
+		if (MinecraftClient.getInstance().world == null) return;
+
+		final BlockPos pos = BlockPos.ofFloored(state.x, state.y, state.z);
+		if (morph.shouldSnap(state.isInSneakingPose, MinecraftClient.getInstance().world, pos)) {
+			final Vec3d blockOffset = morph.blockState().getModelOffset(pos);
 
 			final double xOffset = state.x >= 0d ? -state.x % 1d : -state.x % 1d - 1d;
 			final double yOffset = state.y >= -0.5d ? (-state.y - 0.5d) % 1d + 0.5d : (-state.y - 0.5d) % 1d - 0.5d;
@@ -72,7 +75,7 @@ abstract class PlayerRenderingMixin {
 			matrices.translate(x - 0.5d, y, z - 0.5d);
 		}
 
-		MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(morph, matrices, vertices, light, getOverlay(state, 0f));
+		MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(morph.blockState(), matrices, vertices, light, getOverlay(state, 0f));
 
 		matrices.pop();
 	}

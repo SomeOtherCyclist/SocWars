@@ -60,6 +60,8 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 
 	protected void endGame(boolean immediate, DyeColor winningTeam) {
 		this.getPlayers().forEach(player -> {
+			player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 5 * 20, 0, false, false));
+
 			final DyeColor playerTeam = this.getTeam(player);
 			final String playerTeamSuffix = playerTeam == SEEKER_COLOUR ? "seeker" : "hider";
 
