@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class SkywarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "swmap";
-    private static final int DEFAULT_GAME_DURATION = 15 * 60 * 20;
+    private static final int DEFAULT_GAME_DURATION = 20 * 60 * 20;
     public static final Map<String, RangedIntField> MAP_FIELDS = buildFields(
             new RangedIntField("game_duration", 0, 24 * 60 * 60, AbstractGameMap::setGameDurationSeconds)
     );

@@ -332,8 +332,8 @@ public final class SocWarsLib {
     }
 
     public static LivingEntity randomHostileMob(ServerWorld world, Vec3d pos) {
-        int index = world.random.nextBetween(0, 20);
-        if (index == 20 && world.random.nextFloat() < 0.4f) index = world.random.nextBetween(0, 19); //Hacky way to make the warden options 2% chance
+        int index = world.random.nextBetween(0, 19);
+        if (index == 20 && world.random.nextFloat() < 0.4f) index = world.random.nextBetween(0, 18); //Hacky way to make the warden options 2% chance
 
         final LivingEntity mob = switch (index) {
             case 0 -> new ZombieEntity(EntityType.ZOMBIE, world);
@@ -352,19 +352,22 @@ public final class SocWarsLib {
             }
             case 10 -> new WitherSkeletonEntity(EntityType.WITHER_SKELETON, world);
             case 11 -> new BlazeEntity(EntityType.BLAZE, world);
-            case 12 -> new EvokerEntity(EntityType.EVOKER, world);
-            case 13 -> new IllusionerEntity(EntityType.ILLUSIONER, world);
-            case 14 -> new ElderGuardianEntity(EntityType.ELDER_GUARDIAN, world);
-            case 15 -> new GiantEntity(EntityType.GIANT, world);
-            case 16 -> new EndermiteEntity(EntityType.ENDERMITE, world);
-            case 17 -> new SilverfishEntity(EntityType.SILVERFISH, world);
-            case 18 -> new HuskEntity(EntityType.HUSK, world);
-            case 19 -> new StrayEntity(EntityType.STRAY, world);
-            case 20 -> new WardenEntity(EntityType.WARDEN, world);
-            default -> throw new IllegalStateException("RNG set up incorrectly, leading to an invalid switch case");
+            case 12 -> new IllusionerEntity(EntityType.ILLUSIONER, world);
+            case 13 -> new ElderGuardianEntity(EntityType.ELDER_GUARDIAN, world);
+            case 14 -> new GiantEntity(EntityType.GIANT, world);
+            case 15 -> new EndermiteEntity(EntityType.ENDERMITE, world);
+            case 16 -> new SilverfishEntity(EntityType.SILVERFISH, world);
+            case 17 -> new HuskEntity(EntityType.HUSK, world);
+            case 18 -> new StrayEntity(EntityType.STRAY, world);
+            case 19 -> new WardenEntity(EntityType.WARDEN, world);
+            default -> null;
         };
 
-        mob.setPosition(pos);
+        if (mob == null) {
+            SocWars.LOGGER.error("Invalid index for random mob: {}", index);
+        } else {
+            mob.setPosition(pos);
+        }
 
         return mob;
     }

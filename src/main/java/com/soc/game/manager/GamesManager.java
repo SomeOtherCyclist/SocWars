@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.registry.tag.BlockTags;
@@ -28,7 +29,7 @@ import static java.util.stream.IntStream.range;
 public class GamesManager {
     private static final GamesManager INSTANCE = new GamesManager();
 
-    private ServerWorld world;
+    private MinecraftServer server;
     private MatchmakingQueue queue;
 
     private final List<AbstractGameManager<?, ?, ?>> games = new ArrayList<>();
@@ -46,8 +47,8 @@ public class GamesManager {
 
     public void initialiseEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            this.world = server.getOverworld();
-            this.queue = new MatchmakingQueue(this.world, this::finishQueue);
+            this.server = server;
+            this.queue = new MatchmakingQueue(this.server, this::finishQueue);
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.endAllGames());
 
@@ -95,6 +96,13 @@ public class GamesManager {
         ModEvents.ON_BED_USED.register((player, world, pos) ->
                 this.getGame(player).map(game -> game.onBedUsed(player, world, pos)).orElse(true)
         );
+        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, player, parameters) -> {
+            this.getGame(player).ifPresentOrElse(
+                    game -> game.onChatMessage(message, player, parameters),
+                    () -> this.getPlayersNotInGame().forEach(otherPlayer -> otherPlayer.sendMessage(message.getContent(), false))
+            );
+            return false;
+        });
     }
 
     private void endAllGames() {
@@ -205,11 +213,11 @@ public class GamesManager {
     }
 
     public List<ServerPlayerEntity> getPlayersNotInQueue() {
-        return this.world.getPlayers().stream().filter(player -> !this.queue.isPlayerInQueue(player)).toList();
+        return this.server.getPlayerManager().getPlayerList().stream().filter(player -> !this.queue.isPlayerInQueue(player)).toList();
     }
 
     public List<ServerPlayerEntity> getPlayersNotInGame() {
-        return this.world.getPlayers().stream().filter(player -> !this.playerGameLookup.containsKey(player.getUuid())).toList();
+        return this.server.getPlayerManager().getPlayerList().stream().filter(player -> !this.playerGameLookup.containsKey(player.getUuid())).toList();
     }
 
     private boolean finishQueue(GameType queueType, Set<ServerPlayerEntity> players) {
@@ -221,11 +229,11 @@ public class GamesManager {
 
         try {
             final AbstractGameManager<?, ?, ?> game = switch (queueType) {
-                case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
-                case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
-                case PROP_HUNT -> new PropHuntGameManager(this.world, players, null, gameId);
-                case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.world, players, null, gameId);
-                case DUELS -> new DuelsGameManager(this.world, players, null, gameId);
+                case SKYWARS -> new SkywarsGameManager(this.server.getOverworld(), players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
+                case BEDWARS -> new BedwarsGameManager(this.server.getOverworld(), players, new SpreadRules(4), gameId);
+                case PROP_HUNT -> new PropHuntGameManager(this.server.getOverworld(), players, null, gameId);
+                case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.server.getOverworld(), players, null, gameId);
+                case DUELS -> new DuelsGameManager(this.server.getOverworld(), players, null, gameId);
             };
 
             final boolean startedGame = this.startGame(game);

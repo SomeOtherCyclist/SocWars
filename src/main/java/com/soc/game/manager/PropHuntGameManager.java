@@ -7,6 +7,7 @@ import com.soc.game.map.SpreadRules;
 import com.soc.items.AttackFunctionWeapon;
 import com.soc.items.BowItem;
 import com.soc.items.MorphWand;
+import com.soc.items.UseFunctionWeapon;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
@@ -47,8 +48,9 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	protected void onFinishCountdown() {
 		this.map.spawnCages(false, HIDER_COLOUR);
 		this.getPlayers(HIDER_COLOUR).forEach(hider -> {
-			hider.giveItemStack(new ItemStack(MorphWand.MORPH_WAND));
 			hider.changeGameMode(GameMode.SURVIVAL);
+			hider.giveItemStack(new ItemStack(MorphWand.MORPH_WAND));
+			hider.giveItemStack(new ItemStack(UseFunctionWeapon.TAUNT_STICK));
 		});
 
 		final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));

@@ -26,6 +26,8 @@ import static com.soc.lib.SocWarsLib.copyTeam;
 import static com.soc.lib.SocWarsLib.randomHostileMob;
 
 public class SummonersGarb extends ArmourItem implements OnHitArmour {
+    public static final float HIT_SPAWN_CHANCE = 0.4f;
+
     private static final RegistryKey<EquipmentAsset> SUMMONERS_GARB_MODEL_KEY = ArmourItem.registerEquipmentAsset("summoners_garb");
 
     public SummonersGarb(Settings settings, EquipmentSlot slot, int armour) {
@@ -43,7 +45,7 @@ public class SummonersGarb extends ArmourItem implements OnHitArmour {
 
     @Override
     public boolean onHit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {
-        if (!world.isClient && world instanceof ServerWorld serverWorld && world.random.nextFloat() > 0.5f) {
+        if (!world.isClient && world instanceof ServerWorld serverWorld && world.random.nextFloat() > HIT_SPAWN_CHANCE) {
             final LivingEntity mob = randomHostileMob(serverWorld, wearer.getPos());
             copyTeam(world, mob, wearer);
 
@@ -55,6 +57,6 @@ public class SummonersGarb extends ArmourItem implements OnHitArmour {
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        textConsumer.accept(Text.translatable("summoners_garb.spawn_chance", 50).formatted(Formatting.GOLD));
+        textConsumer.accept(Text.translatable("summoners_garb.spawn_chance", (int)(HIT_SPAWN_CHANCE * 100f)).formatted(Formatting.GOLD));
     }
 }

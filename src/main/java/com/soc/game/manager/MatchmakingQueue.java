@@ -8,6 +8,7 @@ import com.soc.networking.helper.QueueProgress;
 import com.soc.networking.s2c.QueueProgressPayload;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.*;
 
 public class MatchmakingQueue {
-    private final World world;
+    private final MinecraftServer server;
 
     private final boolean allowMultiQueue = false;
 
@@ -33,8 +34,8 @@ public class MatchmakingQueue {
 
     private boolean dirty = false;
 
-    public MatchmakingQueue(World world, BiConsumer<GameType, Set<ServerPlayerEntity>> queueCompletionFunction) {
-		this.world = world;
+    public MatchmakingQueue(MinecraftServer server, BiConsumer<GameType, Set<ServerPlayerEntity>> queueCompletionFunction) {
+		this.server = server;
 		this.queue = HashMultimap.create();
         this.queueCountdowns = new HashMap<>();
 		this.queueCompletionFunction = queueCompletionFunction;
@@ -69,7 +70,7 @@ public class MatchmakingQueue {
     }
 
     private void startCountdown(ServerPlayerEntity player, GameType gameType) {
-        this.queueCountdowns.put(gameType, this.world.getTime() + 30 * 20);
+        this.queueCountdowns.put(gameType, this.server.getOverworld().getTime() + 30 * 20);
 
         final Text text = Text.translatable("message.queue.queue_started", Objects.requireNonNull((MutableText)player.getDisplayName()).formatted(Formatting.GREEN), gameType.getVariantName().formatted(Formatting.GOLD));
         for (ServerPlayerEntity playerNotInGame : GamesManager.getInstance().getPlayersNotInGame()) {
@@ -152,7 +153,7 @@ public class MatchmakingQueue {
             final Set<ServerPlayerEntity> players = this.getLimitedPlayers(gameType);
 
             ifNotNull(this.queueCountdowns.get(gameType), time -> {
-                if (this.world.getTime() > time) {
+                if (this.server.getOverworld().getTime() > time) {
                     if (players.size() >= gameType.minPlayers() || this.allowedSinglePlayerQueues.contains(gameType)) {
                         this.finishQueue(gameType, players);
                     } else {
@@ -189,7 +190,7 @@ public class MatchmakingQueue {
     }
 
     public Set<ServerPlayerEntity> getLimitedPlayers(GameType gameType) {
-        return this.queue.get(gameType).stream().map(uuid -> (ServerPlayerEntity)this.world.getPlayerByUuid(uuid)).filter(Objects::nonNull).limit(gameType.maxPlayers()).collect(Collectors.toSet());
+        return this.queue.get(gameType).stream().map(uuid -> this.server.getPlayerManager().getPlayer(uuid)).filter(Objects::nonNull).limit(gameType.maxPlayers()).collect(Collectors.toSet());
     }
 
     public boolean allowsMultiQueue() {
@@ -221,7 +222,7 @@ public class MatchmakingQueue {
     }
 
     private boolean playerIsLoggedIn(UUID uuid) {
-        return this.world.getPlayerByUuid(uuid) != null;
+        return this.server.getPlayerManager().getPlayer(uuid) != null;
     }
 
     public boolean allowSinglePlayer(GameType gameType) {

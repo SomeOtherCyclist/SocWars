@@ -94,6 +94,9 @@ public class DrawableWeapon extends Item {
     public static final Item MOBBING_STAFF = ModItems.register("mobbing_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
                 if (world instanceof ServerWorld serverWorld) {
                     final LivingEntity mob = randomHostileMob(serverWorld, user.getEyePos());
+
+                    if (mob == null) return false;
+
                     mob.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(progress) * 0.5f + 0.5f));
                     copyTeam(world, mob, user);
                     world.spawnEntity(mob);

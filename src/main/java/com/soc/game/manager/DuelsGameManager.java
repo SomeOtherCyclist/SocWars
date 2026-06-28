@@ -104,4 +104,9 @@ public class DuelsGameManager extends AbstractGameManager<DuelsGameMap, DuelsTab
 
 		return true;
 	}
+
+	@Override
+	protected boolean hasTeamChat() {
+		return false;
+	}
 }

@@ -47,6 +47,7 @@ public interface ModItems {
         JetShoppingTrolley.initialise();
         MorphWand.initialise();
         BothClickItem.initialise();
+        GravityOrb.initialise();
     }
 
     static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

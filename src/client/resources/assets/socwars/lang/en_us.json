@@ -152,6 +152,7 @@
   "game.death.final": " §4FINAL KILL!",
   "game.disallow_dismount": "You may not press %s to Dismount",
   "game.doubloons_reward": "You gained %s Doubloons!",
+  "game.failed_to_start": "§4Failed to start game with id: %s",
   "game.hider": "Hider",
   "game.hiding.find": "You found %s!",
   "game.hiding.found": "You have been found by %s!",

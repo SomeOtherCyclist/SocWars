@@ -165,6 +165,11 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 		return false;
 	}
 
+	@Override
+	protected boolean hasTeamChat() {
+		return true;
+	}
+
 	protected void taunt(ServerPlayerEntity player) {
 		this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
 		if (this.getAlivePlayers().size() < 2) player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));

@@ -316,6 +316,11 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
         return true;
     }
 
+    @Override
+    protected boolean hasTeamChat() {
+        return false;
+    }
+
     //@Override
     //public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
     //    if (!this.bossBarMap.isEmpty()) {

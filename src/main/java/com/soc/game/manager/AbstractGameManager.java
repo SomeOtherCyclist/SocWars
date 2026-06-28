@@ -30,6 +30,8 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SignedMessage;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.*;
@@ -63,6 +65,7 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.*;
 
 public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE extends BaseGameTable, EVENT extends AbstractGameManager<?, ?, ?>> {
+
     protected interface OnGameEnd {
         void onGameEnd(ServerPlayerEntity player, boolean immediate);
 
@@ -341,6 +344,19 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     public boolean onBedUsed(ServerPlayerEntity player, World world, BlockPos pos) {
         return false;
     }
+
+    public boolean onChatMessage(SignedMessage message, ServerPlayerEntity player, MessageType.Parameters parameters) {
+        if (this.hasTeamChat()) {
+            final DyeColor team = this.getTeam(player);
+            this.broadcast(team, message.getContent(), false);
+        } else {
+            this.broadcast(message.getContent(), false);
+        }
+
+        return false;
+    }
+
+    protected abstract boolean hasTeamChat();
 
     public boolean onPowerupPickedUp(ServerPlayerEntity player) {
         return false;

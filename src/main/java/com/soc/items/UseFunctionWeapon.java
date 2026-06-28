@@ -92,7 +92,6 @@ public class UseFunctionWeapon extends Item {
         addItemToGroupsAndBaseItemGroup(VELOCITY_STAFF, ItemGroups.TOOLS);
         addItemToGroupsAndBaseItemGroup(VEXING_STAFF, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(YELLOW_SWORD, ItemGroups.COMBAT);
-        addItemToGroupsAndBaseItemGroup(GRAVITY_ORB, ItemGroups.TOOLS);
         addItemToGroupsAndBaseItemGroup(GOD_COMPLEX, ItemGroups.TOOLS);
         addItemToGroupsAndBaseItemGroup(SCROLL_OF_EAU, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(SCROLL_OF_HELLFIRE, ItemGroups.COMBAT);
@@ -112,7 +111,7 @@ public class UseFunctionWeapon extends Item {
     public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
                 final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
-                final float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.5f;
+                final float dashStrength = (float)Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.8f;
 
                 user.addVelocity(user.getRotationVector().multiply(dashStrength));
 
@@ -120,7 +119,7 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
-            .sword(ToolMaterials.DASH, 2f, -2f)
+            .sword(ToolMaterials.DASH, 2.5f, -2f)
             .useCooldown(3.5f)
             .rarity(Rarity.RARE)
     );
@@ -175,15 +174,6 @@ public class UseFunctionWeapon extends Item {
             .sword(ToolMaterials.BASE, 6f, -2.1f)
             .useCooldown(1.5f)
             .maxDamage(600)
-    );
-    public static final Item GRAVITY_ORB = ModItems.register("gravity_orb", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                user.addStatusEffect(new StatusEffectInstance(ModEffects.ANTI_GRAVITY, (int) 7.5 * 20, 2, false, false));
-                user.getStackInHand(hand).decrementUnlessCreative(1, user);
-
-                return ActionResult.SUCCESS;
-            }), new Settings()
-            .useCooldown(7.5f)
-            .rarity(Rarity.UNCOMMON)
     );
     public static final Item GOD_COMPLEX = ModItems.register("god_complex", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 user.addStatusEffect(new StatusEffectInstance(ModEffects.FLIGHT, 5 * 20, 0, false, false));
@@ -444,7 +434,7 @@ public class UseFunctionWeapon extends Item {
                 return ActionResult.SUCCESS;
             }), new Settings()
             .rarity(Rarity.UNCOMMON)
-            .useCooldown(5f)
+            .useCooldown(0.75f)
     );
 
     @Override

@@ -444,7 +444,12 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         return false;
     }
 
-    public BedwarsShopContents getIndividualShopContents(UUID player) {
+	@Override
+	protected boolean hasTeamChat() {
+		return true;
+	}
+
+	public BedwarsShopContents getIndividualShopContents(UUID player) {
         return this.playerStatsMap.get(player).getShopContents();
     }
 
