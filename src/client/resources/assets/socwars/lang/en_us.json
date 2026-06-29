@@ -560,6 +560,7 @@
   "message.queue.not_in_queue.queue": "You are not in the queue for %s!",
   "message.queue.queue_failed": "The %s queue failed to start as there were not enough players.",
   "message.queue.queue_started": "%s has started a queue for %s!",
+  "message.chat_message": "%s §8>> %s",
   "potion.potency.100": "(Full Heal)",
   "potion_apple.when_eaten": "When Eaten:",
   "potion_apple.with_duration": "%s %s",

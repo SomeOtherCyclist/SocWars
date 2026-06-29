@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface Queue {
+public interface QueueCommand {
     String QUEUE_COMMAND_ID = "queue";
     String QUEUE_COMPLETE_ARGUMENT = "complete";
     String QUEUE_ALLOW_SINGLE_PLAYER_ARGUMENT = "allowsingleplayer";
@@ -30,39 +30,39 @@ public interface Queue {
             .then(
                 CommandManager.literal(QUEUE_COMPLETE_ARGUMENT)
                     .requires(source -> source.hasPermissionLevel(2))
-                    .executes(Queue::executeComplete)
+                    .executes(QueueCommand::executeComplete)
                     .then(
                         CommandManager.argument(QUEUE_TYPE_ARGUMENT, new GameTypeArgumentType())
-                            .executes(Queue::executeComplete)
+                            .executes(QueueCommand::executeComplete)
                     )
             )
             .then(
                 CommandManager.literal(QUEUE_ALLOW_SINGLE_PLAYER_ARGUMENT)
-                    .executes(Queue::executeAllowSinglePlayer)
+                    .executes(QueueCommand::executeAllowSinglePlayer)
                     .then(
                         CommandManager.argument(QUEUE_TYPE_ARGUMENT, new GameTypeArgumentType())
-                            .executes(Queue::executeAllowSinglePlayer)
+                            .executes(QueueCommand::executeAllowSinglePlayer)
                             .then(
                                 CommandManager.argument(QUEUE_ALLOW_SINGLE_PLAYER_BOOL_ARGUMENT, BoolArgumentType.bool())
-                                    .executes(Queue::executeAllowSinglePlayer)
+                                    .executes(QueueCommand::executeAllowSinglePlayer)
                             )
                     )
             )
             .then(
                 CommandManager.literal(QUEUE_JOIN_ARGUMENT)
-                    .requires(Queue::sourceIsNotInGame)
+                    .requires(QueueCommand::sourceIsNotInGame)
                     .then(
                         CommandManager.argument(QUEUE_TYPE_ARGUMENT, new GameTypeArgumentType())
-                            .executes(Queue::join)
+                            .executes(QueueCommand::join)
                     )
             )
             .then(
                 CommandManager.literal(QUEUE_LEAVE_ARGUMENT)
-                    .requires(Queue::sourceIsNotInGame)
-                    .executes(Queue::leave)
+                    .requires(QueueCommand::sourceIsNotInGame)
+                    .executes(QueueCommand::leave)
                     .then(
                         CommandManager.argument(QUEUE_TYPE_ARGUMENT, new GameTypeArgumentType())
-                            .executes(Queue::leave)
+                            .executes(QueueCommand::leave)
                     )
             )
         );

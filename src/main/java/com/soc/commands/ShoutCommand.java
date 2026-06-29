@@ -18,16 +18,16 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 
-public interface Collectibles {
+public interface ShoutCommand {
     String COLLECTIBLES_COMMAND_ID = "collectibles";
     String FULL_LIST_ARGUMENT = "full list";
 
     static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal(COLLECTIBLES_COMMAND_ID)
-            .executes(Collectibles::execute)
+            .executes(ShoutCommand::execute)
                 .then(
                     CommandManager.argument(FULL_LIST_ARGUMENT, BoolArgumentType.bool())
-                        .executes(Collectibles::execute)
+                        .executes(ShoutCommand::execute)
                 )
         );
     }

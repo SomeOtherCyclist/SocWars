@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.soc.game.manager.AbstractGameManager.createChatMessage;
 import static java.util.stream.IntStream.range;
 
 public class GamesManager {
@@ -99,7 +100,7 @@ public class GamesManager {
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, player, parameters) -> {
             this.getGame(player).ifPresentOrElse(
                     game -> game.onChatMessage(message, player, parameters),
-                    () -> this.getPlayersNotInGame().forEach(otherPlayer -> otherPlayer.sendMessage(message.getContent(), false))
+                    () -> this.getPlayersNotInGame().forEach(otherPlayer -> otherPlayer.sendMessage(createChatMessage(message, player), false))
             );
             return false;
         });

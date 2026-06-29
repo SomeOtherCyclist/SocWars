@@ -345,15 +345,18 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return false;
     }
 
-    public boolean onChatMessage(SignedMessage message, ServerPlayerEntity player, MessageType.Parameters parameters) {
+    public void onChatMessage(SignedMessage message, ServerPlayerEntity player, MessageType.Parameters parameters) {
+        final Text chatMessage = createChatMessage(message, player);
         if (this.hasTeamChat()) {
             final DyeColor team = this.getTeam(player);
-            this.broadcast(team, message.getContent(), false);
+            this.broadcast(team, chatMessage, false);
         } else {
-            this.broadcast(message.getContent(), false);
+            this.broadcast(chatMessage, false);
         }
+    }
 
-        return false;
+    public static Text createChatMessage(SignedMessage message, ServerPlayerEntity player) {
+		return Text.translatable("message.chat_message", player.getDisplayName(), message.getContent());
     }
 
     protected abstract boolean hasTeamChat();
